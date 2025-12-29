@@ -16,20 +16,29 @@
 /************************************************************
  * 一、读取记录数据
  *
- * records.json 是一个数组，每个元素是一条记录对象
- * 示例：
+ * records_index.json 所有记录文件名
+ * 单个记录示例：
  * {
- *   id: 12,
- *   date: "2024-10-05",
- *   time: "",          // 可能为空
- *   order: 2,          // 仅在 time 为空时使用
- *   author: "记录员A",
- *   content: "...",
- *   image: "images/xxx.jpg"
+ *   "id": 12,
+ *   "date": "2024-10-05",
+ *   "time": "",          // 可能为空
+ *   "order": 2,          // 仅在 time 为空时使用
+ *   "author": "记录员A",
+ *   "content": "...",
+ *   "image": "images/xxx.jpg"
  * }
  ************************************************************/
-fetch("data/records.json")
-    .then(response => response.json())
+
+// 页面容器
+const container = document.getElementById("record-list");
+
+fetch("data/records_index.json")
+    .then(res => res.json())
+    .then(fileList => {
+        // fileList 是一个数组，包含所有记录 JSON 文件名
+        const promises = fileList.map(filename => fetch(`data/${filename}`).then(res => res.json()));
+        return Promise.all(promises); // 等待所有 JSON 加载完成
+    })
     .then(records => {
 
         /********************************************************
@@ -93,7 +102,6 @@ fetch("data/records.json")
         /********************************************************
          * 三、渲染到页面
          ********************************************************/
-        const container = document.getElementById("record-list");
 
         records.forEach(record => {
 
@@ -134,11 +142,5 @@ fetch("data/records.json")
      ********************************************************/
     .catch(error => {
         console.error("加载记录失败：", error);
-
-        const container = document.getElementById("record-list");
-        container.innerHTML = `
-      <p style="color:red;">
-        记录加载失败，请检查 records.json 是否存在或格式是否正确。
-      </p>
-    `;
+        container.innerHTML = `<p style="color:red;">记录加载失败，请检查 records.json 是否存在或格式是否正确。</p>`;
     });
