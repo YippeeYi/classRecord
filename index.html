@@ -3,135 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>班级纪事本安全版</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>班级纪事本</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>班级纪事本安全版</h1>
 
-    <form id="recordForm">
-        <label>日期: <input type="date" id="date" required></label>
-        <label>时间（可选）: <input type="time" id="time"></label>
-        <label>作者: <input type="text" id="author" required></label>
-        <label>内容: <textarea id="content" required></textarea></label>
-        <label>图片: <input type="file" id="image" accept="image/*" required></label>
-        <button type="submit">提交记录</button>
-    </form>
+    <header>
+        <h1>📘 班级纪事本</h1>
+        <p>记录我们一起走过的日子</p>
+    </header>
 
-    <h2>已有记录</h2>
-    <div id="record-list"></div>
+    <main id="record-list">
+        <!-- 记录会由 JS 自动插入 -->
+    </main>
 
-    <script>
-        const REPO_OWNER = "YippeeYi"; // 修改为你的用户名
-        const REPO_NAME = "classRecord";     // 修改为你的仓库名
-        const DATA_DIR = "data";               // 仓库 data/ 文件夹
-
-        let existingRecords = [];
-
-        // 渲染记录
-        function renderRecords(records) {
-            const container = document.getElementById("record-list");
-            container.innerHTML = "";
-            records.sort((a, b) => {
-                if (a.date !== b.date) return new Date(b.date) - new Date(a.date);
-                const hasTimeA = !!a.time, hasTimeB = !!b.time;
-                if (hasTimeA && hasTimeB) return new Date(b.date + " " + b.time) - new Date(a.date + " " + a.time);
-                if (hasTimeA && !hasTimeB) return -1;
-                if (!hasTimeA && hasTimeB) return 1;
-                const orderA = a.order || 0, orderB = b.order || 0;
-                if (orderA !== orderB) return orderA - orderB;
-                return b.id - a.id;
-            });
-            records.forEach(r => {
-                const timeText = r.time ? r.time : (r.order ? `当日第 ${r.order} 条` : "时间不详");
-                const div = document.createElement("div");
-                div.className = "record";
-                div.innerHTML = `
-      <div class="meta">📅 ${r.date} ${timeText} | ✍ ${r.author}</div>
-      <div class="content">${r.content}</div>
-      <img src="${r.image}" alt="记录图片">
-    `;
-                container.appendChild(div);
-            });
-        }
-
-        // -------------------- 加载历史记录 --------------------
-        async function loadGitHubRecords() {
-            try {
-                const apiUrl = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${DATA_DIR}`;
-                const res = await fetch(apiUrl);
-                if (!res.ok) throw new Error("无法获取仓库 data/ 文件列表");
-                const files = await res.json();
-                const jsonFiles = files.filter(f => f.name.endsWith(".json"));
-                const records = [];
-                for (const file of jsonFiles) {
-                    const r = await fetch(file.download_url);
-                    const data = await r.json();
-                    records.push(data);
-                }
-                existingRecords = records;
-                renderRecords(existingRecords);
-            } catch (err) {
-                console.error(err);
-                alert("加载历史记录失败，请检查控制台。");
-            }
-        }
-
-        // 初次加载
-        loadGitHubRecords();
-
-        // -------------------- 表单提交 --------------------
-        document.getElementById("recordForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-            const date = document.getElementById("date").value;
-            const time = document.getElementById("time").value;
-            const author = document.getElementById("author").value.trim();
-            const content = document.getElementById("content").value.trim();
-            const imageInput = document.getElementById("image");
-
-            if (!date || !author || !content || !imageInput.files.length) {
-                alert("请填写完整信息并上传图片！");
-                return;
-            }
-
-            const imageFile = imageInput.files[0];
-            const todayRecords = existingRecords.filter(r => r.date === date);
-            const order = todayRecords.length + 1;
-
-            const ext = imageFile.name.substring(imageFile.name.lastIndexOf('.'));
-            const imageName = `${date}-${String(order).padStart(2, '0')}${ext}`;
-
-            const record = {
-                id: Date.now(),
-                date: date,
-                time: time || "",
-                order: order,
-                author: author,
-                content: content,
-                image: `images/${imageName}`
-            };
-
-            try {
-                const formData = new FormData();
-                formData.append("jsonFile", new Blob([JSON.stringify(record, null, 2)], { type: "application/json" }), `${date}-${String(order).padStart(2, '0')}.json`);
-                formData.append("imageFile", imageFile, imageName);
-
-                // POST 上传到 /upload-endpoint（GitHub Actions 或后端中转）
-                const res = await fetch("/upload-endpoint", { method: "POST", body: formData });
-                if (!res.ok) throw new Error("上传失败");
-
-                existingRecords.push(record);
-                renderRecords(existingRecords);
-                alert("记录提交成功，GitHub Actions 会自动处理 JSON 和图片。");
-                document.getElementById("recordForm").reset();
-            } catch (err) {
-                console.error(err);
-                alert("上传失败，请检查控制台。");
-            }
-        });
-    </script>
-
+    <script src="script.js"></script>
 </body>
 
 </html>
