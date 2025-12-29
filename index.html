@@ -23,8 +23,8 @@
     <div id="record-list"></div>
 
     <script>
-        const REPO_OWNER = "你的GitHub用户名"; // 修改为你的用户名
-        const REPO_NAME = "class-records";     // 修改为你的仓库名
+        const REPO_OWNER = "yippeeyi"; // 修改为你的用户名
+        const REPO_NAME = "classRecord";     // 修改为你的仓库名
         const DATA_DIR = "data";               // 仓库 data/ 文件夹
 
         let existingRecords = [];
@@ -48,7 +48,7 @@
                 const div = document.createElement("div");
                 div.className = "record";
                 div.innerHTML = `
-      <div class="meta">📅 ${r.date} ${timeText} ｜ ✍ ${r.author}</div>
+      <div class="meta">📅 ${r.date} ${timeText} | ✍ ${r.author}</div>
       <div class="content">${r.content}</div>
       <img src="${r.image}" alt="记录图片">
     `;
