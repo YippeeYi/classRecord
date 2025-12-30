@@ -1,146 +1,123 @@
 /************************************************************
  * 班级纪事本 - script.js
- *
- * 功能说明：
- * 1. 从 data/records.json 读取所有记录
- * 2. 对记录进行“稳定且可解释”的排序
- * 3. 将排序后的记录渲染到网页中
- *
- * 设计原则：
- * - 数据可能不完美，但页面不能乱
- * - 排序规则清晰、长期可维护
- * - 为未来修改保留空间
+ * 架构：方案一（分文件记录）
+ * 功能：
+ * - 读取 records_index.json
+ * - 加载所有记录文件
+ * - 按 date → time → order → id 排序
+ * - 图片 / 附件 点击展开
  ************************************************************/
 
-
-/************************************************************
- * 一、读取记录数据
- *
- * records_index.json 所有记录文件名
- * 单个记录示例：
- * {
- *   "id": 12,
- *   "date": "2024-10-05",
- *   "time": "",          // 可能为空
- *   "order": 2,          // 仅在 time 为空时使用
- *   "author": "记录员A",
- *   "content": "...",
- *   "image": "images/xxx.jpg"
- * }
- ************************************************************/
-
-// 页面容器
 const container = document.getElementById("record-list");
 
+/* 1️⃣ 读取索引文件 */
 fetch("data/records_index.json")
     .then(res => res.json())
     .then(fileList => {
-        // fileList 是一个数组，包含所有记录 JSON 文件名
-        const promises = fileList.map(filename => fetch(`data/${filename}`).then(res => res.json()));
-        return Promise.all(promises); // 等待所有 JSON 加载完成
+        const requests = fileList.map(name =>
+            fetch(`data/${name}`).then(res => res.json())
+        );
+        return Promise.all(requests);
     })
     .then(records => {
 
-        /********************************************************
-         * 二、排序规则（非常重要）
-         *
-         * 排序优先级（从高到低）：
-         * 1. date   ：日期晚的在前
-         * 2. time   ：
-         *    - 有具体时间的记录，按真实时间排序
-         *    - 有时间的记录，一定排在“无时间”的前面
-         * 3. order  ：
-         *    - 同一天
-         *    - 都没有 time
-         *    - 使用人工指定的先后顺序
-         * 4. id     ：兜底排序，确保排序稳定
-         *
-         * 说明：
-         * - 在“数据完全规范”的情况下，第 4 步理论上不会触发
-         * - 但为了防止未来数据出错，必须保留
-         ********************************************************/
+        /* 2️⃣ 排序逻辑 */
         records.sort((a, b) => {
 
-            /* ---------- 1. 按日期排序 ---------- */
             if (a.date !== b.date) {
-                // 日期新的排在前面
                 return new Date(b.date) - new Date(a.date);
             }
 
-            /* ---------- 2. 同一天，处理 time ---------- */
-            const hasTimeA = Boolean(a.time);
-            const hasTimeB = Boolean(b.time);
+            const hasTimeA = !!a.time;
+            const hasTimeB = !!b.time;
 
-            // 两条记录都有 time，直接按真实时间比较
             if (hasTimeA && hasTimeB) {
-                return (
-                    new Date(b.date + " " + b.time) -
-                    new Date(a.date + " " + a.time)
-                );
+                return new Date(b.date + " " + b.time) -
+                    new Date(a.date + " " + a.time);
             }
 
-            // 只有一条有 time：有时间的排在前面
             if (hasTimeA && !hasTimeB) return -1;
             if (!hasTimeA && hasTimeB) return 1;
 
-            /* ---------- 3. 同一天，且都没有 time，用 order ---------- */
             const orderA = typeof a.order === "number" ? a.order : 0;
             const orderB = typeof b.order === "number" ? b.order : 0;
 
             if (orderA !== orderB) {
-                // order 小的表示“更早发生”
                 return orderA - orderB;
             }
 
-            /* ---------- 4. 最终兜底：按 id ---------- */
-            // 理论上不应走到这里
-            // 作用：防止完全相等导致排序不稳定
             return b.id - a.id;
         });
 
-
-        /********************************************************
-         * 三、渲染到页面
-         ********************************************************/
-
+        /* 3️⃣ 渲染 */
         records.forEach(record => {
 
-            /* ---------- 处理显示用的时间文本 ---------- */
             let timeText = "（时间不详）";
+            if (record.time) timeText = record.time;
+            else if (record.order) timeText = `（当日第 ${record.order} 条）`;
 
-            if (record.time) {
-                // 有明确时间
-                timeText = record.time;
-            } else if (record.order) {
-                // 没有时间，但有人工顺序
-                timeText = `（当日第 ${record.order} 条）`;
-            }
+            const recordDiv = document.createElement("div");
+            recordDiv.className = "record";
 
-            /* ---------- 创建记录卡片 ---------- */
-            const div = document.createElement("div");
-            div.className = "record";
-
-            div.innerHTML = `
+            recordDiv.innerHTML = `
         <div class="meta">
-          📅 ${record.date} ${timeText} ｜ ✍ ${record.author}
+          <span>📅 ${record.date} ${timeText} ｜ ✍ ${record.author}</span>
+          <span class="icon-group">
+            <span class="image-toggle" title="查看原始记录">📷</span>
+            ${record.attachments && record.attachments.length > 0
+                    ? `<span class="attach-toggle" title="查看附件">📎</span>`
+                    : ""}
+          </span>
         </div>
 
-        <div class="content">
-          ${record.content}
+        <div class="content">${record.content}</div>
+
+        <div class="image-wrapper">
+          <img src="${record.image}" alt="纸笔原始记录">
         </div>
 
-        <img src="${record.image}" alt="记录原始照片">
+        ${record.attachments && record.attachments.length > 0
+                    ? `
+          <div class="attachments-wrapper">
+            <strong>附件：</strong>
+            <ul>
+              ${record.attachments.map(att => `
+                <li>
+                  <a href="${att.file}" target="_blank">${att.name}</a>
+                </li>
+              `).join("")}
+            </ul>
+          </div>
+          `
+                    : ""}
       `;
 
-            container.appendChild(div);
+            /* 图片切换 */
+            const imgBtn = recordDiv.querySelector(".image-toggle");
+            const imgWrap = recordDiv.querySelector(".image-wrapper");
+
+            imgBtn.addEventListener("click", () => {
+                const open = imgWrap.style.display === "block";
+                imgWrap.style.display = open ? "none" : "block";
+                imgBtn.textContent = open ? "📷" : "❌";
+            });
+
+            /* 附件切换 */
+            const attBtn = recordDiv.querySelector(".attach-toggle");
+            const attWrap = recordDiv.querySelector(".attachments-wrapper");
+
+            if (attBtn && attWrap) {
+                attBtn.addEventListener("click", () => {
+                    const open = attWrap.style.display === "block";
+                    attWrap.style.display = open ? "none" : "block";
+                    attBtn.textContent = open ? "📎" : "❌";
+                });
+            }
+
+            container.appendChild(recordDiv);
         });
     })
-
-
-    /********************************************************
-     * 四、错误处理（防止页面空白）
-     ********************************************************/
-    .catch(error => {
-        console.error("加载记录失败：", error);
-        container.innerHTML = `<p style="color:red;">记录加载失败，请检查 records.json 是否存在或格式是否正确。</p>`;
+    .catch(err => {
+        console.error(err);
+        container.innerHTML = "<p>记录加载失败，请检查数据文件。</p>";
     });

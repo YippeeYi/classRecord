@@ -1,38 +1,86 @@
 body {
-  font-family: "Microsoft YaHei", sans-serif;
+  font-family: Arial, sans-serif;
   background: #f4f6f8;
-  margin: 0;
-}
-
-header {
-  background: #3f51b5;
-  color: white;
   padding: 20px;
-  text-align: center;
 }
 
-#record-list {
-  max-width: 800px;
-  margin: 20px auto;
-}
-
-.record {
-  background: white;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-}
-
-.record img {
-  max-width: 100%;
-  border-radius: 5px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.record .meta {
-  color: #666;
-  font-size: 14px;
+h1 {
   margin-bottom: 5px;
+}
+
+.notice {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 20px;
+}
+
+/* 单条记录卡片 */
+.record {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 顶部信息行 */
+.meta {
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.icon-group span {
+  margin-left: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 内容 */
+.content {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* 图片（默认隐藏） */
+.image-wrapper {
+  display: none;
+  margin-top: 10px;
+}
+
+.image-wrapper img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* 附件区域 */
+.attachments-wrapper {
+  display: none;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #fafafa;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+}
+
+.attachments-wrapper ul {
+  margin: 6px 0 0 0;
+  padding-left: 18px;
+}
+
+.attachments-wrapper li {
+  margin: 4px 0;
+}
+
+.attachments-wrapper a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.attachments-wrapper a:hover {
+  text-decoration: underline;
 }
