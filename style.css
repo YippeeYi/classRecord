@@ -46,6 +46,29 @@ h1 {
 }
 
 /* 图片（默认隐藏） */
+
+/* =========================
+   图片按钮（📷 图标）
+   ========================= */
+.image-toggle {
+  display: inline-block;
+  font-size: 14px;
+  /* 字体大小 */
+  cursor: pointer;
+  /* 鼠标手型提示可点击 */
+  user-select: none;
+  /* 禁止选中文本 */
+  margin-top: 6px;
+  /* 与正文或上方元素保持间距 */
+}
+
+.image-toggle:hover {
+  color: #555;
+  /* 悬停颜色提示 */
+  text-decoration: underline;
+  /* 悬停下划线 */
+}
+
 .image-wrapper {
   display: none;
   margin-top: 10px;
@@ -58,6 +81,24 @@ h1 {
 }
 
 /* 附件区域 */
+
+/* =========================
+   附件按钮（📎 图标）
+   ========================= */
+.attach-toggle {
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 4px;
+  /* 与正文或上方元素间距稍小 */
+}
+
+.attach-toggle:hover {
+  color: #555;
+  text-decoration: underline;
+}
+
 .attachments-wrapper {
   display: none;
   margin-top: 10px;
