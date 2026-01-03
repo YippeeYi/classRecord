@@ -11,11 +11,11 @@
 const container = document.getElementById("record-list");
 
 /* 1️⃣ 读取索引文件 */
-fetch("data/records_index.json")
+fetch("data/record/records_index.json")
   .then(res => res.json())
   .then(fileList => {
     const requests = fileList.map(name =>
-      fetch(`data/${name}`).then(res => res.json())
+      fetch(`data/record/${name}`).then(res => res.json())
     );
     return Promise.all(requests);
   })
