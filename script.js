@@ -1,6 +1,6 @@
 /************************************************************
  * 班级纪事本 - script.js
- * 架构：方案一（分文件记录）
+ * 架构：分文件记录
  * 功能：
  * - 读取 records_index.json
  * - 加载所有记录文件
@@ -37,7 +37,7 @@ fetch("data/records_index.json")
 
       let timeText = "（时间不详）";
       if (record.time) timeText = record.time;
-      else if (record.order) timeText = `（当日第 ${record.order} 条）`;
+      else if (record.order !== undefined) timeText = `（当日第 ${record.order} 条）`;
 
       const recordDiv = document.createElement("div");
       recordDiv.className = "record";
@@ -46,18 +46,22 @@ fetch("data/records_index.json")
         <div class="meta">
           <span>📅 ${record.date} ${timeText} | ✍ ${record.author}</span>
           <span class="icon-group">
-            <span class="image-toggle" title="查看原始记录">📷</span>
-            ${record.attachments && record.attachments.length > 0
-          ? `<span class="attach-toggle" title="查看附件">📎</span>`
-          : ""}
+            ${record.image ? `
+              <span class="image-toggle" title="查看原始记录">📷</span>
+            ` : ""}
+            ${record.attachments && record.attachments.length > 0 ? `
+              <span class="attach-toggle" title="查看附件">📎</span>
+            ` : ""}
           </span>
         </div>
 
         <div class="content">${record.content}</div>
 
-        <div class="image-wrapper">
-          <img src="${record.image}" alt="纸笔原始记录">
-        </div>
+        ${record.image ? `
+          <div class="image-wrapper">
+            <img src="${record.image}" alt="纸笔原始记录">
+          </div>
+        ` : ""}
 
         ${record.attachments && record.attachments.length > 0
           ? `
@@ -79,11 +83,13 @@ fetch("data/records_index.json")
       const imgBtn = recordDiv.querySelector(".image-toggle");
       const imgWrap = recordDiv.querySelector(".image-wrapper");
 
-      imgBtn.addEventListener("click", () => {
-        const open = imgWrap.style.display === "block";
-        imgWrap.style.display = open ? "none" : "block";
-        imgBtn.textContent = open ? "📷" : "❌";
-      });
+      if (imgBtn && imgWrap) {
+        imgBtn.addEventListener("click", () => {
+          const open = imgWrap.style.display === "block";
+          imgWrap.style.display = open ? "none" : "block";
+          imgBtn.textContent = open ? "📷" : "❌";
+        });
+      }
 
       /* 附件切换 */
       const attBtn = recordDiv.querySelector(".attach-toggle");
