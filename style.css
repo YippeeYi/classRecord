@@ -168,3 +168,16 @@ h1 {
 .top-nav button:focus {
   outline: none;
 }
+
+/* 人物列表 */
+.person-item {
+  padding: 6px 10px;
+  margin: 4px 0;
+  cursor: pointer;
+  border-bottom: 1px solid #ddd;
+  transition: background 0.2s;
+}
+
+.person-item:hover {
+  background-color: #f0f0f0;
+}
