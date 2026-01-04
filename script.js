@@ -21,12 +21,13 @@ let peopleMap = {}; // id -> person
    =============================== */
 fetch("data/people/people_index.json")
   .then(res => res.json())
-  .then(fileList => {
-    const requests = fileList.map(name =>
-      fetch(`data/people/${name}`).then(res => res.json())
-    );
-    return Promise.all(requests);
-  })
+  .then(files =>
+    Promise.all(
+      files.map(f =>
+        fetch(`data/people/${f}`).then(r => r.json())
+      )
+    )
+  )
   .then(people => {
     people.forEach(p => {
       peopleMap[p.id] = p;
@@ -35,6 +36,7 @@ fetch("data/people/people_index.json")
   .catch(err => {
     console.error("人物数据加载失败", err);
   });
+
 
 /* ===============================
    解析记录内容中的人名标记
@@ -89,12 +91,17 @@ fetch("data/record/records_index.json")
       else if (record.order !== undefined)
         timeText = `（当日第 ${record.order} 条）`;
 
+      const authorPerson = peopleMap[record.author];
+      const authorHTML = authorPerson
+        ? renderPersonName(authorPerson.id, authorPerson.name)
+        : record.author;
+
       const recordDiv = document.createElement("div");
       recordDiv.className = "record";
 
       recordDiv.innerHTML = `
         <div class="meta">
-          <span>📅 ${record.date} ${timeText} | ✍ ${record.author}</span>
+          <span>📅 ${record.date} ${timeText} | ✍ ${authorHTML}</span>
           <span class="icon-group">
             ${record.image ? `
               <span class="image-toggle" title="查看原始记录">📷</span>
