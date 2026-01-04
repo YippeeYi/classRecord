@@ -44,13 +44,9 @@ fetch("data/people/people_index.json")
    =============================== */
 function parseContent(text) {
   return text.replace(
-    /\[\[([a-zA-Z0-9_-]+)\|([^\]]+)\]\]/g,
+    /\[\[(.+?)\|(.+?)\]\]/g,
     (match, personId, displayName) => {
-      return `
-        <span class="person-tag" data-id="${personId}">
-          ${displayName}
-        </span>
-      `;
+      return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
     }
   );
 }
