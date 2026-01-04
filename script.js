@@ -9,6 +9,17 @@
  * - 人物标记解析与个人页面跳转
  ************************************************************/
 
+/* 人名渲染函数 */
+function renderPersonName(id, name) {
+  return `
+    <span class="person-tag"
+          data-id="${id}"
+          onclick="location.href='person.html?id=${id}'">
+      ${name}
+    </span>
+  `;
+}
+
 const container = document.getElementById("record-list");
 
 /* ===============================
