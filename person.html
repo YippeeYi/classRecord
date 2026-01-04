@@ -3,36 +3,24 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>人物详情</title>
+    <title>个人页面</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
+    <button onclick="location.href='index.html'">返回主页面</button>
+    <button onclick="location.href='people.html'">返回人物列表</button>
 
-    <!-- 顶部导航 -->
-    <div class="nav">
-        <a href="index.html">← 返回纪事本</a>
-        <a href="people.html">人物名单</a>
+    <h1 id="person-alias"></h1>
+    <p>ID: <span id="person-id"></span></p>
+    <p id="person-bio"></p>
+
+    <div>
+        <button id="btn-author-events" class="switch-btn active">记录的事件</button>
+        <button id="btn-participate-events" class="switch-btn">参与的事件</button>
     </div>
 
-    <!-- 人物基本信息 -->
-    <h1 id="person-name"></h1>
-
-    <div class="person-info">
-        <p><strong>ID：</strong><span id="person-id"></span></p>
-        <p><strong>别名：</strong><span id="person-alias"></span></p>
-        <p><strong>简介：</strong></p>
-        <p id="person-intro"></p>
-    </div>
-
-    <!-- 切换按钮 -->
-    <div class="tabs">
-        <button id="btn-recorded" class="active">记录的事件</button>
-        <button id="btn-participated">参与的事件</button>
-    </div>
-
-    <!-- 内容区域 -->
-    <div id="event-list"></div>
+    <div id="events-container"></div>
 
     <script src="person.js"></script>
 </body>
