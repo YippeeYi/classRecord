@@ -1,143 +1,140 @@
-/************************************************************
- * person.js
- * 功能：
- * - 加载人物信息（分文件）
- * - 加载所有记录
- * - 区分「记录的事件 / 参与的事件」
- * - 通过按钮切换显示
- ************************************************************/
-
 /* ===============================
-   读取 URL 参数
+   获取 URL 中 id
    =============================== */
-const params = new URLSearchParams(location.search);
-const personId = params.get("id");
+const urlParams = new URLSearchParams(window.location.search);
+const personId = urlParams.get("id");
 
-/* DOM */
-const idEl = document.getElementById("person-id");
-const aliasEl = document.getElementById("person-alias");
-const introEl = document.getElementById("person-intro");
-
-const btnRecorded = document.getElementById("btn-recorded");
-const btnParticipated = document.getElementById("btn-participated");
-const listEl = document.getElementById("event-list");
-
-/* 数据缓存 */
-let allRecords = [];
-let recordedEvents = [];
-let participatedEvents = [];
-
-/* ===============================
-   工具：解析人物标记为纯文本
-   =============================== */
-function stripPersonTags(text) {
-    return text.replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, "$2");
+if (!personId) {
+    alert("未指定人物 id！");
+    throw new Error("未指定人物 id");
 }
 
 /* ===============================
-   加载人物信息
+   加载人物 JSON
    =============================== */
-function loadPerson() {
-    return fetch("data/people/people_index.json")
-        .then(res => res.json())
-        .then(files =>
-            Promise.all(
-                files.map(f =>
-                    fetch(`data/people/${f}`).then(r => r.json())
-                )
-            )
-        )
-        .then(people => {
-            const person = people.find(p => p.id === personId);
-            if (!person) throw new Error("人物不存在");
+let personData = null;
+fetch(`data/people/${personId}.json`)
+    .then(res => res.json())
+    .then(data => {
+        personData = data;
+        document.getElementById("person-alias").textContent = data.alias || "无别名";
+        document.getElementById("person-id").textContent = data.id;
+        document.getElementById("person-bio").textContent = data.bio || "无简介";
+        loadRecords();
+    })
+    .catch(err => {
+        console.error("人物数据加载失败", err);
+        document.getElementById("events-container").innerHTML = "<p>人物数据加载失败</p>";
+    });
 
-            idEl.textContent = person.id;
-            aliasEl.textContent = person.alias || "—";
-            introEl.textContent = person.intro || "暂无介绍";
-        });
+/* ===============================
+   解析 content 中人物标记 [[id|label]]
+   =============================== */
+function parseContent(text) {
+    return text.replace(
+        /\[\[(.+?)\|(.+?)\]\]/g,
+        (match, pid, label) => {
+            return `<span class="person-tag" data-id="${pid}">${label}</span>`;
+        }
+    );
 }
 
 /* ===============================
    加载所有记录
    =============================== */
 function loadRecords() {
-    return fetch("data/record/records_index.json")
+    fetch("data/record/records_index.json")
         .then(res => res.json())
-        .then(files =>
-            Promise.all(
-                files.map(f =>
-                    fetch(`data/record/${f}`).then(r => r.json())
-                )
-            )
-        )
-        .then(records => {
-            allRecords = records;
-
-            recordedEvents = records.filter(r => r.author === personId);
-
-            participatedEvents = records.filter(r =>
-                r.content.includes(`[[${personId}|`)
+        .then(fileList => {
+            const requests = fileList.map(name =>
+                fetch(`data/record/${name}`).then(res => res.json())
             );
+            return Promise.all(requests);
+        })
+        .then(records => {
+            displayRecords(records);
+        })
+        .catch(err => {
+            console.error(err);
+            document.getElementById("events-container").innerHTML = "<p>记录加载失败</p>";
         });
 }
 
 /* ===============================
-   渲染事件列表
+   渲染记录
    =============================== */
-function renderEvents(list) {
-    listEl.innerHTML = "";
+function displayRecords(records) {
+    const container = document.getElementById("events-container");
+    container.innerHTML = "";
 
-    if (list.length === 0) {
-        listEl.innerHTML = "<p>暂无相关记录。</p>";
-        return;
-    }
+    // 排序
+    records.sort((a, b) => {
+        if (a.date !== b.date) return b.date.localeCompare(a.date);
+        if (a.time && b.time) return a.time.localeCompare(b.time);
+        if (a.time) return -1;
+        if (b.time) return 1;
+        if (a.order !== undefined && b.order !== undefined) return a.order - b.order;
+        return a.id - b.id;
+    });
 
-    list.forEach(r => {
-        const div = document.createElement("div");
-        div.className = "record";
+    // 分两类
+    const authored = records.filter(r => r.author === personId);
+    const participated = records.filter(r => r.content.includes(`[[${personId}|`)));
 
-        let timeText = r.time
-            ? r.time
-            : r.order !== undefined
-                ? `（当日第 ${r.order} 条）`
-                : "（时间不详）";
+    // 保存全局，供按钮切换
+    window.authoredRecords = authored;
+    window.participatedRecords = participated;
 
-        div.innerHTML = `
+    // 默认显示 authored
+    renderRecordList(authored);
+}
+
+/* ===============================
+   渲染列表函数
+   =============================== */
+function renderRecordList(list) {
+    const container = document.getElementById("events-container");
+    container.innerHTML = "";
+
+    list.forEach(record => {
+        let timeText = record.time ? record.time : (record.order !== undefined ? `（当日第 ${record.order} 条）` : "（时间不详）");
+
+        const recordDiv = document.createElement("div");
+        recordDiv.className = "record";
+
+        recordDiv.innerHTML = `
       <div class="meta">
-        📅 ${r.date} ${timeText}
+        <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
       </div>
-      <div class="content">
-        ${stripPersonTags(r.content)}
-      </div>
+      <div class="content">${parseContent(record.content)}</div>
     `;
 
-        listEl.appendChild(div);
+        container.appendChild(recordDiv);
     });
 }
 
 /* ===============================
-   按钮切换逻辑
+   按钮切换事件
    =============================== */
-btnRecorded.onclick = () => {
-    btnRecorded.classList.add("active");
-    btnParticipated.classList.remove("active");
-    renderEvents(recordedEvents);
-};
+document.getElementById("btn-author-events").addEventListener("click", () => {
+    renderRecordList(window.authoredRecords);
+    document.getElementById("btn-author-events").classList.add("active");
+    document.getElementById("btn-participate-events").classList.remove("active");
+});
 
-btnParticipated.onclick = () => {
-    btnParticipated.classList.add("active");
-    btnRecorded.classList.remove("active");
-    renderEvents(participatedEvents);
-};
+document.getElementById("btn-participate-events").addEventListener("click", () => {
+    renderRecordList(window.participatedRecords);
+    document.getElementById("btn-author-events").classList.remove("active");
+    document.getElementById("btn-participate-events").classList.add("active");
+});
 
 /* ===============================
-   初始化
+   人物点击跳转个人页面
    =============================== */
-Promise.all([loadPerson(), loadRecords()])
-    .then(() => {
-        renderEvents(recordedEvents); // 默认显示“记录的事件”
-    })
-    .catch(err => {
-        document.body.innerHTML = "<p>人物信息加载失败。</p>";
-        console.error(err);
-    });
+document.addEventListener("click", e => {
+    const tag = e.target.closest(".person-tag");
+    if (!tag) return;
+
+    const pid = tag.dataset.id;
+    location.href = `person.html?id=${pid}`;
+});
