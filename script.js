@@ -96,7 +96,7 @@ fetch("data/record/records_index.json")
 
       recordDiv.innerHTML = `
         <div class="meta">
-          <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(record.author)}</span>
+          <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
           <span class="icon-group">
             ${record.image ? `
               <span class="image-toggle" title="查看原始记录">📷</span>
