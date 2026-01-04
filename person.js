@@ -79,7 +79,7 @@ function displayRecords(records) {
 
     // 分两类
     const authored = records.filter(r => r.author === personId);
-    const participated = records.filter(r => r.content.includes(`[[${personId}|`)));
+    const participated = records.filter(r => r.content.includes(`[[${personId}|`));
 
     // 保存全局，供按钮切换
     window.authoredRecords = authored;
