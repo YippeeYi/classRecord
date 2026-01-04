@@ -102,10 +102,17 @@ fetch("data/record/records_index.json")
       else if (record.order !== undefined)
         timeText = `（当日第 ${record.order} 条）`;
 
-      const authorPerson = peopleMap[record.author];
-      const authorHTML = authorPerson
-        ? renderPersonName(authorPerson.id, authorPerson.name)
-        : record.author;
+      let authorHTML = "";
+
+      if (typeof record.author === "object") {
+        authorHTML = renderPersonName(
+          record.author.id,
+          record.author.label
+        );
+      } else {
+        authorHTML = record.author;
+      }
+
 
       const recordDiv = document.createElement("div");
       recordDiv.className = "record";
