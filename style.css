@@ -125,3 +125,14 @@ h1 {
 .attachments-wrapper a:hover {
   text-decoration: underline;
 }
+
+/* 人名悬停&单击 */
+.person-tag {
+  cursor: pointer;
+  transition: font-weight 0.15s;
+}
+
+.person-tag:hover {
+  font-weight: bold;
+  text-decoration: underline;
+}

@@ -6,11 +6,56 @@
  * - 加载所有记录文件
  * - 按 date → time → order → id 排序
  * - 图片 / 附件 点击展开
+ * - 人物标记解析与个人页面跳转
  ************************************************************/
 
 const container = document.getElementById("record-list");
 
-/* 1️⃣ 读取索引文件 */
+/* ===============================
+   人物数据加载
+   =============================== */
+
+let peopleMap = {}; // id -> person
+/* ===============================
+   读取人物索引
+   =============================== */
+fetch("data/people/people_index.json")
+  .then(res => res.json())
+  .then(fileList => {
+    const requests = fileList.map(name =>
+      fetch(`data/people/${name}`).then(res => res.json())
+    );
+    return Promise.all(requests);
+  })
+  .then(people => {
+    people.forEach(p => {
+      peopleMap[p.id] = p;
+    });
+  })
+  .catch(err => {
+    console.error("人物数据加载失败", err);
+  });
+
+/* ===============================
+   解析记录内容中的人名标记
+   语法：[[id|显示名]]
+   =============================== */
+function parseContent(text) {
+  return text.replace(
+    /\[\[([a-zA-Z0-9_-]+)\|([^\]]+)\]\]/g,
+    (match, personId, displayName) => {
+      return `
+        <span class="person-tag" data-id="${personId}">
+          ${displayName}
+        </span>
+      `;
+    }
+  );
+}
+
+/* ===============================
+   读取记录索引
+   =============================== */
 fetch("data/record/records_index.json")
   .then(res => res.json())
   .then(fileList => {
@@ -21,7 +66,9 @@ fetch("data/record/records_index.json")
   })
   .then(records => {
 
-    /* 2️⃣ 排序逻辑 */
+    /* ===============================
+       排序逻辑
+       =============================== */
     records.sort((a, b) => {
       if (a.date !== b.date) return b.date.localeCompare(a.date);
       if (a.time && b.time) return b.time.localeCompare(a.time);
@@ -32,12 +79,15 @@ fetch("data/record/records_index.json")
       return a.id - b.id;
     });
 
-    /* 3️⃣ 渲染 */
+    /* ===============================
+       渲染
+       =============================== */
     records.forEach(record => {
 
       let timeText = "（时间不详）";
       if (record.time) timeText = record.time;
-      else if (record.order !== undefined) timeText = `（当日第 ${record.order} 条）`;
+      else if (record.order !== undefined)
+        timeText = `（当日第 ${record.order} 条）`;
 
       const recordDiv = document.createElement("div");
       recordDiv.className = "record";
@@ -55,17 +105,19 @@ fetch("data/record/records_index.json")
           </span>
         </div>
 
-        <div class="content">${record.content}</div>
+        <div class="content">
+          ${parseContent(record.content)}
+        </div>
 
         ${record.image ? `
-          <div class="image-wrapper">
+          <div class="image-wrapper" style="display:none">
             <img src="${record.image}" alt="纸笔原始记录">
           </div>
         ` : ""}
 
         ${record.attachments && record.attachments.length > 0
           ? `
-          <div class="attachments-wrapper">
+          <div class="attachments-wrapper" style="display:none">
             <strong>附件：</strong>
             <ul>
               ${record.attachments.map(att => `
@@ -79,7 +131,9 @@ fetch("data/record/records_index.json")
           : ""}
       `;
 
-      /* 图片切换 */
+      /* ===============================
+         图片切换
+         =============================== */
       const imgBtn = recordDiv.querySelector(".image-toggle");
       const imgWrap = recordDiv.querySelector(".image-wrapper");
 
@@ -91,7 +145,9 @@ fetch("data/record/records_index.json")
         });
       }
 
-      /* 附件切换 */
+      /* ===============================
+         附件切换
+         =============================== */
       const attBtn = recordDiv.querySelector(".attach-toggle");
       const attWrap = recordDiv.querySelector(".attachments-wrapper");
 
@@ -110,3 +166,14 @@ fetch("data/record/records_index.json")
     console.error(err);
     container.innerHTML = "<p>记录加载失败，请检查数据文件。</p>";
   });
+
+/* ===============================
+   人名点击 → 个人页面
+   =============================== */
+document.addEventListener("click", e => {
+  const tag = e.target.closest(".person-tag");
+  if (!tag) return;
+
+  const personId = tag.dataset.id;
+  location.href = `person.html?id=${personId}`;
+});
