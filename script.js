@@ -9,17 +9,6 @@
  * - 人物标记解析与个人页面跳转
  ************************************************************/
 
-/* 人名渲染函数 */
-function renderPersonName(id, name) {
-  return `
-    <span class="person-tag"
-          data-id="${id}"
-          onclick="location.href='person.html?id=${id}'">
-      ${name}
-    </span>
-  `;
-}
-
 const container = document.getElementById("record-list");
 
 /* ===============================
@@ -32,13 +21,12 @@ let peopleMap = {}; // id -> person
    =============================== */
 fetch("data/people/people_index.json")
   .then(res => res.json())
-  .then(files =>
-    Promise.all(
-      files.map(f =>
-        fetch(`data/people/${f}`).then(r => r.json())
-      )
-    )
-  )
+  .then(fileList => {
+    const requests = fileList.map(name =>
+      fetch(`data/people/${name}`).then(res => res.json())
+    );
+    return Promise.all(requests);
+  })
   .then(people => {
     people.forEach(p => {
       peopleMap[p.id] = p;
@@ -47,6 +35,7 @@ fetch("data/people/people_index.json")
   .catch(err => {
     console.error("人物数据加载失败", err);
   });
+
 
 
 /* ===============================
@@ -102,24 +91,12 @@ fetch("data/record/records_index.json")
       else if (record.order !== undefined)
         timeText = `（当日第 ${record.order} 条）`;
 
-      let authorHTML = "";
-
-      if (typeof record.author === "object") {
-        authorHTML = renderPersonName(
-          record.author.id,
-          record.author.label
-        );
-      } else {
-        authorHTML = record.author;
-      }
-
-
       const recordDiv = document.createElement("div");
       recordDiv.className = "record";
 
       recordDiv.innerHTML = `
         <div class="meta">
-          <span>📅 ${record.date} ${timeText} | ✍ ${authorHTML}</span>
+          <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(record.author)}</span>
           <span class="icon-group">
             ${record.image ? `
               <span class="image-toggle" title="查看原始记录">📷</span>
