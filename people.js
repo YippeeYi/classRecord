@@ -4,7 +4,7 @@ const container = document.getElementById("people-container");
 function renderPersonItem(person) {
     return `
     <div class="person-item" data-id="${person.id}">
-      <strong>${person.alias}</strong> （ID: ${person.id}）
+      <strong>${person.id}</strong> （${person.alias}）
     </div>
   `;
 }
