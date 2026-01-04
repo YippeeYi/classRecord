@@ -14,7 +14,6 @@ const params = new URLSearchParams(location.search);
 const personId = params.get("id");
 
 /* DOM */
-const nameEl = document.getElementById("person-name");
 const idEl = document.getElementById("person-id");
 const aliasEl = document.getElementById("person-alias");
 const introEl = document.getElementById("person-intro");
@@ -52,7 +51,6 @@ function loadPerson() {
             const person = people.find(p => p.id === personId);
             if (!person) throw new Error("人物不存在");
 
-            nameEl.textContent = person.name;
             idEl.textContent = person.id;
             aliasEl.textContent = person.alias || "—";
             introEl.textContent = person.intro || "暂无介绍";
