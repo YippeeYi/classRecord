@@ -52,11 +52,12 @@ function parseContent(text) {
    内容格式化（换行 / 分段）
    =============================== */
 function formatContent(text) {
-  const paragraphs = text.split("\n\n");
-  return paragraphs.map(p => {
-    const trimmed = p.replace(/^\n+|\n+$/g, "");
-    return `<p>${parseContent(trimmed).replace(/\n/g, "<br>")}</p>`;
-  }).join("");
+  return text
+    .split("\n\n")
+    .map(p =>
+      `${parseContent(p).replace(/\n/g, "<br>")}`
+    )
+    .join("");
 }
 
 /* ===============================
