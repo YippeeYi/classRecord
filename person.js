@@ -32,11 +32,23 @@ fetch(`data/people/${personId}.json`)
    =============================== */
 function parseContent(text) {
     return text.replace(
-        /\[\[(.+?)\|(.+?)\]\]/g,
+        /\[\[([^\|\]]+)\|([^\]]+)\]\]/g,
         (match, pid, label) => {
             return `<span class="person-tag" data-id="${pid}">${label}</span>`;
         }
     );
+}
+
+/* ===============================
+   内容格式化（换行 / 分段）
+   =============================== */
+function formatContent(text) {
+    return text
+        .split("\n\n")
+        .map(p =>
+            `<p>${parseContent(p).replace(/\n/g, "<br>")}</p>`
+        )
+        .join("");
 }
 
 /* ===============================
@@ -103,10 +115,12 @@ function renderRecordList(list) {
         recordDiv.className = "record";
 
         recordDiv.innerHTML = `
-      <div class="meta">
-        <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
-      </div>
-      <div class="content">${parseContent(record.content)}</div>
+        <div class="meta">
+            <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
+        </div>
+        <div class="content">
+            ${formatContent(record.content)}
+        </div>
     `;
 
         container.appendChild(recordDiv);

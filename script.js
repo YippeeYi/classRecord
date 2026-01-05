@@ -36,19 +36,28 @@ fetch("data/people/people_index.json")
     console.error("人物数据加载失败", err);
   });
 
-
-
 /* ===============================
-   解析记录内容中的人名标记
-   语法：[[id|显示名]]
+   解析 content 中人物标记 [[id|label]]
    =============================== */
 function parseContent(text) {
   return text.replace(
-    /\[\[(.+?)\|(.+?)\]\]/g,
-    (match, personId, displayName) => {
-      return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
+    /\[\[([^\|\]]+)\|([^\]]+)\]\]/g,
+    (match, pid, label) => {
+      return `<span class="person-tag" data-id="${pid}">${label}</span>`;
     }
   );
+}
+
+/* ===============================
+   内容格式化（换行 / 分段）
+   =============================== */
+function formatContent(text) {
+  return text
+    .split("\n\n")
+    .map(p =>
+      `<p>${parseContent(p).replace(/\n/g, "<br>")}</p>`
+    )
+    .join("");
 }
 
 /* ===============================
@@ -104,7 +113,7 @@ fetch("data/record/records_index.json")
         </div>
 
         <div class="content">
-          ${parseContent(record.content)}
+          ${formatContent(record.content)}
         </div>
 
         ${record.image ? `
