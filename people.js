@@ -5,13 +5,22 @@
  * - 加载全部记录
  * - 自动统计：
  *   参与记录数 / 记录数
- * - 渲染人物名单表格
+ * - 按角色（同学 / 老师 / 其他）分组渲染人物名单
  ************************************************************/
 
-const tbody = document.getElementById("people-body");
+const container = document.getElementById("people-list");
 
 let peopleList = [];
 let records = [];
+
+/* ===============================
+   角色显示名映射
+   =============================== */
+const roleNameMap = {
+    student: "同学",
+    teacher: "老师",
+    other: "其他"
+};
 
 /* ===============================
    加载人物
@@ -19,20 +28,22 @@ let records = [];
 fetch("data/people/people_index.json")
     .then(res => res.json())
     .then(files =>
-        Promise.all(files.map(f =>
-            fetch(`data/people/${f}`).then(r => r.json())
-        ))
+        Promise.all(
+            files.map(f =>
+                fetch(`data/people/${f}`).then(r => r.json())
+            )
+        )
     )
     .then(people => {
         peopleList = people;
         return loadRecords();
     })
     .then(() => {
-        renderTable();
+        renderByRole();
     })
     .catch(err => {
         console.error(err);
-        tbody.innerHTML = `<tr><td colspan="4">加载失败</td></tr>`;
+        container.innerHTML = "<p>人物加载失败</p>";
     });
 
 /* ===============================
@@ -42,9 +53,11 @@ function loadRecords() {
     return fetch("data/record/records_index.json")
         .then(res => res.json())
         .then(files =>
-            Promise.all(files.map(f =>
-                fetch(`data/record/${f}`).then(r => r.json())
-            ))
+            Promise.all(
+                files.map(f =>
+                    fetch(`data/record/${f}`).then(r => r.json())
+                )
+            )
         )
         .then(list => {
             records = list;
@@ -52,32 +65,79 @@ function loadRecords() {
 }
 
 /* ===============================
-   渲染人物表格
+   按角色分组渲染
    =============================== */
-function renderTable() {
+function renderByRole() {
+    container.innerHTML = "";
 
-    tbody.innerHTML = "";
+    const groups = {
+        student: [],
+        teacher: [],
+        other: []
+    };
 
-    peopleList.forEach((person, index) => {
+    // 分组
+    peopleList.forEach(p => {
+        if (groups[p.role]) {
+            groups[p.role].push(p);
+        } else {
+            groups.other.push(p); // 兜底
+        }
+    });
 
-        const recordCount = countAsAuthor(person.id);
-        const participationCount = countAsParticipant(person.id);
+    // 依次渲染
+    Object.keys(groups).forEach(role => {
+        const list = groups[role];
+        if (list.length === 0) return;
 
-        const tr = document.createElement("tr");
+        const section = document.createElement("section");
 
-        tr.innerHTML = `
-            <td>${index + 1}</td>
-            <td>${person.id}</td>
-            <td>${person.alias || "—"}</td>
-            <td>${participationCount}</td>
-            <td>${recordCount}</td>
-        `;
+        section.innerHTML = `
+      <h2>${roleNameMap[role]}</h2>
+      <table class="people-table">
+        <thead>
+          <tr>
+            <th>序号</th>
+            <th>ID</th>
+            <th>别名</th>
+            <th>参与记录数</th>
+            <th>记录数</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${list.map((person, index) => {
+            const recordCount = countAsAuthor(person.id);
+            const participationCount = countAsParticipant(person.id);
 
+            return `
+              <tr data-id="${person.id}">
+                <td>${index + 1}</td>
+                <td>${person.id}</td>
+                <td>${person.alias || "—"}</td>
+                <td>${participationCount}</td>
+                <td>${recordCount}</td>
+              </tr>
+            `;
+        }).join("")}
+        </tbody>
+      </table>
+    `;
+
+        container.appendChild(section);
+    });
+
+    bindRowClick();
+}
+
+/* ===============================
+   行点击跳转
+   =============================== */
+function bindRowClick() {
+    document.querySelectorAll(".people-table tbody tr").forEach(tr => {
         tr.addEventListener("click", () => {
-            location.href = `person.html?id=${person.id}`;
+            const id = tr.dataset.id;
+            location.href = `person.html?id=${id}`;
         });
-
-        tbody.appendChild(tr);
     });
 }
 
@@ -92,9 +152,8 @@ function countAsAuthor(personId) {
    统计：作为参与者
    =============================== */
 function countAsParticipant(personId) {
-    return records.filter(r => {
-        if (!r.content) return false;
-        const pattern = new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`);
-        return pattern.test(r.content);
-    }).length;
+    const pattern = new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`);
+    return records.filter(r =>
+        r.content && pattern.test(r.content)
+    ).length;
 }
