@@ -197,3 +197,20 @@ h1 {
 .people-table tbody tr:hover {
   background-color: #eef5ff;
 }
+
+/* 黑幕 */
+.redacted {
+  background: #000;
+  color: transparent;
+  /* 默认文字不可见 */
+  padding: 2px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+/* 悬停时显示文字 */
+.redacted:hover {
+  color: #fff;
+  box-shadow: 0 0 0 1px #444;
+}

@@ -14,6 +14,30 @@ let peopleList = [];
 let records = [];
 
 /* ===============================
+   解析人物标记 [[id|label]]
+   =============================== */
+function parseContent(text) {
+    return text
+        // 黑幕处理
+        .replace(
+            /\[\[REDACT\|(.+?)\]\]/g,
+            (_, content) => {
+                return `<span class="redacted">${content}</span>`;
+            }
+        )
+
+    /* ===============================
+        // 人物标记处理
+        .replace(
+            /\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
+            (_, personId, displayName) => {
+                return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
+            }
+        );
+       =============================== */
+}
+
+/* ===============================
    角色显示名映射
    =============================== */
 const roleNameMap = {
@@ -100,20 +124,23 @@ function renderByRole() {
             <th>序号</th>
             <th>ID</th>
             <th>别名</th>
-            <th>参与记录数</th>
-            <th>记录数</th>
+            <th>参与</th>
+            <th>记录</th>
           </tr>
         </thead>
         <tbody>
           ${list.map((person, index) => {
-            const recordCount = countAsAuthor(person.id);
+            const recordCount =
+                person.role === "student"
+                    ? countAsAuthor(person.id)
+                    : "—";
             const participationCount = countAsParticipant(person.id);
 
             return `
               <tr data-id="${person.id}">
                 <td>${index + 1}</td>
                 <td>${person.id}</td>
-                <td>${person.alias || "—"}</td>
+                <td>${parseContent(person.alias) || "—"}</td>
                 <td>${participationCount}</td>
                 <td>${recordCount}</td>
               </tr>

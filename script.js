@@ -37,15 +37,26 @@ fetch("data/people/people_index.json")
   });
 
 /* ===============================
-   解析 content 中人物标记 [[id|label]]
+   解析人物标记 [[id|label]]
    =============================== */
 function parseContent(text) {
-  return text.replace(
-    /\[\[([^\|\]]+)\|([^\]]+)\]\]/g,
-    (match, pid, label) => {
-      return `<span class="person-tag" data-id="${pid}">${label}</span>`;
-    }
-  );
+  return text
+    // 黑幕处理
+    .replace(
+      /\[\[REDACT\|(.+?)\]\]/g,
+      (_, content) => {
+        return `<span class="redacted">${content}</span>`;
+      }
+    )
+  /* ===============================
+      // 人物标记处理
+      .replace(
+          /\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
+          (_, personId, displayName) => {
+              return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
+          }
+      );
+     =============================== */
 }
 
 /* ===============================
