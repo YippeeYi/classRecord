@@ -48,15 +48,13 @@ function parseContent(text) {
         return `<span class="redacted">${content}</span>`;
       }
     )
-  /* ===============================
-      // 人物标记处理
-      .replace(
-          /\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
-          (_, personId, displayName) => {
-              return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
-          }
-      );
-     =============================== */
+    // 人物标记处理
+    .replace(
+      /\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
+      (_, personId, displayName) => {
+        return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
+      }
+    );
 }
 
 /* ===============================
