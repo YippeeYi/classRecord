@@ -17,9 +17,9 @@ fetch(`data/people/${personId}.json`)
     .then(res => res.json())
     .then(data => {
         personData = data;
-        document.getElementById("person-alias").textContent = data.alias || "无别名";
+        document.getElementById("person-alias").textContent = parseContent(data.alias) || "无别名";
         document.getElementById("person-id").textContent = data.id;
-        document.getElementById("person-bio").textContent = data.bio || "无简介";
+        document.getElementById("person-bio").textContent = formatContent(data.bio) || "无简介";
         loadRecords();
     })
     .catch(err => {
@@ -45,7 +45,17 @@ function parseContent(text) {
             (_, personId, displayName) => {
                 return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
             }
-        );
+        )
+        // 处理上标：[[name|^]] -> <sup>name</sup>
+        .replace(/\[\[([a-zA-Z0-9_-]+)\|([^\]]+\^)\]\]/g, (_, personId, displayName) => {
+            const content = displayName.slice(0, -1);  // 去掉末尾的 ^
+            return `<span class="person-tag" data-id="${personId}"><sup>${content}</sup></span>`;
+        })
+        // 处理下标：[[name|_]] -> <sub>name</sub>
+        .replace(/\[\[([a-zA-Z0-9_-]+)\|([^\]]+_)\]\]/g, (_, personId, displayName) => {
+            const content = displayName.slice(0, -1);  // 去掉末尾的 _
+            return `<span class="person-tag" data-id="${personId}"><sub>${content}</sub></span>`;
+        });
 }
 
 /* ===============================
@@ -99,15 +109,15 @@ function displayRecords(records) {
     });
 
     // 分两类
-    const authored = records.filter(r => r.author === personId);
     const participated = records.filter(r => r.content.includes(`[[${personId}|`));
+    const authored = records.filter(r => r.author === personId);
 
     // 保存全局，供按钮切换
-    window.authoredRecords = authored;
     window.participatedRecords = participated;
+    window.authoredRecords = authored;
 
-    // 默认显示 authored
-    renderRecordList(authored);
+    // 默认显示 participated
+    renderRecordList(participated);
 }
 
 /* ===============================
@@ -126,11 +136,68 @@ function renderRecordList(list) {
         recordDiv.innerHTML = `
         <div class="meta">
             <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
+            <span class="icon-group">
+                ${record.image ? `
+                    <span class="image-toggle" title="查看原始记录">📷</span>
+                ` : ""}
+                ${record.attachments && record.attachments.length > 0 ? `
+                    <span class="attach-toggle" title="查看附件">📎</span>
+                ` : ""}
+            </span>
         </div>
         <div class="content">
             ${formatContent(record.content)}
         </div>
+
+        ${record.image ? `
+            <div class="image-wrapper" style="display:none">
+                <img src="${record.image}" alt="纸笔原始记录">
+            </div>
+        ` : ""}
+
+        ${record.attachments && record.attachments.length > 0
+                ? `
+            <div class="attachments-wrapper" style="display:none">
+                <strong>附件：</strong>
+                <ul>
+                    ${record.attachments.map(att => `
+                        <li>
+                            <a href="${att.file}" target="_blank">${att.name}</a>
+                        </li>
+                    `).join("")}
+                </ul>
+            </div>
+            `
+                : ""}
     `;
+
+        /* ===============================
+           图片切换
+           =============================== */
+        const imgBtn = recordDiv.querySelector(".image-toggle");
+        const imgWrap = recordDiv.querySelector(".image-wrapper");
+
+        if (imgBtn && imgWrap) {
+            imgBtn.addEventListener("click", () => {
+                const open = imgWrap.style.display === "block";
+                imgWrap.style.display = open ? "none" : "block";
+                imgBtn.textContent = open ? "📷" : "❌";
+            });
+        }
+
+        /* ===============================
+           附件切换
+           =============================== */
+        const attBtn = recordDiv.querySelector(".attach-toggle");
+        const attWrap = recordDiv.querySelector(".attachments-wrapper");
+
+        if (attBtn && attWrap) {
+            attBtn.addEventListener("click", () => {
+                const open = attWrap.style.display === "block";
+                attWrap.style.display = open ? "none" : "block";
+                attBtn.textContent = open ? "📎" : "❌";
+            });
+        }
 
         container.appendChild(recordDiv);
     });
@@ -139,16 +206,16 @@ function renderRecordList(list) {
 /* ===============================
    按钮切换事件
    =============================== */
-document.getElementById("btn-author-events").addEventListener("click", () => {
-    renderRecordList(window.authoredRecords);
-    document.getElementById("btn-author-events").classList.add("active");
-    document.getElementById("btn-participate-events").classList.remove("active");
-});
-
 document.getElementById("btn-participate-events").addEventListener("click", () => {
     renderRecordList(window.participatedRecords);
     document.getElementById("btn-author-events").classList.remove("active");
     document.getElementById("btn-participate-events").classList.add("active");
+});
+
+document.getElementById("btn-author-events").addEventListener("click", () => {
+    renderRecordList(window.authoredRecords);
+    document.getElementById("btn-author-events").classList.add("active");
+    document.getElementById("btn-participate-events").classList.remove("active");
 });
 
 /* ===============================

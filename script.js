@@ -54,7 +54,17 @@ function parseContent(text) {
       (_, personId, displayName) => {
         return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
       }
-    );
+    )
+    // 处理上标：[[name|^]] -> <sup>name</sup>
+    .replace(/\[\[([a-zA-Z0-9_-]+)\|([^\]]+\^)\]\]/g, (_, personId, displayName) => {
+      const content = displayName.slice(0, -1);  // 去掉末尾的 ^
+      return `<span class="person-tag" data-id="${personId}"><sup>${content}</sup></span>`;
+    })
+    // 处理下标：[[name|_]] -> <sub>name</sub>
+    .replace(/\[\[([a-zA-Z0-9_-]+)\|([^\]]+_)\]\]/g, (_, personId, displayName) => {
+      const content = displayName.slice(0, -1);  // 去掉末尾的 _
+      return `<span class="person-tag" data-id="${personId}"><sub>${content}</sub></span>`;
+    });
 }
 
 /* ===============================
