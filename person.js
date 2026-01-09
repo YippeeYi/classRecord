@@ -17,9 +17,9 @@ fetch(`data/people/${personId}.json`)
     .then(res => res.json())
     .then(data => {
         personData = data;
-        document.getElementById("person-alias").textContent = parseContent(data.alias) || "无别名";
+        document.getElementById("person-alias").innerHTML = parseContent(data.alias) || "无别名";
         document.getElementById("person-id").textContent = data.id;
-        document.getElementById("person-bio").textContent = formatContent(data.bio) || "无简介";
+        document.getElementById("person-bio").innerHTML = formatContent(data.bio) || "无简介";
         loadRecords();
     })
     .catch(err => {
