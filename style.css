@@ -214,3 +214,25 @@ h1 {
   color: #fff;
   box-shadow: 0 0 0 1px #444;
 }
+
+/* 个人简介 */
+.person-info {
+  margin-top: 16px;
+}
+
+.info-row {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.info-label {
+  font-weight: 700;
+  /* 加粗 */
+  font-size: 1.15em;
+  /* 比正文大一点 */
+  margin-right: 6px;
+}
+
+.info-value {
+  font-size: 1em;
+}
