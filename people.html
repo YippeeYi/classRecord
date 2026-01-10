@@ -16,6 +16,23 @@
 
     <h1>班级人物名单</h1>
 
+    <div id="sort-controls">
+        <label for="sort-key">排序依据：</label>
+        <select id="sort-key">
+            <option value="alias">别名</option>
+            <option value="participation">参与事件数</option>
+            <option value="record">记录事件数</option>
+        </select>
+
+        <label for="sort-order">顺序：</label>
+        <select id="sort-order">
+            <option value="asc">升序</option>
+            <option value="desc">降序</option>
+        </select>
+
+        <button id="sort-btn">排序</button>
+    </div>
+
     <div id="people-list"></div>
 
     <script src="js/recordRenderer.js"></script>
