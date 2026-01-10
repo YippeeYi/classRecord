@@ -160,7 +160,7 @@ function sortPeople(list, key, order) {
         // 统计事件数
         person._participation = countAsParticipant(person.id);
         person._record = person.role === "student" ? countAsAuthor(person.id) : 0;
-        person._alias = person.alias || ""; // 空值兜底
+        person._id = person.id || ""; // 空值兜底
     });
 
     sorted.sort((a, b) => {
