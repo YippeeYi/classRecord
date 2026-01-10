@@ -23,8 +23,8 @@ fetch(`data/people/${personId}.json`)
         document.getElementById("person-id").textContent = person.id;
         document.getElementById("person-alias").innerHTML =
             `<strong>${parseContent(person.alias || "—")}</strong>`;
-        document.getElementById("person-desc").innerHTML =
-            `<strong>${parseContent(person.desc || "—")}</strong>`;
+        document.getElementById("person-bio").innerHTML =
+            `<strong>${parseContent(person.bio || "—")}</strong>`;
     });
 
 /* ===============================
