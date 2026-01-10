@@ -167,9 +167,9 @@ function sortPeople(list, key, order) {
         let valA, valB;
 
         switch (key) {
-            case "alias":
-                valA = a._alias.toLowerCase();
-                valB = b._alias.toLowerCase();
+            case "id":
+                valA = a._id.toLowerCase();
+                valB = b._id.toLowerCase();
                 break;
             case "participation":
                 valA = a._participation;
