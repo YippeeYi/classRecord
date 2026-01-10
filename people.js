@@ -14,30 +14,6 @@ let peopleList = [];
 let records = [];
 
 /* ===============================
-   解析人物标记 [[id|label]]
-   =============================== */
-function parseContent(text) {
-    return text
-        // 黑幕处理
-        .replace(
-            /\[\[REDACT\|(.+?)\]\]/g,
-            (_, content) => {
-                return `<span class="redacted">${content}</span>`;
-            }
-        )
-
-    /* ===============================
-        // 人物标记处理
-        .replace(
-            /\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
-            (_, personId, displayName) => {
-                return `<span class="person-tag" data-id="${personId}">${displayName}</span>`;
-            }
-        );
-       =============================== */
-}
-
-/* ===============================
    角色显示名映射
    =============================== */
 const roleNameMap = {
