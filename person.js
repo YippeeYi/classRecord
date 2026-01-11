@@ -24,7 +24,7 @@ fetch(`data/people/${personId}.json`)
         document.getElementById("person-alias").innerHTML =
             `<strong>${parseContent(person.alias || "—")}</strong>`;
         document.getElementById("person-bio").innerHTML =
-            `<strong>${parseContent(person.bio || "—")}</strong>`;
+            `<strong>${formatContent(person.bio || "—")}</strong>`;
     });
 
 /* ===============================
