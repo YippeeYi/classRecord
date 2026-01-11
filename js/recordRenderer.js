@@ -72,7 +72,8 @@ function renderRecordList(records, container) {
         div.innerHTML = `
             <div class="meta">
                 <span>
-                    📅 ${record.date} ${timeText} |
+                    📅 ${record.date} |
+                    📌 ${timeText} |
                     ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
                 </span>
                 <span class="icon-group">
