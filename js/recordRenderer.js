@@ -14,7 +14,7 @@ function parseContent(text) {
     if (!text) return "";
 
     return text
-        // 黑幕
+        // 黑幕 [[REDACT|显示内容]]
         .replace(/\[\[REDACT\|(.+?)\]\]/g, (_, c) =>
             `<span class="redacted">${c}</span>`
         )
@@ -61,11 +61,10 @@ function renderRecordList(records, container) {
     container.innerHTML = "";
 
     records.forEach(record => {
-        const timeText =
-            record.time ??
-            (record.order !== undefined
-                ? `（当日第 ${record.order} 条）`
-                : "（时间不详）");
+        let timeText = "（时间不详）";
+        if (record.time) timeText = record.time;
+        else if (record.order !== undefined)
+            timeText.innerHTML = `<strong>${record.order}<\strong>`;
 
         const div = document.createElement("div");
         div.className = "record";
