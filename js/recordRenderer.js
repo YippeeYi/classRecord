@@ -50,7 +50,7 @@ function sortRecords(records) {
         if (b.time) return -1;
         if (a.order !== undefined && b.order !== undefined)
             return b.order - a.order;
-        return b.id - a.id;
+        return b.id.localeCompare(a.id);
     });
 }
 
