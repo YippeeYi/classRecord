@@ -64,7 +64,7 @@ function renderRecordList(records, container) {
         let timeText = "（时间不详）";
         if (record.time) timeText = record.time;
         else if (record.order !== undefined)
-            timeText.innerHTML = `<strong>${record.order}<\strong>`;
+            timeText = `<strong>${record.order}</strong>`;
 
         const div = document.createElement("div");
         div.className = "record";
