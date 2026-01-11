@@ -129,7 +129,7 @@ h1 {
 /* 人名悬停&单击 */
 .person-tag {
   display: inline-block;
-  font-size: 20px;
+  font-size: 14px;
   transition: all 0.2s ease;
 }
 
