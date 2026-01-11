@@ -127,14 +127,20 @@ h1 {
 }
 
 /* 人名悬停&单击 */
+/* 初始状态 */
 .person-tag {
-  cursor: pointer;
-  transition: font-weight 0.15s;
+  display: inline-block;
+  transition: all 0.2s ease;
 }
 
+/* 悬停时加粗，并且不改变宽度 */
 .person-tag:hover {
   font-weight: bold;
-  text-decoration: underline;
+  /* 加粗 */
+  transform: scaleX(1.1);
+  /* 水平拉伸 10% */
+  white-space: nowrap;
+  /* 防止换行 */
 }
 
 /* 顶部导航样式 */
