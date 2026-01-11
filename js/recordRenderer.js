@@ -45,12 +45,12 @@ function formatContent(text) {
 function sortRecords(records) {
     records.sort((a, b) => {
         if (a.date !== b.date) return b.date.localeCompare(a.date);
-        if (a.time && b.time) return a.time.localeCompare(b.time);
-        if (a.time) return -1;
-        if (b.time) return 1;
+        if (a.time && b.time) return b.time.localeCompare(a.time);
+        if (a.time) return 1;
+        if (b.time) return -1;
         if (a.order !== undefined && b.order !== undefined)
-            return a.order - b.order;
-        return a.id - b.id;
+            return b.order - a.order;
+        return b.id - a.id;
     });
 }
 
