@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记录格式说明</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <h1>📘 史记 · 记录文件格式说明</h1>
+
+    <h2>1. 文件组织结构</h2>
+    <pre>
+data/
+└─ record/
+   ├─ records_index.json
+   ├─ 2024-10-12-1.json
+   ├─ 2024-10-12-2.json
+   └─ 2024-10-13-1.json
+  </pre>
+    <p>每条记录 <strong>单独一个 JSON 文件</strong>，展示顺序 <strong>完全由 records_index.json 决定</strong>。记录本身 <strong>不包含 id
+            字段</strong>。</p>
+
+    <h2>2. records_index.json</h2>
+    <pre>
+[
+  "2024-10-12-1.json",
+  "2024-10-12-2.json",
+  "2024-10-13-1.json"
+]
+  </pre>
+    <p>说明：
+        数组顺序 = 记录顺序。程序会按照该顺序自动生成记录编号（如 <code>R001</code>、<code>R002</code>）。
+    </p>
+
+    <h2>3. 单条记录 JSON 结构</h2>
+    <pre>
+{
+  "date": "2024-10-12",
+  "order": 1,
+  "time": "10:35",
+  "author": "zhangsan",
+  "content": "今天在[[lisi|李四]]的带领下完成了实验。",
+  "image": "img/20241012.jpg",
+  "attachments": [
+    {
+      "name": "实验记录原稿",
+      "file": "files/exp.pdf"
+    }
+  ]
+}
+  </pre>
+
+    <h2>4. 字段说明</h2>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>字段名</th>
+                <th>是否必填</th>
+                <th>说明</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>date</td>
+                <td>✅</td>
+                <td>日期，格式 <code>YYYY-MM-DD</code></td>
+            </tr>
+            <tr>
+                <td>order</td>
+                <td>❌</td>
+                <td>当天第几条记录（用于无具体时间时显示）</td>
+            </tr>
+            <tr>
+                <td>time</td>
+                <td>❌</td>
+                <td>具体时间（优先于 order 显示）</td>
+            </tr>
+            <tr>
+                <td>author</td>
+                <td>✅</td>
+                <td>记录人 ID（对应人物文件）</td>
+            </tr>
+            <tr>
+                <td>content</td>
+                <td>✅</td>
+                <td>记录正文，支持标记语法</td>
+            </tr>
+            <tr>
+                <td>image</td>
+                <td>❌</td>
+                <td>原始纸质记录图片</td>
+            </tr>
+            <tr>
+                <td>attachments</td>
+                <td>❌</td>
+                <td>附件列表</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>5. 正文标记语法（content）</h2>
+
+    <h3>👤 人物标记</h3>
+    <pre>
+[[zhangsan|张三]]
+  </pre>
+    <p>效果：
+        显示为“张三”，点击跳转到人物页面。
+    </p>
+
+    <h3>🕶 黑幕遮挡</h3>
+    <pre>
+[[REDACT|敏感内容]]
+  </pre>
+    <p>效果：
+        默认黑色遮挡，悬停显示文字。
+    </p>
+
+    <h3>⬆ 上标 / ⬇ 下标</h3>
+    <pre>
+H^2^O     CO_2_
+  </pre>
+    <p>效果：
+        H²O 和 CO₂。
+    </p>
+
+    <h2>6. 记录编号说明（自动生成）</h2>
+    <p>每条记录在页面中会被自动赋予编号：
+
+    <pre>
+R001, R002, R003 ...
+    </pre>
+    编号只用于显示与引用，<strong>不写入 JSON 文件</strong>。
+    </p>
+
+    <h2>7. 设计原则</h2>
+    <ul>
+        <li>内容与结构分离</li>
+        <li>JSON 只保存事实</li>
+        <li>顺序、编号、展示逻辑由程序控制</li>
+    </ul>
+
+</body>
+
+</html>
