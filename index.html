@@ -9,6 +9,13 @@
 </head>
 
 <body>
+    <!-- 右上角功能按钮 -->
+    <div class="top-right-actions">
+        <button class="top-action-btn" onclick="window.open('docs/record-format.html', '_blank')">
+            📄 记录格式说明
+        </button>
+    </div>
+
     <!-- 顶部导航 -->
     <nav class="top-nav">
         <button onclick="location.href='index.html'">主页面</button>
@@ -20,17 +27,6 @@
 
     <!-- 记录列表容器 -->
     <div id="record-list"></div>
-
-    <section class="attachments-wrapper">
-        <strong>📎 项目附件：</strong>
-        <ul>
-            <li>
-                <a href="docs/record-format.html" target="_blank">
-                    📘《记录格式说明》
-                </a>
-            </li>
-        </ul>
-    </section>
 
     <script src="js/recordRenderer.js"></script>
     <script src="script.js"></script>
