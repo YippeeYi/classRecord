@@ -246,7 +246,7 @@ h1 {
 
 .top-right-actions {
   position: fixed;
-  top: 16px;
+  top: 12px;
   right: 20px;
   z-index: 1000;
 }
