@@ -49,6 +49,9 @@ fetch("data/record/records_index.json")
             r.author === personId
         );
 
+        sortRecords(participatedRecords);
+        sortRecords(authoredRecords);
+
         renderRecordList(participatedRecords, recordContainer);
     });
 
