@@ -26,7 +26,6 @@ fetch("data/record/records_index.json")
   )
   .then(list => {
     records = list;
-    sortRecords(records);
     renderRecordList(records, container);
   })
   .catch(err => {

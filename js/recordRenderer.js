@@ -40,15 +40,6 @@ function formatContent(text) {
 }
 
 /* ===============================
-   排序规则
-   =============================== */
-function sortRecords(records) {
-    records.sort((a, b) => {
-        return b.id.localeCompare(a.id);
-    });
-}
-
-/* ===============================
    渲染记录列表
    =============================== */
 function renderRecordList(records, container) {
