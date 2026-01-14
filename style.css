@@ -14,107 +14,71 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* 单条记录卡片 */
+/* 记录条目 */
 .record {
-  background: #fff;
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: #f9f9f9;
+  /* 淡灰色背景 */
+  padding: 10px;
+  margin-bottom: 15px;
+  /* 每条记录之间的间隔 */
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.3s ease;
 }
 
-/* 顶部信息行 */
+.record:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时加深阴影 */
+}
+
+/* 记录元数据 */
 .meta {
   font-size: 14px;
   color: #555;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  margin-bottom: 8px;
 }
 
-.icon-group span {
-  margin-left: 10px;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* 内容 */
+/* 记录正文 */
 .content {
-  margin-top: 8px;
   font-size: 16px;
-  line-height: 1.6;
+  line-height: 1.5;
+  color: #333;
 }
 
-/* 图片（默认隐藏） */
-
-/* =========================
-   图片按钮（📷 图标）
-   ========================= */
-.image-toggle {
-  display: inline-block;
-  font-size: 14px;
-  /* 字体大小 */
+/* 图片切换按钮 */
+.image-toggle,
+.attach-toggle {
+  font-size: 16px;
   cursor: pointer;
-  /* 鼠标手型提示可点击 */
-  user-select: none;
-  /* 禁止选中文本 */
-  margin-top: 6px;
-  /* 与正文或上方元素保持间距 */
+  color: #007bff;
+  /* 蓝色 */
 }
 
-.image-toggle:hover {
-  color: #555;
-  /* 悬停颜色提示 */
+.image-toggle:hover,
+.attach-toggle:hover {
   text-decoration: underline;
-  /* 悬停下划线 */
 }
 
-.image-wrapper {
-  display: none;
+/* 图片和附件容器 */
+.image-wrapper,
+.attachments-wrapper {
   margin-top: 10px;
+  display: none;
+}
+
+.attachments-wrapper ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.attachments-wrapper li {
+  margin-bottom: 5px;
 }
 
 .image-wrapper img {
   max-width: 100%;
   border-radius: 6px;
   border: 1px solid #ddd;
-}
-
-/* 附件区域 */
-
-/* =========================
-   附件按钮（📎 图标）
-   ========================= */
-.attach-toggle {
-  display: inline-block;
-  font-size: 14px;
-  cursor: pointer;
-  user-select: none;
-  margin-top: 4px;
-  /* 与正文或上方元素间距稍小 */
-}
-
-.attach-toggle:hover {
-  color: #555;
-  text-decoration: underline;
-}
-
-.attachments-wrapper {
-  display: none;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #fafafa;
-  border: 1px dashed #ccc;
-  border-radius: 6px;
-}
-
-.attachments-wrapper ul {
-  margin: 6px 0 0 0;
-  padding-left: 18px;
-}
-
-.attachments-wrapper li {
-  margin: 4px 0;
 }
 
 .attachments-wrapper a {
@@ -124,6 +88,12 @@ h1 {
 
 .attachments-wrapper a:hover {
   text-decoration: underline;
+}
+
+.icon-group span {
+  margin-left: 10px;
+  cursor: pointer;
+  user-select: none;
 }
 
 /* 人名悬停&单击 */
@@ -263,4 +233,31 @@ h1 {
 
 .top-action-btn:hover {
   background: #f3f3f3;
+}
+
+/* 排序按钮 */
+.sort-btn {
+  padding: 8px 16px;
+  font-size: 14px;
+  background-color: #4CAF50;
+  /* 绿色背景 */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10px 0;
+  transition: background-color 0.3s ease;
+}
+
+.sort-btn:hover {
+  background-color: #45a049;
+  /* 悬停时变深的绿色 */
+}
+
+/* 排序按钮容器（固定位置） */
+.top-right-actions {
+  position: fixed;
+  top: 16px;
+  right: 20px;
+  z-index: 1000;
 }

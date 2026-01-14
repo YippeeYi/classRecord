@@ -3,7 +3,7 @@
  * 功能：
  * - 统一解析记录文本
  * - 统一加载记录
- * - 统一渲染记录列表
+ * - 统一排序与渲染记录列表
  * - 主页面 & 个人页面共用
  ************************************************************/
 
@@ -29,6 +29,16 @@ function parseContent(text) {
         .replace(/_(.+?)_/g, (_, t) => `<sub>${t}</sub>`);
 }
 
+/* ===============================
+   段落格式化
+   =============================== */
+function formatContent(text) {
+    return text
+        .split("\n\n")
+        .map(p => parseContent(p).replace(/\n/g, "<br>"))
+        .join("");
+}
+
 /**
  * 加载记录
  * @param {Function} processRecord 处理每条记录的函数
@@ -48,23 +58,24 @@ function loadRecords(processRecord) {
         );
 }
 
-/* ===============================
-   段落格式化
-   =============================== */
-function formatContent(text) {
-    return text
-        .split("\n\n")
-        .map(p => parseContent(p).replace(/\n/g, "<br>"))
-        .join("");
-}
+let sortAscending = true; // 默认正序
 
-/* ===============================
-   渲染记录列表
-   =============================== */
+/**
+ * 渲染记录列表
+ * @param {Array} records - 记录数组
+ * @param {HTMLElement} container - 渲染容器
+ */
 function renderRecordList(records, container) {
     container.innerHTML = "";
 
-    records.forEach(record => {
+    // 按 id 排序
+    const sorted = [...records].sort((a, b) => {
+        const numA = parseInt(a.id.slice(1)); // R001 -> 1
+        const numB = parseInt(b.id.slice(1));
+        return sortAscending ? numA - numB : numB - numA;
+    });
+
+    sorted.forEach(record => {
         let timeText = "";
         if (record.time) timeText = "📌 " + record.time + " |";
 
@@ -72,70 +83,49 @@ function renderRecordList(records, container) {
         div.className = "record";
 
         div.innerHTML = `
-            <div class="meta">
-                <span>
-                    #${record.id} |
-                    📅 ${record.date} |
-                    ${timeText}
-                    ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
-                </span>
-                <span class="icon-group">
-                    ${record.image ? `<span class="image-toggle">📷</span>` : ""}
-                    ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
-                </span>
-            </div>
+      <div class="meta">
+        <span>📅 ${record.date} ${timeText} | ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}</span>
+        <span class="icon-group">
+          ${record.image ? `<span class="image-toggle" title="查看原始记录">📷</span>` : ""}
+          ${record.attachments && record.attachments.length > 0 ? `<span class="attach-toggle" title="查看附件">📎</span>` : ""}
+        </span>
+      </div>
+      <div class="content">${formatContent(record.content)}</div>
+      ${record.image ? `<div class="image-wrapper" style="display:none"><img src="${record.image}" alt="纸笔原始记录"></div>` : ""}
+      ${record.attachments && record.attachments.length > 0 ? `<div class="attachments-wrapper" style="display:none"><strong>附件：</strong><ul>${record.attachments.map(att => `<li><a href="${att.file}" target="_blank">${att.name}</a></li>`).join("")}</ul></div>` : ""}
+    `;
 
-            <div class="content">
-                ${formatContent(record.content)}
-            </div>
+        // 图片切换
+        const imgBtn = div.querySelector(".image-toggle");
+        const imgWrap = div.querySelector(".image-wrapper");
+        if (imgBtn && imgWrap) {
+            imgBtn.addEventListener("click", () => {
+                const open = imgWrap.style.display === "block";
+                imgWrap.style.display = open ? "none" : "block";
+                imgBtn.textContent = open ? "📷" : "❌";
+            });
+        }
 
-            ${record.image ? `
-                <div class="image-wrapper" style="display:none">
-                    <img src="${record.image}">
-                </div>
-            ` : ""}
+        // 附件切换
+        const attBtn = div.querySelector(".attach-toggle");
+        const attWrap = div.querySelector(".attachments-wrapper");
+        if (attBtn && attWrap) {
+            attBtn.addEventListener("click", () => {
+                const open = attWrap.style.display === "block";
+                attWrap.style.display = open ? "none" : "block";
+                attBtn.textContent = open ? "📎" : "❌";
+            });
+        }
 
-            ${record.attachments?.length ? `
-                <div class="attachments-wrapper" style="display:none">
-                    <ul>
-                        ${record.attachments.map(a =>
-            `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`
-        ).join("")}
-                    </ul>
-                </div>
-            ` : ""}
-        `;
-
-        bindToggle(div);
         container.appendChild(div);
     });
 }
 
-/* ===============================
-   图片 / 附件切换
-   =============================== */
-function bindToggle(recordDiv) {
-    const imgBtn = recordDiv.querySelector(".image-toggle");
-    const imgWrap = recordDiv.querySelector(".image-wrapper");
-
-    if (imgBtn && imgWrap) {
-        imgBtn.onclick = () => {
-            const open = imgWrap.style.display === "block";
-            imgWrap.style.display = open ? "none" : "block";
-            imgBtn.textContent = open ? "📷" : "❌";
-        };
-    }
-
-    const attBtn = recordDiv.querySelector(".attach-toggle");
-    const attWrap = recordDiv.querySelector(".attachments-wrapper");
-
-    if (attBtn && attWrap) {
-        attBtn.onclick = () => {
-            const open = attWrap.style.display === "block";
-            attWrap.style.display = open ? "none" : "block";
-            attBtn.textContent = open ? "📎" : "❌";
-        };
-    }
+/**
+ * 切换排序顺序
+ */
+function toggleSort() {
+    sortAscending = !sortAscending;
 }
 
 /* ===============================
