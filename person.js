@@ -30,24 +30,19 @@ fetch(`data/people/${personId}.json`)
 /* ===============================
    加载记录
    =============================== */
-fetch("data/record/records_index.json")
-    .then(res => res.json())
-    .then(files =>
-        Promise.all(files.map(f =>
-            fetch(`data/record/${f}`).then(r => r.json())
-        ))
-    )
+loadRecords((record, index) => {
+    // 自动生成 id（基于 records_index.json 顺序）
+    record.id = `R${String(index + 1).padStart(3, "0")}`;
+    return record;
+})
     .then(list => {
         allRecords = list;
 
         participatedRecords = allRecords.filter(r =>
-            r.content &&
-            new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
+            r.content && new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
         );
 
-        authoredRecords = allRecords.filter(r =>
-            r.author === personId
-        );
+        authoredRecords = allRecords.filter(r => r.author === personId);
 
         renderRecordList(participatedRecords, recordContainer);
     });

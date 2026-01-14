@@ -2,7 +2,7 @@
  * recordRenderer.js
  * 功能：
  * - 统一解析记录文本
- * - 统一排序
+ * - 统一加载记录
  * - 统一渲染记录列表
  * - 主页面 & 个人页面共用
  ************************************************************/
@@ -27,6 +27,25 @@ function parseContent(text) {
         .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
         // 下标 _内容_
         .replace(/_(.+?)_/g, (_, t) => `<sub>${t}</sub>`);
+}
+
+/**
+ * 加载记录
+ * @param {Function} processRecord 处理每条记录的函数
+ * @returns {Promise} 返回包含所有记录的 Promise
+ */
+function loadRecords(processRecord) {
+    return fetch("data/record/records_index.json")
+        .then(res => res.json())
+        .then(files =>
+            Promise.all(
+                files.map((f, index) =>
+                    fetch(`data/record/${f}`)
+                        .then(r => r.json())
+                        .then(record => processRecord(record, index))
+                )
+            )
+        );
 }
 
 /* ===============================
