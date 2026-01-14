@@ -12,35 +12,6 @@
 
     <h1>📄 编日史 · 记录文件格式说明</h1>
 
-    <h2>样例1</h2>
-    <pre>
-{
-    "date": "2024-11-20",
-    "time": "",
-    "order": 1,
-    "author": "shr",
-    "content": "[[zhx|qq哥]]将[[shr|shr]]的情书揉成一团并扔在地上，并抢夺其生物作业。[[hxw|贺宝宝]]帮助[[shr|生物课代表]]保留了情书",
-    "image": "images/2024-11-20-01.jpg",
-    "attachments": [
-        {
-            "name": "情书.jpg",
-            "file": "attachments/2024-11-20-01-love.jpg"
-        }
-    ]
-}
-  </pre>
-
-    <h2>样例2</h2>
-    <pre>
-{
-    "date": "2025-09-03",
-    "time": "17:08",
-    "author": "sch",
-    "content": "[[cws|锁]]：[[qyc|qyc]][[REDACT|鸡鸡歪歪的]]",
-    "image": "images/2025-09-03-02.jpg"
-}
-  </pre>
-
     <h2>字段说明</h2>
     <table border="1" cellspacing="0" cellpadding="5">
         <thead>
@@ -62,15 +33,8 @@
                 <td>time</td>
                 <td>❌</td>
                 <td>具体时间</td>
-                <td><code>"HH:MM"</code>（使用半角，即英文冒号；有此项删去order一行）</td>
+                <td><code>"HH:MM"</code>（使用半角，即英文冒号；无具体时间保留本行）</td>
             </tr>
-            <tr>
-                <td>order</td>
-                <td>❌</td>
-                <td>当天第几条记录</td>
-                <td>与该事件图片名中标号一致（即图片名最后一项；删去前导零；无具体时间时填写，同时保留time为空；允许某天存在有time与无time混杂）</td>
-            </tr>
-
             <tr>
                 <td>author</td>
                 <td>✅</td>
@@ -123,6 +87,35 @@ H^2^O     CO_2_
     <p>效果：
         H²O 和 CO₂。
     </p>
+
+    <h2>样例1</h2>
+    <pre>
+{
+    "date": "2024-11-20",
+    "time": "",
+    "author": "shr",
+    "content": "[[zhx|qq哥]]将[[shr|shr]]的情书揉成一团并扔在地上，并抢夺其生物作业。[[hxw|贺宝宝]]帮助[[shr|生物课代表]]保留了情书",
+    "image": "images/2024-11-20-01.jpg",
+    "attachments": [
+        {
+            "name": "情书.jpg",
+            "file": "attachments/2024-11-20-01-love.jpg"
+        }
+    ]
+}
+  </pre>
+
+    <h2>样例2</h2>
+    <pre>
+{
+    "date": "2025-09-03",
+    "time": "17:08",
+    "author": "sch",
+    "content": "[[cws|锁]]：[[qyc|qyc]][[REDACT|鸡鸡歪歪的]]",
+    "image": "images/2025-09-03-02.jpg"
+}
+  </pre>
+
 </body>
 
 </html>

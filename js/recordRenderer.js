@@ -44,12 +44,6 @@ function formatContent(text) {
    =============================== */
 function sortRecords(records) {
     records.sort((a, b) => {
-        if (a.date !== b.date) return b.date.localeCompare(a.date);
-        if (a.time && b.time) return b.time.localeCompare(a.time);
-        if (a.time) return 1;
-        if (b.time) return -1;
-        if (a.order !== undefined && b.order !== undefined)
-            return b.order - a.order;
         return b.id.localeCompare(a.id);
     });
 }
@@ -61,10 +55,8 @@ function renderRecordList(records, container) {
     container.innerHTML = "";
 
     records.forEach(record => {
-        let timeText = "（时间不详）";
-        if (record.time) timeText = record.time;
-        else if (record.order !== undefined)
-            timeText = `<strong>${record.order}</strong>`;
+        let timeText = "";
+        if (record.time) timeText = "📌 " + record.time + " |";
 
         const div = document.createElement("div");
         div.className = "record";
@@ -74,7 +66,7 @@ function renderRecordList(records, container) {
                 <span>
                     #${record.id} |
                     📅 ${record.date} |
-                    📌 ${timeText} |
+                    ${timeText}
                     ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
                 </span>
                 <span class="icon-group">
