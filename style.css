@@ -8,6 +8,7 @@ h1 {
   margin-bottom: 5px;
 }
 
+/* 安全提示 */
 .notice {
   font-size: 14px;
   color: #888;
@@ -23,6 +24,11 @@ h1 {
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
+.record:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时加深阴影 */
+}
+
 /* 顶部信息行 */
 .meta {
   font-size: 14px;
@@ -32,6 +38,7 @@ h1 {
   align-items: center;
 }
 
+/* 图片附件按钮 */
 .icon-group span {
   margin-left: 10px;
   cursor: pointer;
