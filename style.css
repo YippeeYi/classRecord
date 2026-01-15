@@ -139,6 +139,7 @@ h1 {
   display: inline-block;
   font-size: 16px;
   text-decoration: underline;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
@@ -217,7 +218,6 @@ h1 {
   /* 默认文字不可见 */
   padding: 2px 6px;
   border-radius: 3px;
-  cursor: pointer;
   transition: color 0.2s;
 }
 
