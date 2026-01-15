@@ -10,7 +10,6 @@ const recordContainer = document.getElementById("record-list");
 const btnParticipated = document.getElementById("btn-participated");
 const btnAuthored = document.getElementById("btn-authored");
 
-let allRecords = [];
 let participatedRecords = [];
 let authoredRecords = [];
 
@@ -28,32 +27,25 @@ fetch(`data/people/${personId}.json`)
     });
 
 /* ===============================
-   加载记录
+   加载记录（来自全局 RecordStore）
    =============================== */
-fetch("data/record/records_index.json")
-    .then(res => res.json())
-    .then(files =>
-        Promise.all(files.map(f =>
-            fetch(`data/record/${f}`).then(r => r.json())
-        ))
-    )
-    .then(list => {
-        allRecords = list;
+(async function () {
+    const allRecords = await loadAllRecords();
 
-        participatedRecords = allRecords.filter(r =>
-            r.content &&
-            new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
-        );
+    participatedRecords = allRecords.filter(r =>
+        r.content &&
+        new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
+    );
 
-        authoredRecords = allRecords.filter(r =>
-            r.author === personId
-        );
+    authoredRecords = allRecords.filter(r =>
+        r.author === personId
+    );
 
-        sortRecords(participatedRecords);
-        sortRecords(authoredRecords);
+    sortRecords(participatedRecords);
+    sortRecords(authoredRecords);
 
-        renderRecordList(participatedRecords, recordContainer);
-    });
+    renderRecordList(participatedRecords, recordContainer);
+})();
 
 /* ===============================
    按钮切换
