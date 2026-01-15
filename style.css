@@ -138,12 +138,12 @@ h1 {
 .person-tag {
   display: inline-block;
   font-size: 16px;
-  text-decoration: underline;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .person-tag:hover {
+  text-decoration: underline;
   /* 用 text-shadow 模拟加粗，不改变宽度 */
   text-shadow: 0.6px 0 0 rgb(128, 128, 128), 0 0.6px 0 rgb(128, 128, 128), -0.6px 0 0 rgb(128, 128, 128), 0 -0.6px 0 rgb(128, 128, 128);
   /* 禁止实际加粗 */
