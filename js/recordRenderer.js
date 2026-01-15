@@ -52,6 +52,16 @@ function sortRecords(records) {
    渲染记录列表
    =============================== */
 function renderRecordList(records, container) {
+    // 检查是否已初始化
+    records.forEach(record => {
+        if (!record.id) {
+            console.warn(
+                "发现未初始化（未带 id）的记录：",
+                record
+            );
+        }
+    });
+
     container.innerHTML = "";
 
     records.forEach(record => {
