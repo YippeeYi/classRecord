@@ -138,6 +138,7 @@ h1 {
 .person-tag {
   display: inline-block;
   font-size: 16px;
+  text-decoration: underline;
   transition: all 0.2s ease;
 }
 
