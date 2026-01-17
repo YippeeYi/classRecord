@@ -32,7 +32,7 @@ window.loadAllRecords = async function () {
     }
 
     // 如果缓存中没有，则从网络请求数据
-    const indexRes = await fetch("data/records_index.json");
+    const indexRes = await fetch("data/record/records_index.json");
     const files = await indexRes.json();
 
     const list = [];
