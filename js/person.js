@@ -41,7 +41,7 @@ Promise.all([
     document.getElementById("person-alias").innerHTML =
         `<strong>${parseContent(person.alias || "—")}</strong>`;
     document.getElementById("person-bio").innerHTML =
-        `<strong>${formatContent(person.bio || "—")}</strong>`;
+        `<strong style="display:block">${formatContent(person.bio || "—")}</strong>`;
 
     // === 拆分记录 ===
     participatedRecords = allRecords.filter(r =>
