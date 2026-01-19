@@ -147,9 +147,9 @@ function sortPeople(list, key, order) {
                 valA = a._record;
                 valB = b._record;
                 break;
-            default: // alias 或其他
-                valA = (a.alias || "").toLowerCase();
-                valB = (b.alias || "").toLowerCase();
+            default:
+                valA = 0;
+                valB = 0;
         }
 
         if (valA < valB) return order === "asc" ? -1 : 1;
