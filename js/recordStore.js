@@ -15,7 +15,7 @@ window.loadAllRecords = async function () {
 
     const list = await loadWithCache({
         key: "records",
-        expire: 24 * 60 * 60 * 1000, // 24h
+        expire: 24 * 60 * 60 * 1000,
         loader: async () => {
             const indexRes = await fetch("data/record/records_index.json");
             const files = await indexRes.json();
