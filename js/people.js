@@ -1,11 +1,10 @@
 /************************************************************
  * people.js
+ * 人物名单页面
  * 功能：
- * - 加载人物（分文件）
- * - 加载全部记录
- * - 自动统计：
- *   参与记录数 / 记录数
- * - 按角色（同学 / 老师 / 其他）分组渲染人物名单
+ * - 加载人物和全部记录（统一走缓存模块）
+ * - 自动统计：参与记录数 / 记录数
+ * - 按角色分组渲染
  ************************************************************/
 
 const container = document.getElementById("people-list");
@@ -19,12 +18,11 @@ let records = [];
 Promise.all([
     loadAllPeople(),
     loadAllRecords()
-]).then(([people, records]) => {
+]).then(([people, allRecords]) => {
     peopleList = people;
-    window.records = records;
-    renderByRole();
+    records = allRecords; // 本地变量
+    renderByRole();       // 默认按别名升序
 });
-
 
 /* ===============================
    角色显示名映射
@@ -91,7 +89,6 @@ function renderByRole(sortKey = "alias", sortOrder = "asc") {
     bindRowClick();
 }
 
-
 /* ===============================
    行点击跳转
    =============================== */
@@ -150,9 +147,9 @@ function sortPeople(list, key, order) {
                 valA = a._record;
                 valB = b._record;
                 break;
-            default:
-                valA = 0;
-                valB = 0;
+            default: // alias 或其他
+                valA = (a.alias || "").toLowerCase();
+                valB = (b.alias || "").toLowerCase();
         }
 
         if (valA < valB) return order === "asc" ? -1 : 1;
@@ -170,6 +167,5 @@ document.getElementById("sort-btn").addEventListener("click", () => {
     const key = document.getElementById("sort-key").value;
     const order = document.getElementById("sort-order").value;
 
-    // 对原本分组后的列表做排序
     renderByRole(key, order);
 });
