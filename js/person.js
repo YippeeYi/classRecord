@@ -29,23 +29,22 @@ fetch(`data/people/${personId}.json`)
 /* ===============================
    加载记录（来自全局 RecordStore）
    =============================== */
-(async function () {
-    const allRecords = await loadAllRecords();
+loadRecordsWithCache()
+    .then(list => {
+        allRecords = list; participatedRecords = allRecords.filter(r =>
+            r.content &&
+            new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
+        );
 
-    participatedRecords = allRecords.filter(r =>
-        r.content &&
-        new RegExp(`\\[\\[${personId}\\|.+?\\]\\]`).test(r.content)
-    );
+        authoredRecords = allRecords.filter(r =>
+            r.author === personId
+        );
 
-    authoredRecords = allRecords.filter(r =>
-        r.author === personId
-    );
+        sortRecords(participatedRecords);
+        sortRecords(authoredRecords);
 
-    sortRecords(participatedRecords);
-    sortRecords(authoredRecords);
-
-    renderRecordList(participatedRecords, recordContainer);
-})();
+        renderRecordList(participatedRecords, recordContainer);
+    });
 
 /* ===============================
    按钮切换

@@ -14,31 +14,15 @@ let peopleList = [];
 let records = [];
 
 /* ===============================
-   角色显示名映射
+   启动加载流程（统一走缓存模块）
    =============================== */
-const roleNameMap = {
-    student: "同学",
-    teacher: "老师",
-    other: "其他"
-};
-
-/* ===============================
-   加载人物
-   =============================== */
-fetch("data/people/people_index.json")
-    .then(res => res.json())
-    .then(files =>
-        Promise.all(
-            files.map(f =>
-                fetch(`data/people/${f}`).then(r => r.json())
-            )
-        )
-    )
-    .then(people => {
+Promise.all([
+    loadPeopleWithCache(),
+    loadRecordsWithCache()
+])
+    .then(([people, recordList]) => {
         peopleList = people;
-        return loadRecords();
-    })
-    .then(() => {
+        records = recordList;
         renderByRole();
     })
     .catch(err => {
@@ -47,22 +31,13 @@ fetch("data/people/people_index.json")
     });
 
 /* ===============================
-   加载记录
+   角色显示名映射
    =============================== */
-function loadRecords() {
-    return fetch("data/record/records_index.json")
-        .then(res => res.json())
-        .then(files =>
-            Promise.all(
-                files.map(f =>
-                    fetch(`data/record/${f}`).then(r => r.json())
-                )
-            )
-        )
-        .then(list => {
-            records = list;
-        });
-}
+const roleNameMap = {
+    student: "同学",
+    teacher: "老师",
+    other: "其他"
+};
 
 /* ===============================
    按角色分组渲染

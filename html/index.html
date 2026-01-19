@@ -3,41 +3,36 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>人物名单</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加 viewport -->
+    <title>编日史</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico">
 </head>
 
 <body>
+    <!-- 右上角功能按钮 -->
+    <div class="top-right-actions">
+        <button class="top-action-btn" onclick="window.open('docs/record-format.html', '_blank')">
+            📄 记录格式说明
+        </button>
+    </div>
+
     <!-- 顶部导航 -->
     <nav class="top-nav">
         <button onclick="location.href='index.html'">主页面</button>
         <button onclick="location.href='people.html'">人物名单</button>
     </nav>
 
-    <h1>班级人物名单</h1>
+    <h1>📘 编日史</h1>
+    <p class="notice">⚠ 本页面仅供本班内部查看，请勿外传。</p>
 
-    <div id="sort-controls">
-        <label for="sort-key">排序依据：</label>
-        <select id="sort-key">
-            <option value="id">id</option>
-            <option value="participation">参与事件数</option>
-            <option value="record">记录事件数</option>
-        </select>
+    <!-- 记录列表容器 -->
+    <div id="record-list"></div>
 
-        <label for="sort-order">顺序：</label>
-        <select id="sort-order">
-            <option value="asc">升序</option>
-            <option value="desc">降序</option>
-        </select>
-
-        <button id="sort-btn">排序</button>
-    </div>
-
-    <div id="people-list"></div>
-
+    <script src="js/cacheLoader.js"></script>
+    <script src="js/recordStore.js"></script>
     <script src="js/recordRenderer.js"></script>
-    <script src="people.js"></script>
+    <script src="js/script.js"></script>
 
     <footer class="footer">
         本站使用匿名访问统计，仅用于了解页面使用情况，不收集任何个人信息。
