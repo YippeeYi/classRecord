@@ -3,36 +3,46 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加 viewport -->
-    <title>编日史</title>
+    <title>个人页面</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico">
 </head>
 
 <body>
-    <!-- 右上角功能按钮 -->
-    <div class="top-right-actions">
-        <button class="top-action-btn" onclick="window.open('docs/record-format.html', '_blank')">
-            📄 记录格式说明
-        </button>
-    </div>
-
     <!-- 顶部导航 -->
     <nav class="top-nav">
         <button onclick="location.href='index.html'">主页面</button>
         <button onclick="location.href='people.html'">人物名单</button>
     </nav>
 
-    <h1>📘 编日史</h1>
-    <p class="notice">⚠ 本页面仅供本班内部查看，请勿外传。</p>
+    <h1 id="person-id"></h1>
+    <div class="person-info">
+        <div class="info-row">
+            <span class="info-label">别名：</span>
+            <span class="info-value" id="person-alias"></span>
+        </div>
 
-    <!-- 记录列表容器 -->
+        <div class="info-row">
+            <span class="info-label">简介：</span>
+            <span class="info-value" id="person-bio"></span>
+        </div>
+    </div>
+
+    <div>
+        <button id="btn-participated">参与的事件</button>
+        <button id="btn-authored">记录的事件</button>
+    </div>
+
     <div id="record-list"></div>
 
+    <!-- Cache + Store -->
     <script src="js/cacheLoader.js"></script>
     <script src="js/recordStore.js"></script>
+    <script src="js/peopleStore.js"></script>
+
+    <!-- 渲染和页面逻辑 -->
     <script src="js/recordRenderer.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/person.js"></script>
 
     <footer class="footer">
         本站使用匿名访问统计，仅用于了解页面使用情况，不收集任何个人信息。

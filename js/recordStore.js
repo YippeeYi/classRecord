@@ -1,6 +1,6 @@
 /************************************************************
  * recordStore.js
- * 全局记录仓库（只负责统一持有 records）
+ * 全局记录仓库
  ************************************************************/
 
 window.RecordStore = {
@@ -8,20 +8,33 @@ window.RecordStore = {
     loaded: false
 };
 
-/**
- * 统一加载所有记录（只会执行一次）
- */
 window.loadAllRecords = async function () {
     if (RecordStore.loaded) {
         return RecordStore.records;
     }
 
-    // 直接调用公共缓存模块
-    const list = await loadRecordsWithCache();
+    const list = await loadWithCache({
+        key: "records",
+        expire: 24 * 60 * 60 * 1000, // 24h
+        loader: async () => {
+            const indexRes = await fetch("data/record/records_index.json");
+            const files = await indexRes.json();
 
-    list.forEach((r, i) => {
-        if (!r.id) {
-            r.id = `R${String(i + 1).padStart(3, "0")}`;
+            const records = [];
+
+            for (let i = 0; i < files.length; i++) {
+                const res = await fetch(`data/record/${files[i]}`);
+                const record = await res.json();
+
+                // 生成id
+                if (!record.id) {
+                    record.id = `R${String(i + 1).padStart(3, "0")}`;
+                }
+
+                records.push(record);
+            }
+
+            return records;
         }
     });
 

@@ -17,18 +17,14 @@ let records = [];
    启动加载流程（统一走缓存模块）
    =============================== */
 Promise.all([
-    loadPeopleWithCache(),
-    loadRecordsWithCache()
-])
-    .then(([people, recordList]) => {
-        peopleList = people;
-        records = recordList;
-        renderByRole();
-    })
-    .catch(err => {
-        console.error(err);
-        container.innerHTML = "<p>人物加载失败</p>";
-    });
+    loadAllPeople(),
+    loadAllRecords()
+]).then(([people, records]) => {
+    peopleList = people;
+    window.records = records;
+    renderByRole();
+});
+
 
 /* ===============================
    角色显示名映射

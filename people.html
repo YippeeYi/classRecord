@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>个人页面</title>
+    <title>人物名单</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico">
 </head>
@@ -15,30 +15,34 @@
         <button onclick="location.href='people.html'">人物名单</button>
     </nav>
 
-    <h1 id="person-id"></h1>
-    <div class="person-info">
-        <div class="info-row">
-            <span class="info-label">别名：</span>
-            <span class="info-value" id="person-alias"></span>
-        </div>
+    <h1>班级人物名单</h1>
 
-        <div class="info-row">
-            <span class="info-label">简介：</span>
-            <span class="info-value" id="person-bio"></span>
-        </div>
+    <div id="sort-controls">
+        <label for="sort-key">排序依据：</label>
+        <select id="sort-key">
+            <option value="id">id</option>
+            <option value="participation">参与事件数</option>
+            <option value="record">记录事件数</option>
+        </select>
+
+        <label for="sort-order">顺序：</label>
+        <select id="sort-order">
+            <option value="asc">升序</option>
+            <option value="desc">降序</option>
+        </select>
+
+        <button id="sort-btn">排序</button>
     </div>
 
-    <div>
-        <button id="btn-participated">参与的事件</button>
-        <button id="btn-authored">记录的事件</button>
-    </div>
+    <div id="people-list"></div>
 
-    <div id="record-list"></div>
-
+    <!-- Cache + Store -->
     <script src="js/cacheLoader.js"></script>
     <script src="js/recordStore.js"></script>
-    <script src="js/recordRenderer.js"></script>
-    <script src="js/person.js"></script>
+    <script src="js/peopleStore.js"></script>
+
+    <!-- 渲染和页面逻辑 -->
+    <script src="js/people.js"></script>
 
     <footer class="footer">
         本站使用匿名访问统计，仅用于了解页面使用情况，不收集任何个人信息。

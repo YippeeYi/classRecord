@@ -1,57 +1,60 @@
 /************************************************************
  * cacheLoader.js
- * 公共缓存加载模块
- * - 支持 index.json + 分文件结构
- * - localStorage 缓存
+ * 通用本地缓存加载器（带过期时间）
+ *
+ * 用法：
+ * loadWithCache({
+ *   key: "records",
+ *   expire: 24 * 60 * 60 * 1000,
+ *   loader: async () => {...}
+ * })
  ************************************************************/
 
-/**
- * 通用缓存加载器
- * @param {string} cacheKey localStorage key
- * @param {string} indexUrl 索引文件路径
- * @param {string} basePath 数据文件所在目录
- * @returns {Promise<Array>}
- */
-function loadWithCache(cacheKey, indexUrl, basePath) {
-    const cache = localStorage.getItem(cacheKey);
-    if (cache) {
-        return Promise.resolve(JSON.parse(cache));
+window.loadWithCache = async function ({
+    key,
+    expire = 24 * 60 * 60 * 1000,
+    loader
+}) {
+    if (!key || typeof loader !== "function") {
+        throw new Error("loadWithCache: key 和 loader 是必须的");
     }
 
-    return fetch(indexUrl)
-        .then(res => {
-            if (!res.ok) throw new Error("Index fetch failed");
-            return res.json();
-        })
-        .then(files =>
-            Promise.all(
-                files.map(f =>
-                    fetch(`${basePath}/${f}`).then(r => r.json())
-                )
-            )
-        )
-        .then(list => {
-            localStorage.setItem(cacheKey, JSON.stringify(list));
-            return list;
-        });
-}
+    const dataKey = `${key}_cache`;
+    const timeKey = `${key}_cache_time`;
+    const now = Date.now();
 
-/* ===============================
-   专用封装（更语义化）
-   =============================== */
+    const cachedData = localStorage.getItem(dataKey);
+    const cachedTime = localStorage.getItem(timeKey);
 
-function loadPeopleWithCache() {
-    return loadWithCache(
-        "classRecord_people_v1",
-        "data/people/people_index.json",
-        "data/people"
-    );
-}
+    /* ===============================
+       ① 缓存有效 → 直接返回
+       =============================== */
+    if (
+        cachedData &&
+        cachedTime &&
+        now - Number(cachedTime) < expire
+    ) {
+        console.log(`📦 使用缓存：${key}`);
+        return JSON.parse(cachedData);
+    }
 
-function loadRecordsWithCache() {
-    return loadWithCache(
-        "classRecord_records_v1",
-        "data/record/records_index.json",
-        "data/record"
-    );
-}
+    /* ===============================
+       ② 缓存失效 → 清理
+       =============================== */
+    console.log(`♻️ 缓存失效，重新加载：${key}`);
+    localStorage.removeItem(dataKey);
+    localStorage.removeItem(timeKey);
+
+    /* ===============================
+       ③ 调用真正的加载逻辑
+       =============================== */
+    const data = await loader();
+
+    /* ===============================
+       ④ 写入缓存
+       =============================== */
+    localStorage.setItem(dataKey, JSON.stringify(data));
+    localStorage.setItem(timeKey, now.toString());
+
+    return data;
+};
