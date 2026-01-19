@@ -235,18 +235,28 @@ h1 {
 .info-row {
   margin-bottom: 10px;
   line-height: 1.6;
+  display: flex;
+  /* 使用 flex 横向排列 label + value */
+  align-items: flex-start;
+  /* 顶部对齐 */
 }
 
 .info-label {
   font-weight: 700;
-  /* 加粗 */
   font-size: 1.15em;
-  /* 比正文大一点 */
   margin-right: 6px;
+  flex-shrink: 0;
+  /* 不缩小，保持固定宽度 */
+  width: 60px;
+  /* 可以根据需要调整宽度 */
 }
 
 .info-value {
   font-size: 1em;
+  flex: 1;
+  /* 占剩余空间 */
+  white-space: pre-wrap;
+  /* 支持换行 */
 }
 
 /* ===============================
