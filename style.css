@@ -249,6 +249,17 @@ h1 {
   font-size: 1em;
 }
 
+#person-bio {
+  text-align: left;
+}
+
+#person-bio strong {
+  display: inline;
+  /* 保持加粗，不影响换行 */
+  white-space: pre-wrap;
+  /* 保留换行 */
+}
+
 /* ===============================
    主页面右上角功能按钮
    =============================== */
