@@ -270,6 +270,8 @@ h1 {
   /* 不缩小，保持固定宽度 */
   width: 60px;
   /* 可以根据需要调整宽度 */
+  white-space: nowrap;
+  /* 不换行 */
 }
 
 .info-value {
