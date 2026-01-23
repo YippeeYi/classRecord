@@ -23,6 +23,11 @@ function parseContent(text) {
             (_, id, label) =>
                 `<span class="person-tag" data-id="${id}">${label}</span>`
         )
+        // 术语标记 {{termId|显示文本}}
+        .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g,
+            (_, id, label) =>
+                `<span class="term-tag" data-id="${id}">${label}</span>`
+        )
         // 上标 ^内容^
         .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
         // 下标 _内容_

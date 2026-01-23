@@ -158,6 +158,18 @@ h1 {
   font-weight: normal;
 }
 
+/* 术语悬停&单击 */
+.term-tag {
+  color: #8b5cf6;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px dashed #c4b5fd;
+}
+
+.term-tag:hover {
+  background-color: #f5f3ff;
+}
+
 /* 顶部导航样式 */
 .top-nav {
   background-color: #f8f8f8;
