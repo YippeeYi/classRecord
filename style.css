@@ -203,6 +203,7 @@ h1 {
 }
 
 /* 人物列表 */
+.glossary-table,
 .people-table {
   width: 100%;
   max-width: 600px;
