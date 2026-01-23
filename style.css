@@ -152,7 +152,6 @@ h1 {
 }
 
 .person-tag:hover {
-  text-decoration: underline;
   /* 用 text-shadow 模拟加粗，不改变宽度 */
   text-shadow: 0.6px 0 0 rgb(128, 128, 128), 0 0.6px 0 rgb(128, 128, 128), -0.6px 0 0 rgb(128, 128, 128), 0 -0.6px 0 rgb(128, 128, 128);
   /* 禁止实际加粗 */
