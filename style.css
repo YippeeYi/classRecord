@@ -23,11 +23,20 @@ h1 {
   margin-bottom: 16px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
   transition: box-shadow 0.3s ease;
+  position: relative;
 }
 
 .record:hover {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   /* 鼠标悬停时加深阴影 */
+}
+
+/* 重要记录 */
+.importance-important {
+  border-left: 5px solid #d32f2f;
+  /* 左侧红色标记条 */
+  background: #fff6f6;
+  /* 极淡红色背景 */
 }
 
 /* 顶部信息行 */

@@ -68,8 +68,11 @@ function renderRecordList(records, container) {
         let timeText = "";
         if (record.time) timeText = "📌 " + record.time + " |";
 
+        const importance = record.importance || "normal";
+
         const div = document.createElement("div");
-        div.className = "record";
+
+        div.className = `record importance-${importance}`;
 
         div.innerHTML = `
             <div class="meta">
