@@ -55,7 +55,7 @@ Promise.all([
     document.getElementById("term-related").innerHTML =
         relatedNames.length ? relatedNames.join("，") : "—";
 
-    // === 关联记录（通过 {{termId}}）===
+    // === 关联记录（通过 {{termId|显示文本}}）===
     const pattern = new RegExp(`\\{\\{${termId}\\|.+?\\}\\}`);
     relatedRecords = allRecords.filter(r =>
         r.content && pattern.test(r.content)
