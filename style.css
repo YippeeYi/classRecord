@@ -259,6 +259,27 @@ h1 {
   background-color: #f5f3ff;
 }
 
+/* 术语 Tooltip */
+.term-tooltip {
+  position: fixed;
+  max-width: 320px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 8px 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  font-size: 14px;
+  line-height: 1.6;
+  z-index: 9999;
+}
+
+.term-tooltip-hint {
+  margin-top: 6px;
+  font-size: 12px;
+  color: #888;
+  text-align: right;
+}
+
 /* 黑幕 */
 .redacted {
   background: #000;

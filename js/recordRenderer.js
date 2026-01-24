@@ -147,6 +147,55 @@ function bindToggle(recordDiv) {
 }
 
 /* ===============================
+   术语 Tooltip
+   =============================== */
+
+let glossaryCache = null;
+let activeTooltip = null;
+
+async function ensureGlossary() {
+    if (!glossaryCache) {
+        const list = await loadAllGlossary();
+        glossaryCache = {};
+        list.forEach(t => glossaryCache[t.id] = t);
+    }
+}
+
+document.addEventListener("mouseover", async e => {
+    const tag = e.target.closest(".term-tag");
+    if (!tag) return;
+
+    await ensureGlossary();
+
+    const term = glossaryCache[tag.dataset.id];
+    if (!term) return;
+
+    activeTooltip = document.createElement("div");
+    activeTooltip.className = "term-tooltip";
+    activeTooltip.innerHTML = `
+        <div class="term-tooltip-content">
+            ${formatContent(term.definition)}
+        </div>
+        <div class="term-tooltip-hint">
+            点击术语查看完整页面
+        </div>
+    `;
+
+    document.body.appendChild(activeTooltip);
+
+    const rect = tag.getBoundingClientRect();
+    activeTooltip.style.left = rect.left + "px";
+    activeTooltip.style.top = rect.bottom + 6 + "px";
+});
+
+document.addEventListener("mouseout", e => {
+    if (activeTooltip && !e.relatedTarget?.closest(".term-tooltip")) {
+        activeTooltip.remove();
+        activeTooltip = null;
+    }
+});
+
+/* ===============================
    术语点击跳转
    =============================== */
 document.addEventListener("click", e => {
