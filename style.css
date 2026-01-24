@@ -249,6 +249,7 @@ h1 {
 
 /* 术语悬停&单击 */
 .term-tag {
+  display: inline-block;
   color: #8b5cf6;
   font-weight: 600;
   cursor: pointer;
