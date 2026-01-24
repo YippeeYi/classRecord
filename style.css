@@ -1,3 +1,7 @@
+/* ===============================
+   一、基础全局样式
+   =============================== */
+
 body {
   font-family: Arial, sans-serif;
   background: #f4f6f8;
@@ -8,6 +12,10 @@ h1 {
   margin-bottom: 5px;
 }
 
+/* ===============================
+   二、提示 / 说明类
+   =============================== */
+
 /* 隐私安全提示 */
 .notice {
   font-size: 14px;
@@ -15,160 +23,19 @@ h1 {
   margin-bottom: 20px;
 }
 
-/* 单条记录卡片 */
-.record {
-  background: #fff;
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
-  position: relative;
+/* 信息收集说明 */
+.footer {
+  margin-top: 40px;
+  padding: 12px 0;
+  text-align: center;
+  font-size: 12px;
+  color: #888;
+  border-top: 1px solid #eee;
 }
 
-.record:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  /* 鼠标悬停时加深阴影 */
-}
-
-/* 重要记录 */
-.importance-important {
-  border-left: 5px solid #d32f2f;
-  /* 左侧红色标记条 */
-  background: #fff6f6;
-  /* 极淡红色背景 */
-}
-
-/* 顶部信息行 */
-.meta {
-  font-size: 14px;
-  color: #555;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* 图片附件按钮 */
-.icon-group span {
-  margin-left: 10px;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* 内容 */
-.content {
-  margin-top: 8px;
-  font-size: 16px;
-  line-height: 1.6;
-}
-
-/* 图片（默认隐藏） */
-
-/* =========================
-   图片按钮（📷 图标）
-   ========================= */
-.image-toggle {
-  display: inline-block;
-  font-size: 14px;
-  /* 字体大小 */
-  cursor: pointer;
-  /* 鼠标手型提示可点击 */
-  user-select: none;
-  /* 禁止选中文本 */
-  margin-top: 6px;
-  /* 与正文或上方元素保持间距 */
-}
-
-.image-toggle:hover {
-  color: #555;
-  /* 悬停颜色提示 */
-  text-decoration: underline;
-  /* 悬停下划线 */
-}
-
-.image-wrapper {
-  display: none;
-  margin-top: 10px;
-}
-
-.image-wrapper img {
-  max-width: 100%;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-}
-
-/* 附件区域 */
-
-/* =========================
-   附件按钮（📎 图标）
-   ========================= */
-.attach-toggle {
-  display: inline-block;
-  font-size: 14px;
-  cursor: pointer;
-  user-select: none;
-  margin-top: 4px;
-  /* 与正文或上方元素间距稍小 */
-}
-
-.attach-toggle:hover {
-  color: #555;
-  text-decoration: underline;
-}
-
-.attachments-wrapper {
-  display: none;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #fafafa;
-  border: 1px dashed #ccc;
-  border-radius: 6px;
-}
-
-.attachments-wrapper ul {
-  margin: 6px 0 0 0;
-  padding-left: 18px;
-}
-
-.attachments-wrapper li {
-  margin: 4px 0;
-}
-
-.attachments-wrapper a {
-  color: #0366d6;
-  text-decoration: none;
-}
-
-.attachments-wrapper a:hover {
-  text-decoration: underline;
-}
-
-/* 人名悬停&单击 */
-.person-tag {
-  display: inline-block;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.person-tag:hover {
-  /* 用 text-shadow 模拟加粗，不改变宽度 */
-  text-shadow: 0.6px 0 0 rgb(128, 128, 128), 0 0.6px 0 rgb(128, 128, 128), -0.6px 0 0 rgb(128, 128, 128), 0 -0.6px 0 rgb(128, 128, 128);
-  /* 禁止实际加粗 */
-  font-weight: normal;
-}
-
-/* 术语悬停&单击 */
-.term-tag {
-  color: #8b5cf6;
-  font-weight: 600;
-  cursor: pointer;
-  border-bottom: 1px dashed #c4b5fd;
-}
-
-.term-tag:hover {
-  background-color: #f5f3ff;
-}
+/* ===============================
+   三、顶部导航与全局操作
+   =============================== */
 
 /* 顶部导航样式 */
 .top-nav {
@@ -201,6 +68,216 @@ h1 {
 .top-nav button:focus {
   outline: none;
 }
+
+/* 主页面右上角功能按钮 */
+
+.top-right-actions {
+  position: fixed;
+  top: 5px;
+  right: 38px;
+  z-index: 1000;
+}
+
+.top-action-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+.top-action-btn:hover {
+  background: #f3f3f3;
+}
+
+/* ===============================
+   四、记录卡片（Record）
+   =============================== */
+
+/* 单条记录卡片 */
+.record {
+  background: #fff;
+  border-radius: 8px;
+  padding: 14px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.3s ease;
+  position: relative;
+}
+
+.record:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  /* 鼠标悬停时加深阴影 */
+}
+
+/* 重要记录 */
+.importance-important {
+  border-left: 5px solid #d32f2f;
+  /* 左侧红色标记条 */
+  background: #fff6f6;
+  /* 极淡红色背景 */
+}
+
+/* ===============================
+   五、记录元信息与内容
+   =============================== */
+
+/* 顶部信息行 */
+.meta {
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* 内容 */
+.content {
+  margin-top: 8px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+/* ===============================
+   六、图片与附件 图标按钮
+   =============================== */
+
+/* 图片附件按钮 */
+.icon-group span {
+  margin-left: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* 图片按钮（📷 图标） */
+.image-toggle {
+  display: inline-block;
+  font-size: 14px;
+  /* 字体大小 */
+  cursor: pointer;
+  /* 鼠标手型提示可点击 */
+  user-select: none;
+  /* 禁止选中文本 */
+  margin-top: 6px;
+  /* 与正文或上方元素保持间距 */
+}
+
+.image-toggle:hover {
+  color: #555;
+  /* 悬停颜色提示 */
+  text-decoration: underline;
+  /* 悬停下划线 */
+}
+
+/* 附件按钮（📎 图标） */
+.attach-toggle {
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  user-select: none;
+  margin-top: 4px;
+  /* 与正文或上方元素间距稍小 */
+}
+
+.attach-toggle:hover {
+  color: #555;
+  text-decoration: underline;
+}
+
+/* 展开区域 */
+.image-wrapper {
+  display: none;
+  margin-top: 10px;
+}
+
+.image-wrapper img {
+  max-width: 100%;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+.attachments-wrapper {
+  display: none;
+  margin-top: 10px;
+  padding: 8px 12px;
+  background: #fafafa;
+  border: 1px dashed #ccc;
+  border-radius: 6px;
+}
+
+.attachments-wrapper ul {
+  margin: 6px 0 0 0;
+  padding-left: 18px;
+}
+
+.attachments-wrapper li {
+  margin: 4px 0;
+}
+
+.attachments-wrapper a {
+  color: #0366d6;
+  text-decoration: none;
+}
+
+.attachments-wrapper a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   七、标记类（人物 / 术语 / 黑幕）
+   =============================== */
+
+/* 人名悬停&单击 */
+.person-tag {
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.person-tag:hover {
+  /* 用 text-shadow 模拟加粗，不改变宽度 */
+  text-shadow: 0.6px 0 0 rgb(128, 128, 128),
+    0 0.6px 0 rgb(128, 128, 128),
+    -0.6px 0 0 rgb(128, 128, 128),
+    0 -0.6px 0 rgb(128, 128, 128);
+  /* 禁止实际加粗 */
+  font-weight: normal;
+}
+
+/* 术语悬停&单击 */
+.term-tag {
+  color: #8b5cf6;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 1px dashed #c4b5fd;
+}
+
+.term-tag:hover {
+  background-color: #f5f3ff;
+}
+
+/* 黑幕 */
+.redacted {
+  background: #000;
+  color: transparent;
+  /* 默认文字不可见 */
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: color 0.2s;
+}
+
+/* 悬停时显示文字 */
+.redacted:hover {
+  color: #fff;
+  box-shadow: 0 0 0 1px #444;
+}
+
+/* ===============================
+   八、表格（人物 / 术语）
+   =============================== */
 
 /* 人物列表 */
 .people-table {
@@ -260,21 +337,9 @@ h1 {
   background-color: #eef5ff;
 }
 
-/* 黑幕 */
-.redacted {
-  background: #000;
-  color: transparent;
-  /* 默认文字不可见 */
-  padding: 2px 6px;
-  border-radius: 3px;
-  transition: color 0.2s;
-}
-
-/* 悬停时显示文字 */
-.redacted:hover {
-  color: #fff;
-  box-shadow: 0 0 0 1px #444;
-}
+/* ===============================
+   九、人物 / 术语详情信息布局
+   =============================== */
 
 /* 个人简介 */
 .person-info {
@@ -306,39 +371,4 @@ h1 {
   /* 占剩余空间 */
   white-space: pre-wrap;
   /* 支持换行 */
-}
-
-/* ===============================
-   主页面右上角功能按钮
-   =============================== */
-
-.top-right-actions {
-  position: fixed;
-  top: 5px;
-  right: 38px;
-  z-index: 1000;
-}
-
-.top-action-btn {
-  padding: 6px 12px;
-  font-size: 14px;
-  background: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-}
-
-.top-action-btn:hover {
-  background: #f3f3f3;
-}
-
-/* 信息收集说明 */
-.footer {
-  margin-top: 40px;
-  padding: 12px 0;
-  text-align: center;
-  font-size: 12px;
-  color: #888;
-  border-top: 1px solid #eee;
 }
