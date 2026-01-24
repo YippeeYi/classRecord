@@ -18,15 +18,15 @@ function parseContent(text) {
         .replace(/\[\[REDACT\|(.+?)\]\]/g, (_, c) =>
             `<span class="redacted">${c}</span>`
         )
-        // 人物标记 [[id|显示名]]
-        .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
-            (_, id, label) =>
-                `<span class="person-tag" data-id="${id}">${label}</span>`
-        )
         // 术语标记 {{termId|显示文本}}
         .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g,
             (_, id, label) =>
                 `<span class="term-tag" data-id="${id}">${label}</span>`
+        )
+        // 人物标记 [[id|显示名]]
+        .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
+            (_, id, label) =>
+                `<span class="person-tag" data-id="${id}">${label}</span>`
         )
         // 上标 ^内容^
         .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
