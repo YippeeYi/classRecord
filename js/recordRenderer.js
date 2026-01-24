@@ -147,21 +147,21 @@ function bindToggle(recordDiv) {
 }
 
 /* ===============================
-   人物点击跳转
-   =============================== */
-document.addEventListener("click", e => {
-    const tag = e.target.closest(".person-tag");
-    if (tag) {
-        location.href = `person.html?id=${tag.dataset.id}`;
-    }
-});
-
-/* ===============================
    术语点击跳转
    =============================== */
 document.addEventListener("click", e => {
     const tag = e.target.closest(".term-tag");
     if (tag) {
         location.href = `term.html?id=${tag.dataset.id}`;
+    }
+});
+
+/* ===============================
+   人物点击跳转
+   =============================== */
+document.addEventListener("click", e => {
+    const tag = e.target.closest(".person-tag");
+    if (tag) {
+        location.href = `person.html?id=${tag.dataset.id}`;
     }
 });
