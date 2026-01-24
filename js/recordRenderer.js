@@ -155,3 +155,13 @@ document.addEventListener("click", e => {
         location.href = `person.html?id=${tag.dataset.id}`;
     }
 });
+
+/* ===============================
+   术语点击跳转
+   =============================== */
+document.addEventListener("click", e => {
+    const tag = e.target.closest(".term-tag");
+    if (tag) {
+        location.href = `term.html?id=${tag.dataset.id}`;
+    }
+});
