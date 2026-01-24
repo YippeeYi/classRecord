@@ -251,7 +251,6 @@ h1 {
 .term-tag {
   display: inline-block;
   color: #8b5cf6;
-  font-weight: 600;
   cursor: pointer;
   border-bottom: 1px dashed #c4b5fd;
 }
