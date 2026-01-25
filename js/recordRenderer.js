@@ -25,7 +25,7 @@ function parseContent(text) {
                 `<span class="person-tag" data-id="${id}">${label}</span>`
         )
         // 黑幕 ((显示内容))
-        .replace(/\(\(\|(.+?)\)\)/g, (_, c) =>
+        .replace(/\(\((.+?)\)\)/g, (_, c) =>
             `<span class="redacted">${c}</span>`
         )
         // 上标 ^内容^
