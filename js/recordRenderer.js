@@ -149,12 +149,10 @@ function bindToggle(recordDiv) {
 /* ===============================
    术语 Tooltip
    =============================== */
-
 let glossaryCache = null;   // 全局术语缓存
 let activeTooltip = null;    // 当前 tooltip DOM
 let activeTermId = null;     // 当前术语 ID
 let tooltipTimer = null;     // 延迟显示定时器
-let tooltipPinned = false;   // tooltip 是否固定
 const TOOLTIP_DELAY = 200;   // 延迟显示时间（ms）
 
 // 确保 glossary 已加载
@@ -166,14 +164,14 @@ async function ensureGlossary() {
     }
 }
 
-/* ---------- 显示 Tooltip ---------- */
+/* ---------- 显示 tooltip（直接固定） ---------- */
 document.addEventListener("mouseover", async e => {
     const tag = e.target.closest(".term-tag");
     if (!tag) return;
 
     const termId = tag.dataset.id;
 
-    // 防抖：先清除上次定时器
+    // 防抖
     if (tooltipTimer) clearTimeout(tooltipTimer);
 
     tooltipTimer = setTimeout(async () => {
@@ -195,11 +193,31 @@ document.addEventListener("mouseover", async e => {
                 ${formatContent(term.definition)}
             </div>
             <div class="term-tooltip-hint">
-                点击固定 / 再次点击进入详情
+                点击查看完整术语页面
             </div>
         `;
 
         document.body.appendChild(activeTooltip);
+
+        // 计算位置并固定
+        const rect = tag.getBoundingClientRect();
+        const tooltipRect = activeTooltip.getBoundingClientRect();
+        const padding = 6;
+
+        let left = rect.left + window.scrollX;
+        let top = rect.bottom + window.scrollY + padding;
+
+        // 屏幕右/下边缘避让
+        if (left + tooltipRect.width > window.scrollX + window.innerWidth) {
+            left = rect.right - tooltipRect.width + window.scrollX;
+        }
+        if (top + tooltipRect.height > window.scrollY + window.innerHeight) {
+            top = rect.top - tooltipRect.height - padding + window.scrollY;
+        }
+
+        activeTooltip.style.position = "absolute";
+        activeTooltip.style.left = left + "px";
+        activeTooltip.style.top = top + "px";
 
         // 渐入
         requestAnimationFrame(() => {
@@ -210,29 +228,7 @@ document.addEventListener("mouseover", async e => {
     }, TOOLTIP_DELAY);
 });
 
-/* ---------- 鼠标移动：tooltip 跟随（固定时不移动） ---------- */
-document.addEventListener("mousemove", e => {
-    if (!activeTooltip || tooltipPinned) return;
-
-    const padding = 12;
-    const rect = activeTooltip.getBoundingClientRect();
-
-    let left = e.clientX + 14;
-    let top = e.clientY + 14;
-
-    // 屏幕右/下边缘避让
-    if (left + rect.width > window.innerWidth) {
-        left = e.clientX - rect.width - padding;
-    }
-    if (top + rect.height > window.innerHeight) {
-        top = e.clientY - rect.height - padding;
-    }
-
-    activeTooltip.style.left = left + "px";
-    activeTooltip.style.top = top + "px";
-});
-
-/* ---------- 鼠标移出：隐藏 tooltip（防抖 & 渐出） ---------- */
+/* ---------- 鼠标移出：隐藏 tooltip ---------- */
 document.addEventListener("mouseout", e => {
     // 移出 term-tag 或 tooltip 之外，取消延迟显示
     if (tooltipTimer) {
@@ -252,8 +248,6 @@ document.addEventListener("mouseout", e => {
 function removeTooltip(immediate = false) {
     if (!activeTooltip) return;
 
-    tooltipPinned = false;
-
     activeTooltip.classList.remove("show");
 
     const el = activeTooltip;
@@ -267,24 +261,11 @@ function removeTooltip(immediate = false) {
     }
 }
 
-/* ---------- 点击 tooltip：固定 / 再次点击跳转 ---------- */
+/* ---------- 点击 tooltip：跳转详情页 ---------- */
 document.addEventListener("click", e => {
     const tooltip = e.target.closest(".term-tooltip");
     if (!tooltip || !activeTermId) return;
 
-    // 第一次点击：固定 tooltip
-    if (!tooltipPinned) {
-        tooltipPinned = true;
-
-        const rect = tooltip.getBoundingClientRect();
-        tooltip.style.position = "absolute";
-        tooltip.style.left = rect.left + window.scrollX + "px";
-        tooltip.style.top = rect.top + window.scrollY + "px";
-
-        return; // 点击后只固定，不跳转
-    }
-
-    // 已固定 → 第二次点击跳转详情页
     location.href = `term.html?id=${activeTermId}`;
 });
 
