@@ -260,9 +260,9 @@ h1 {
   background-color: #f5f3ff;
 }
 
-/* 术语 Tooltip */
 .term-tooltip {
   position: fixed;
+  /* 默认跟随鼠标 */
   max-width: 320px;
   background: #ffffff;
   border: 1px solid #ddd;
@@ -272,31 +272,21 @@ h1 {
   font-size: 14px;
   line-height: 1.6;
   z-index: 9999;
+  /* 渐入渐出 */
   opacity: 0;
   transform: translateY(4px);
-  transition:
-    opacity 0.15s ease,
-    transform 0.15s ease;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+
+  cursor: pointer;
 }
 
-/* Tooltip 显示状态 */
 .term-tooltip.show {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Tooltip 隐藏状态 */
 .term-tooltip.hidden {
   pointer-events: none;
-  /* 隐藏时不抢鼠标 */
-}
-
-.term-tooltip {
-  cursor: pointer;
-}
-
-.term-tooltip:hover {
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
 }
 
 .term-tooltip-hint {
@@ -305,6 +295,10 @@ h1 {
   color: #888;
   text-align: right;
   user-select: none;
+}
+
+.term-tooltip:hover {
+  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
 }
 
 /* 黑幕 */
