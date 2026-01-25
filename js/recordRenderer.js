@@ -14,10 +14,6 @@ function parseContent(text) {
     if (!text) return "";
 
     return text
-        // 黑幕 [[REDACT|显示内容]]
-        .replace(/\[\[REDACT\|(.+?)\]\]/g, (_, c) =>
-            `<span class="redacted">${c}</span>`
-        )
         // 术语标记 {{termId|显示文本}}
         .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g,
             (_, id, label) =>
@@ -27,6 +23,10 @@ function parseContent(text) {
         .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
             (_, id, label) =>
                 `<span class="person-tag" data-id="${id}">${label}</span>`
+        )
+        // 黑幕 ((显示内容))
+        .replace(/\(\(\|(.+?)\)\)/g, (_, c) =>
+            `<span class="redacted">${c}</span>`
         )
         // 上标 ^内容^
         .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
