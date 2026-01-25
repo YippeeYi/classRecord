@@ -152,6 +152,7 @@ function bindToggle(recordDiv) {
 
 let glossaryCache = null;
 let activeTooltip = null;
+let activeTermId = null;
 
 async function ensureGlossary() {
     if (!glossaryCache) {
@@ -161,47 +162,102 @@ async function ensureGlossary() {
     }
 }
 
+/* ---------- 显示 Tooltip ---------- */
 document.addEventListener("mouseover", async e => {
     const tag = e.target.closest(".term-tag");
     if (!tag) return;
 
     await ensureGlossary();
 
-    const term = glossaryCache[tag.dataset.id];
+    const termId = tag.dataset.id;
+    const term = glossaryCache[termId];
     if (!term) return;
 
+    // 如果已经是同一个术语，不重复创建
+    if (activeTooltip && activeTermId === termId) return;
+
+    removeTooltip(true);
+
+    activeTermId = termId;
     activeTooltip = document.createElement("div");
-    activeTooltip.className = "term-tooltip";
+    activeTooltip.className = "term-tooltip hidden";
     activeTooltip.innerHTML = `
         <div class="term-tooltip-content">
             ${formatContent(term.definition)}
         </div>
         <div class="term-tooltip-hint">
-            点击术语查看完整页面
+            点击查看完整术语页面
         </div>
     `;
 
     document.body.appendChild(activeTooltip);
 
-    const rect = tag.getBoundingClientRect();
-    activeTooltip.style.left = rect.left + "px";
-    activeTooltip.style.top = rect.bottom + 6 + "px";
+    // 渐入
+    requestAnimationFrame(() => {
+        activeTooltip.classList.remove("hidden");
+        activeTooltip.classList.add("show");
+    });
 });
 
-document.addEventListener("mouseout", e => {
-    if (activeTooltip && !e.relatedTarget?.closest(".term-tooltip")) {
-        activeTooltip.remove();
-        activeTooltip = null;
+/* ---------- 跟随鼠标 + 智能避让 ---------- */
+document.addEventListener("mousemove", e => {
+    if (!activeTooltip) return;
+
+    const padding = 12;
+    const rect = activeTooltip.getBoundingClientRect();
+
+    let left = e.clientX + 14;
+    let top = e.clientY + 14;
+
+    if (left + rect.width > window.innerWidth) {
+        left = e.clientX - rect.width - padding;
     }
+    if (top + rect.height > window.innerHeight) {
+        top = e.clientY - rect.height - padding;
+    }
+
+    activeTooltip.style.left = left + "px";
+    activeTooltip.style.top = top + "px";
 });
+
+/* ---------- 隐藏 Tooltip（渐出） ---------- */
+document.addEventListener("mouseout", e => {
+    if (!activeTooltip) return;
+
+    const to = e.relatedTarget;
+    if (
+        to &&
+        (to.closest(".term-tag") || to.closest(".term-tooltip"))
+    ) {
+        return;
+    }
+
+    removeTooltip();
+});
+
+function removeTooltip(immediate = false) {
+    if (!activeTooltip) return;
+
+    activeTooltip.classList.remove("show");
+
+    const el = activeTooltip;
+    activeTooltip = null;
+    activeTermId = null;
+
+    if (immediate) {
+        el.remove();
+    } else {
+        setTimeout(() => el.remove(), 150);
+    }
+}
 
 /* ===============================
-   术语点击跳转
+   Tooltip 点击跳转
    =============================== */
 document.addEventListener("click", e => {
-    const tag = e.target.closest(".term-tag");
-    if (tag) {
-        location.href = `term.html?id=${tag.dataset.id}`;
+    const tooltip = e.target.closest(".term-tooltip");
+    if (tooltip && activeTermId) {
+        location.href = `term.html?id=${activeTermId}`;
     }
 });
 
