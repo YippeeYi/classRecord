@@ -246,12 +246,12 @@ h1 {
   font-weight: normal;
 }
 
-/* 术语悬停（不负责跳转） */
+
+/* 术语 */
 .term-tag {
   display: inline-block;
   color: #8b5cf6;
   cursor: help;
-  /* 从 pointer → help，更符合“解释型”语义 */
   border-bottom: 1px dashed #c4b5fd;
   transition: background-color 0.2s ease;
 }
@@ -260,9 +260,8 @@ h1 {
   background-color: #f5f3ff;
 }
 
+/* Tooltip */
 .term-tooltip {
-  position: fixed;
-  /* 默认跟随鼠标 */
   max-width: 320px;
   background: #ffffff;
   border: 1px solid #ddd;
@@ -272,7 +271,7 @@ h1 {
   font-size: 14px;
   line-height: 1.6;
   z-index: 9999;
-  /* 渐入渐出 */
+
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 0.15s ease, transform 0.15s ease;
