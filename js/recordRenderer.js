@@ -149,13 +149,16 @@ function bindToggle(recordDiv) {
 /* ===============================
    术语 Tooltip
    =============================== */
-let glossaryCache = null;   // 全局术语缓存
-let activeTooltip = null;    // 当前 tooltip DOM
-let activeTermId = null;     // 当前术语 ID
-let tooltipTimer = null;     // 延迟显示定时器
-const TOOLTIP_DELAY = 200;   // 延迟显示时间（ms）
+let glossaryCache = null;
+let activeTooltip = null;
+let activeTermId = null;
+let tooltipTimer = null;
+let lastMouseX = 0;
+let lastMouseY = 0;
 
-// 确保 glossary 已加载
+const TOOLTIP_DELAY = 200;
+
+// 加载 glossary
 async function ensureGlossary() {
     if (!glossaryCache) {
         const list = await loadAllGlossary();
@@ -164,14 +167,19 @@ async function ensureGlossary() {
     }
 }
 
-/* ---------- 显示 tooltip（直接固定） ---------- */
-document.addEventListener("mouseover", async e => {
+/* ---------- 记录鼠标位置 ---------- */
+document.addEventListener("mousemove", e => {
+    lastMouseX = e.clientX;
+    lastMouseY = e.clientY;
+});
+
+/* ---------- mouseover：延迟显示 tooltip ---------- */
+document.addEventListener("mouseover", e => {
     const tag = e.target.closest(".term-tag");
     if (!tag) return;
 
     const termId = tag.dataset.id;
 
-    // 防抖
     if (tooltipTimer) clearTimeout(tooltipTimer);
 
     tooltipTimer = setTimeout(async () => {
@@ -180,7 +188,7 @@ document.addEventListener("mouseover", async e => {
         const term = glossaryCache[termId];
         if (!term) return;
 
-        // 已存在且是同一个 tooltip，不重复创建
+        // 已存在同一个 tooltip 不重复创建
         if (activeTooltip && activeTermId === termId) return;
 
         removeTooltip(true);
@@ -199,38 +207,36 @@ document.addEventListener("mouseover", async e => {
 
         document.body.appendChild(activeTooltip);
 
-        // 计算位置并固定
-        const rect = tag.getBoundingClientRect();
+        // 计算位置（基于鼠标）
         const tooltipRect = activeTooltip.getBoundingClientRect();
-        const padding = 6;
+        const padding = 12;
 
-        let left = rect.left + window.scrollX;
-        let top = rect.bottom + window.scrollY + padding;
+        let left = lastMouseX + 14;
+        let top = lastMouseY + 14;
 
-        // 屏幕右/下边缘避让
-        if (left + tooltipRect.width > window.scrollX + window.innerWidth) {
-            left = rect.right - tooltipRect.width + window.scrollX;
+        // 屏幕边缘避让
+        if (left + tooltipRect.width > window.innerWidth) {
+            left = lastMouseX - tooltipRect.width - padding;
         }
-        if (top + tooltipRect.height > window.scrollY + window.innerHeight) {
-            top = rect.top - tooltipRect.height - padding + window.scrollY;
+        if (top + tooltipRect.height > window.innerHeight) {
+            top = lastMouseY - tooltipRect.height - padding;
         }
 
         activeTooltip.style.position = "absolute";
-        activeTooltip.style.left = left + "px";
-        activeTooltip.style.top = top + "px";
+        activeTooltip.style.left = left + window.scrollX + "px";
+        activeTooltip.style.top = top + window.scrollY + "px";
 
         // 渐入
         requestAnimationFrame(() => {
             activeTooltip.classList.remove("hidden");
             activeTooltip.classList.add("show");
         });
-
     }, TOOLTIP_DELAY);
 });
 
-/* ---------- 鼠标移出：隐藏 tooltip ---------- */
+/* ---------- mouseout：只在真正离开时才清除 ---------- */
 document.addEventListener("mouseout", e => {
-    // 移出 term-tag 或 tooltip 之外，取消延迟显示
+    // 取消尚未触发的延迟显示
     if (tooltipTimer) {
         clearTimeout(tooltipTimer);
         tooltipTimer = null;
@@ -239,12 +245,19 @@ document.addEventListener("mouseout", e => {
     if (!activeTooltip) return;
 
     const to = e.relatedTarget;
-    if (to && (to.closest(".term-tag") || to.closest(".term-tooltip"))) return;
+
+    // 只要进入 term-tag 或 tooltip，都不清除
+    if (
+        to &&
+        (to.closest(".term-tag") || to.closest(".term-tooltip"))
+    ) {
+        return;
+    }
 
     removeTooltip();
 });
 
-// 隐藏 tooltip 方法
+/* ---------- 移除 tooltip ---------- */
 function removeTooltip(immediate = false) {
     if (!activeTooltip) return;
 
@@ -261,22 +274,12 @@ function removeTooltip(immediate = false) {
     }
 }
 
-/* ---------- 点击 tooltip：跳转详情页 ---------- */
+/* ---------- 点击 tooltip：跳转 ---------- */
 document.addEventListener("click", e => {
     const tooltip = e.target.closest(".term-tooltip");
     if (!tooltip || !activeTermId) return;
 
     location.href = `term.html?id=${activeTermId}`;
-});
-
-/* ===============================
-   Tooltip 点击跳转
-   =============================== */
-document.addEventListener("click", e => {
-    const tooltip = e.target.closest(".term-tooltip");
-    if (tooltip && activeTermId) {
-        location.href = `term.html?id=${activeTermId}`;
-    }
 });
 
 /* ===============================
