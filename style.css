@@ -297,19 +297,39 @@ h1 {
   user-select: none;
 }
 
-/* 黑幕 */
+/* 黑幕（支持嵌套人物 / 术语） */
 
 .redacted {
-  background: linear-gradient(90deg, #000, #111);
-  color: transparent;
-  padding: 2px 8px;
+  position: relative;
+  display: inline-block;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  overflow: hidden;
 }
 
-/* 悬停时显示文字 */
+/* 真正的内容层 */
+.redacted-content {
+  position: relative;
+  z-index: 1;
+}
+
+/* 遮挡层 */
+.redacted-mask {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #000, #111);
+  z-index: 2;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+  box-shadow: inset 0 0 0 1px #222;
+}
+
+/* 悬停时揭开黑幕 */
+.redacted:hover .redacted-mask {
+  opacity: 0;
+}
+
+/* 悬停时整体高亮一点 */
 .redacted:hover {
-  color: #fff;
   box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
