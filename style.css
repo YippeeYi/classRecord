@@ -297,7 +297,7 @@ h1 {
   user-select: none;
 }
 
-/* 黑幕 */
+/* 黑幕（支持嵌套人物 / 术语） */
 
 .redacted {
   position: relative;
