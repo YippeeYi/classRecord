@@ -8,8 +8,19 @@
  *   expire: 24 * 60 * 60 * 1000,
  *   loader: async () => {...}
  * })
+ *
+ * 额外能力：
+ * - clearCache(key?)：清除指定 / 全部缓存
  ************************************************************/
 
+/* ===============================
+   缓存前缀（防止误删其他项目）
+   =============================== */
+const CACHE_PREFIX = "classRecord";
+
+/* ===============================
+   通用加载器
+   =============================== */
 window.loadWithCache = async function ({
     key,
     expire = 24 * 60 * 60 * 1000,
@@ -19,8 +30,8 @@ window.loadWithCache = async function ({
         throw new Error("loadWithCache: key 和 loader 是必须的");
     }
 
-    const dataKey = `${key}_cache`;
-    const timeKey = `${key}_cache_time`;
+    const dataKey = `${CACHE_PREFIX}:${key}:data`;
+    const timeKey = `${CACHE_PREFIX}:${key}:time`;
     const now = Date.now();
 
     const cachedData = localStorage.getItem(dataKey);
@@ -57,4 +68,17 @@ window.loadWithCache = async function ({
     localStorage.setItem(timeKey, now.toString());
 
     return data;
+};
+
+/* ===============================
+   🧹 手动清理缓存（新增）
+   =============================== */
+window.clearCache = function () {
+    // 清空本项目所有缓存
+    Object.keys(localStorage).forEach(k => {
+        if (k.startsWith(CACHE_PREFIX + ":")) {
+            localStorage.removeItem(k);
+        }
+    });
+    console.log("🧹 已清除缓存");
 };
