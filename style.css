@@ -3,9 +3,10 @@
    =============================== */
 
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
+  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  background: radial-gradient(circle at top, #f8fafc, #eef2f7);
   padding: 20px;
+  color: #1f2937;
 }
 
 h1 {
@@ -19,18 +20,18 @@ h1 {
 /* 隐私安全提示 */
 .notice {
   font-size: 14px;
-  color: #888;
+  color: #6b7280;
   margin-bottom: 20px;
 }
 
 /* 信息收集说明 */
 .footer {
   margin-top: 40px;
-  padding: 12px 0;
+  padding: 14px 0;
   text-align: center;
   font-size: 12px;
-  color: #888;
-  border-top: 1px solid #eee;
+  color: #9ca3af;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* ===============================
@@ -39,11 +40,12 @@ h1 {
 
 /* 顶部导航样式 */
 .top-nav {
-  background-color: #f8f8f8;
-  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(10px);
+  padding: 10px 14px;
   display: flex;
-  gap: 10px;
-  border-bottom: 1px solid #ddd;
+  gap: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -51,18 +53,20 @@ h1 {
 
 /* 导航按钮样式 */
 .top-nav button {
-  padding: 6px 12px;
+  padding: 7px 14px;
   border: none;
-  background-color: #007bff;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
   color: white;
-  font-weight: bold;
+  font-weight: 600;
   cursor: pointer;
-  border-radius: 4px;
-  transition: background 0.2s;
+  border-radius: 999px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
 }
 
 .top-nav button:hover {
-  background-color: #0056b3;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
 }
 
 .top-nav button:focus {
@@ -73,23 +77,25 @@ h1 {
 
 .top-right-actions {
   position: fixed;
-  top: 5px;
+  top: 8px;
   right: 38px;
   z-index: 1000;
 }
 
 .top-action-btn {
-  padding: 6px 12px;
+  padding: 6px 14px;
   font-size: 14px;
-  background: #ffffff;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 999px;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .top-action-btn:hover {
-  background: #f3f3f3;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
 }
 
 /* ===============================
@@ -98,26 +104,52 @@ h1 {
 
 /* 单条记录卡片 */
 .record {
-  background: #fff;
-  border-radius: 8px;
-  padding: 14px;
-  margin-bottom: 16px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(6px);
+  border-radius: 14px;
+  padding: 16px 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.08);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   position: relative;
+  animation: fadeInUp 0.4s ease both;
 }
 
 .record:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14);
   /* 鼠标悬停时加深阴影 */
 }
 
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* 重要记录 */
+
 .importance-important {
-  border-left: 5px solid #d32f2f;
-  /* 左侧红色标记条 */
-  background: #fff6f6;
-  /* 极淡红色背景 */
+  border-left: 6px solid #ef4444;
+  background: linear-gradient(90deg, #fff5f5, #ffffff);
+}
+
+.importance-important::before {
+  content: "⚠ 重要";
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 12px;
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.12);
+  padding: 2px 8px;
+  border-radius: 999px;
 }
 
 /* ===============================
@@ -127,7 +159,7 @@ h1 {
 /* 顶部信息行 */
 .meta {
   font-size: 14px;
-  color: #555;
+  color: #6b7280;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -135,13 +167,14 @@ h1 {
 
 /* 内容 */
 .content {
-  margin-top: 8px;
+  margin-top: 10px;
   font-size: 18px;
-  line-height: 1.6;
+  line-height: 1.75;
+  letter-spacing: 0.02em;
 }
 
 /* ===============================
-   六、图片与附件 图标按钮
+   六、图片与附件
    =============================== */
 
 /* 图片附件按钮 */
@@ -151,60 +184,44 @@ h1 {
   user-select: none;
 }
 
-/* 图片按钮（📷 图标） */
-.image-toggle {
-  display: inline-block;
-  font-size: 14px;
-  /* 字体大小 */
-  cursor: pointer;
-  /* 鼠标手型提示可点击 */
-  user-select: none;
-  /* 禁止选中文本 */
-  margin-top: 6px;
-  /* 与正文或上方元素保持间距 */
-}
-
-.image-toggle:hover {
-  color: #555;
-  /* 悬停颜色提示 */
-  text-decoration: underline;
-  /* 悬停下划线 */
-}
-
-/* 附件按钮（📎 图标） */
+.image-toggle,
 .attach-toggle {
   display: inline-block;
   font-size: 14px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  margin-top: 8px;
   cursor: pointer;
   user-select: none;
-  margin-top: 4px;
-  /* 与正文或上方元素间距稍小 */
+  transition: background 0.15s ease, transform 0.15s ease;
 }
 
+.image-toggle:hover,
 .attach-toggle:hover {
-  color: #555;
-  text-decoration: underline;
+  background: #e0e7ff;
+  transform: translateY(-1px);
 }
 
 /* 展开区域 */
 .image-wrapper {
   display: none;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
 .image-wrapper img {
   max-width: 100%;
-  border-radius: 6px;
-  border: 1px solid #ddd;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
 .attachments-wrapper {
   display: none;
-  margin-top: 10px;
-  padding: 8px 12px;
-  background: #fafafa;
-  border: 1px dashed #ccc;
-  border-radius: 6px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  background: #f9fafb;
+  border: 1px dashed #c7d2fe;
+  border-radius: 10px;
 }
 
 .attachments-wrapper ul {
@@ -217,7 +234,7 @@ h1 {
 }
 
 .attachments-wrapper a {
-  color: #0366d6;
+  color: #2563eb;
   text-decoration: none;
 }
 
@@ -233,27 +250,23 @@ h1 {
 .person-tag {
   display: inline-block;
   cursor: pointer;
-  transition: all 0.2s ease;
+  color: #2563eb;
+  border-bottom: 1px dashed transparent;
+  transition: all 0.15s ease;
 }
 
 .person-tag:hover {
-  /* 用 text-shadow 模拟加粗，不改变宽度 */
-  text-shadow: 0.6px 0 0 rgb(128, 128, 128),
-    0 0.6px 0 rgb(128, 128, 128),
-    -0.6px 0 0 rgb(128, 128, 128),
-    0 -0.6px 0 rgb(128, 128, 128);
-  /* 禁止实际加粗 */
-  font-weight: normal;
+  background: rgba(37, 99, 235, 0.08);
+  border-bottom-color: #93c5fd;
 }
-
 
 /* 术语 */
 .term-tag {
   display: inline-block;
-  color: #8b5cf6;
+  color: #7c3aed;
   cursor: help;
   border-bottom: 1px dashed #c4b5fd;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.15s ease;
 }
 
 .term-tag:hover {
@@ -261,22 +274,22 @@ h1 {
 }
 
 /* Tooltip */
+
 .term-tooltip {
-  max-width: 320px;
-  background: #ffffff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 8px 10px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  max-width: 340px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border-radius: 10px;
+  padding: 10px 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.7;
+  border: 1px solid rgba(0, 0, 0, 0.08);
   z-index: 9999;
 
   opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(6px);
   transition: opacity 0.15s ease, transform 0.15s ease;
-
-  cursor: pointer;
 }
 
 .term-tooltip.show {
@@ -291,95 +304,70 @@ h1 {
 .term-tooltip-hint {
   margin-top: 6px;
   font-size: 12px;
-  color: #888;
+  color: #9ca3af;
   text-align: right;
   user-select: none;
 }
 
-.term-tooltip:hover {
-  box-shadow: 0 8px 26px rgba(0, 0, 0, 0.18);
-}
-
 /* 黑幕 */
+
 .redacted {
-  background: #000;
+  background: linear-gradient(90deg, #000, #111);
   color: transparent;
-  /* 默认文字不可见 */
-  padding: 2px 6px;
-  border-radius: 3px;
-  transition: color 0.2s;
+  padding: 2px 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
 }
 
 /* 悬停时显示文字 */
 .redacted:hover {
   color: #fff;
-  box-shadow: 0 0 0 1px #444;
+  box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
 }
 
 /* ===============================
    八、表格（人物 / 术语）
    =============================== */
 
-/* 人物列表 */
-.people-table {
-  width: 100%;
-  max-width: 600px;
-  margin: 20px 0 20px 20px;
-  border-collapse: collapse;
-  font-size: 16px;
-}
-
-.people-table th,
-.people-table td {
-  border: 1px solid #ddd;
-  padding: 8px 12px;
-  text-align: center;
-}
-
-.people-table th {
-  background-color: #f2f2f2;
-}
-
-.people-table tbody tr {
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.people-table tbody tr:hover {
-  background-color: #eef5ff;
-}
-
-/* 术语列表 */
+.people-table,
 .glossary-table {
   width: 100%;
   max-width: 600px;
   margin: 20px 0 20px 20px;
   border-collapse: collapse;
   font-size: 16px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
 }
 
+.people-table th,
+.people-table td,
 .glossary-table th,
 .glossary-table td {
-  border: 1px solid #ddd;
-  padding: 8px 12px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 10px 14px;
   text-align: center;
 }
 
+.people-table th,
 .glossary-table th {
-  background-color: #f2f2f2;
+  background: linear-gradient(135deg, #e0e7ff, #eef2ff);
 }
 
+.people-table tbody tr,
 .glossary-table tbody tr {
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease;
 }
 
+.people-table tbody tr:hover,
 .glossary-table tbody tr:hover {
-  background-color: #eef5ff;
+  background-color: #eef2ff;
 }
 
 /* ===============================
-   九、人物 / 术语详情信息布局
+   九、人物 / 术语详情信息
    =============================== */
 
 /* 个人简介 */
