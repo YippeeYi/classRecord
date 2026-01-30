@@ -140,18 +140,6 @@ h1 {
   background: linear-gradient(90deg, #fff5f5, #ffffff);
 }
 
-.importance-important::before {
-  content: "⚠ 重要";
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 12px;
-  color: #dc2626;
-  background: rgba(239, 68, 68, 0.12);
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
 /* ===============================
    五、记录元信息与内容
    =============================== */
