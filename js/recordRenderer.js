@@ -291,3 +291,21 @@ document.addEventListener("click", e => {
         location.href = `person.html?id=${tag.dataset.id}`;
     }
 });
+
+/* ===============================
+   刷新缓存按钮（记录页面）
+   =============================== */
+document.addEventListener("DOMContentLoaded", () => {
+    const btn = document.getElementById("refresh-cache-btn");
+    if (!btn) return;
+
+    btn.addEventListener("click", () => {
+        const ok = confirm("将清空所有本地缓存并重新加载数据，是否继续？");
+        if (!ok) return;
+
+        // 来自 cacheLoader.js 的全局方法
+        clearCache();
+
+        location.reload();
+    });
+});
