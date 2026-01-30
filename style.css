@@ -302,22 +302,26 @@ h1 {
 .redacted {
   position: relative;
   display: inline;
-  white-space: nowrap;
+  /* 行内元素，参与文字流 */
+  vertical-align: baseline;
+  /* white-space: normal; 允许自动换行 */
 }
 
 /* 内容层：正常文字流 */
 .redacted-content {
   position: relative;
   z-index: 1;
+  /* 自动换行，保持行高 */
+  display: inline;
 }
 
-/* 遮挡层：严格跟随文字高度 */
+/* 遮挡层：覆盖文字，不撑高父行 */
 .redacted-mask {
   position: absolute;
-  left: -0.1em;
-  right: -0.1em;
-  top: 0.1em;
-  bottom: 0.1em;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
 
   background: linear-gradient(90deg, #000, #111);
   z-index: 2;
@@ -329,12 +333,12 @@ h1 {
   transition: opacity 0.18s ease;
 }
 
-/* hover 揭开 */
+/* hover 揭开黑幕 */
 .redacted:hover .redacted-mask {
   opacity: 0;
 }
 
-/* hover 时轻微强调 */
+/* hover 时整体高亮 */
 .redacted:hover {
   box-shadow: 0 0 0 1px #333;
 }
