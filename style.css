@@ -297,39 +297,43 @@ h1 {
   user-select: none;
 }
 
-/* 黑幕（支持嵌套人物 / 术语） */
+/* 黑幕 */
 
 .redacted {
-  position: relative;
   display: inline;
-  /* 行内元素，参与文字流 */
+  /* 行内，不换行 */
+  position: relative;
   vertical-align: baseline;
-  /* white-space: normal; 允许自动换行 */
+  /* 与文字对齐 */
+  line-height: 1;
+  /* 避免撑高行高 */
+  font-size: inherit;
+  /* 避免字体大小不一致 */
+  white-space: normal;
+  /* 多行文字可换行 */
+  margin: 0;
+  /* 避免前后空格导致换行 */
+  padding: 0;
 }
 
-/* 内容层：正常文字流 */
+/* 内容层，正常文字流 */
 .redacted-content {
   position: relative;
   z-index: 1;
-  /* 自动换行，保持行高 */
   display: inline;
+  /* 内联文字 */
 }
 
-/* 遮挡层：覆盖文字，不撑高父行 */
+/* 遮罩层 */
 .redacted-mask {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-
+  inset: 0;
+  /* top/right/bottom/left = 0 */
   background: linear-gradient(90deg, #000, #111);
   z-index: 2;
   pointer-events: none;
-
   border-radius: 3px;
   box-shadow: inset 0 0 0 1px #222;
-
   transition: opacity 0.18s ease;
 }
 
@@ -338,7 +342,7 @@ h1 {
   opacity: 0;
 }
 
-/* hover 时整体高亮 */
+/* hover 整体微高亮 */
 .redacted:hover {
   box-shadow: 0 0 0 1px #333;
 }
