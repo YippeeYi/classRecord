@@ -27,10 +27,7 @@ function parseContent(text) {
         // 黑幕 ((显示内容))
         .replace(/\(\((.+?)\)\)/g,
             (_, c) =>
-                `<span class="redacted">
-                    <span class="redacted-mask"></span>
-                    <span class="redacted-content">${c}</span>
-                </span>`
+                `<span class="redacted"><span class="redacted-mask"></span><span class="redacted-content">${c}</span></span>`
         )
         // 上标 ^内容^
         .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
