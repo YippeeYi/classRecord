@@ -166,54 +166,65 @@ h1 {
    =============================== */
 
 /* 图片附件按钮 */
-.icon-group span {
-  margin-left: 10px;
-  cursor: pointer;
-  user-select: none;
+.icon-group {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+
+  display: flex;
+  gap: 8px;
+  align-items: center;
+
+  /* 默认隐藏 */
+  opacity: 0;
+  transform: translateY(6px);
+  pointer-events: none;
+
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+/* hover 整个 record 时显示 */
+.record:hover .icon-group {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .image-toggle,
 .attach-toggle {
   display: inline-flex;
-  /* 使用 flex 布局确保内容居中 */
   align-items: center;
-  /* 垂直居中 */
   justify-content: center;
-  /* 水平居中 */
-  font-size: 18px;
-  /* 调整 emoji 大小 */
-  padding: 4px 10px;
-  /* 内边距 */
+
+  width: 30px;
+  height: 30px;
+
+  font-size: 17px;
+  /* emoji 实际视觉更居中 */
+  line-height: 1;
+
   border-radius: 999px;
-  /* 圆形按钮 */
   background: #f1f5f9;
-  margin-top: 8px;
+  color: #334155;
+
   cursor: pointer;
   user-select: none;
-  transition: background 0.15s ease, transform 0.15s ease;
-  height: 32px;
-  /* 设置按钮高度 */
-  width: 32px;
-  /* 设置按钮宽度 */
-  line-height: 32px;
-  /* 使 emoji 垂直居中 */
-  text-align: center;
-  /* 水平居中 */
+
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .image-toggle:hover,
 .attach-toggle:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
-  /* 鼠标悬停时按钮微微放大 */
-}
-
-.image-toggle:active,
-.attach-toggle:active {
-  background: #cbd5e1;
-  /* 按钮点击时的背景色 */
-  transform: scale(1);
-  /* 点击时返回原大小 */
+  background: #e5e7eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
 }
 
 /* 展开区域 */
