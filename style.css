@@ -174,21 +174,42 @@ h1 {
 
 .image-toggle,
 .attach-toggle {
-  display: inline-block;
-  font-size: 14px;
-  padding: 4px 10px;
+  display: inline-flex;
+  /* 使用 flex 布局确保内容居中 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  font-size: 16px;
+  /* 增大字体以确保 emoji 显示清晰 */
+  padding: 6px 14px;
+  /* 适当增加内边距使按钮更大一些 */
   border-radius: 999px;
+  /* 圆形按钮 */
   background: #f1f5f9;
   margin-top: 8px;
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease, transform 0.15s ease;
+  height: 40px;
+  /* 设置固定高度 */
+  width: 40px;
+  /* 设置固定宽度 */
 }
 
 .image-toggle:hover,
 .attach-toggle:hover {
-  background: #e0e7ff;
-  transform: translateY(-1px);
+  background: #e2e8f0;
+  transform: scale(1.05);
+  /* 鼠标悬停时按钮微微放大 */
+}
+
+.image-toggle:active,
+.attach-toggle:active {
+  background: #cbd5e1;
+  /* 按钮点击时的背景色 */
+  transform: scale(1);
+  /* 点击时返回原大小 */
 }
 
 /* 展开区域 */
@@ -299,91 +320,45 @@ h1 {
 
 /* 黑幕 */
 
-/* ===============================
-   一、按钮样式：图片与附件按钮
-   =============================== */
-.image-toggle,
-.attach-toggle {
-  display: inline-flex;
-  /* 使用 flex 布局确保内容居中 */
-  align-items: center;
-  /* 垂直居中 */
-  justify-content: center;
-  /* 水平居中 */
-  font-size: 16px;
-  /* 增大字体以确保 emoji 显示清晰 */
-  padding: 6px 14px;
-  /* 适当增加内边距使按钮更大一些 */
-  border-radius: 999px;
-  /* 圆形按钮 */
-  background: #f1f5f9;
-  margin-top: 8px;
-  cursor: pointer;
-  user-select: none;
-  transition: background 0.15s ease, transform 0.15s ease;
-  height: 40px;
-  /* 设置固定高度 */
-  width: 40px;
-  /* 设置固定宽度 */
-}
-
-.image-toggle:hover,
-.attach-toggle:hover {
-  background: #e2e8f0;
-  transform: scale(1.05);
-  /* 鼠标悬停时按钮微微放大 */
-}
-
-.image-toggle:active,
-.attach-toggle:active {
-  background: #cbd5e1;
-  /* 按钮点击时的背景色 */
-  transform: scale(1);
-  /* 点击时返回原大小 */
-}
-
-/* 黑幕 */
-
 .redacted {
   position: relative;
   display: inline;
-  white-space: nowrap;
+  /* 保证行内显示，不占用额外空间 */
+  white-space: normal;
+  /* 允许文本换行 */
+  line-height: 1.6;
+  /* 确保行高一致 */
+  font-size: inherit;
+  /* 保证字体大小一致 */
 }
 
-/* 内容层：正常文字流 */
 .redacted-content {
   position: relative;
   z-index: 1;
 }
 
-/* 遮挡层：严格跟随文字高度 */
 .redacted-mask {
   position: absolute;
-  left: -0.1em;
-  right: -0.1em;
-  top: 0.1em;
-  bottom: 0.1em;
-
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
   background: linear-gradient(90deg, #000, #111);
   z-index: 2;
   pointer-events: none;
-
   border-radius: 3px;
   box-shadow: inset 0 0 0 1px #222;
-
-  transition: opacity 0.18s ease;
+  /* 内部阴影增强效果 */
+  transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-/* hover 揭开 */
+/* hover 揭开效果：透明度渐变 */
 .redacted:hover .redacted-mask {
   opacity: 0;
 }
 
-/* hover 时轻微强调 */
+/* hover 时黑幕框轻微强调 */
 .redacted:hover {
-<<<<<<< Updated upstream
-  box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
-=======
   box-shadow: 0 0 0 1px #333;
   transform: scale(1.05);
   /* 增加轻微的放大效果 */
@@ -396,7 +371,6 @@ h1 {
   /* 避免遮罩层撑开行高 */
   word-break: break-word;
   /* 确保多行文本适应 */
->>>>>>> Stashed changes
 }
 
 /* ===============================
