@@ -299,6 +299,51 @@ h1 {
 
 /* 黑幕 */
 
+/* ===============================
+   一、按钮样式：图片与附件按钮
+   =============================== */
+.image-toggle,
+.attach-toggle {
+  display: inline-flex;
+  /* 使用 flex 布局确保内容居中 */
+  align-items: center;
+  /* 垂直居中 */
+  justify-content: center;
+  /* 水平居中 */
+  font-size: 16px;
+  /* 增大字体以确保 emoji 显示清晰 */
+  padding: 6px 14px;
+  /* 适当增加内边距使按钮更大一些 */
+  border-radius: 999px;
+  /* 圆形按钮 */
+  background: #f1f5f9;
+  margin-top: 8px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+  height: 40px;
+  /* 设置固定高度 */
+  width: 40px;
+  /* 设置固定宽度 */
+}
+
+.image-toggle:hover,
+.attach-toggle:hover {
+  background: #e2e8f0;
+  transform: scale(1.05);
+  /* 鼠标悬停时按钮微微放大 */
+}
+
+.image-toggle:active,
+.attach-toggle:active {
+  background: #cbd5e1;
+  /* 按钮点击时的背景色 */
+  transform: scale(1);
+  /* 点击时返回原大小 */
+}
+
+/* 黑幕 */
+
 .redacted {
   position: relative;
   display: inline;
@@ -336,7 +381,22 @@ h1 {
 
 /* hover 时轻微强调 */
 .redacted:hover {
+<<<<<<< Updated upstream
   box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
+=======
+  box-shadow: 0 0 0 1px #333;
+  transform: scale(1.05);
+  /* 增加轻微的放大效果 */
+}
+
+/* 适应多行文本黑幕效果 */
+.redacted-content,
+.redacted-mask {
+  display: inline-block;
+  /* 避免遮罩层撑开行高 */
+  word-break: break-word;
+  /* 确保多行文本适应 */
+>>>>>>> Stashed changes
 }
 
 /* ===============================
