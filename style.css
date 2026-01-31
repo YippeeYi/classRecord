@@ -191,9 +191,9 @@ h1 {
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease, transform 0.15s ease;
-  height: 40px;
+  height: 30px;
   /* 设置固定高度 */
-  width: 40px;
+  width: 30px;
   /* 设置固定宽度 */
 }
 
