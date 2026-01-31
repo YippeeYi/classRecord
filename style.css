@@ -180,10 +180,10 @@ h1 {
   /* 垂直居中 */
   justify-content: center;
   /* 水平居中 */
-  font-size: 16px;
-  /* 增大字体以确保 emoji 显示清晰 */
-  padding: 6px 14px;
-  /* 适当增加内边距使按钮更大一些 */
+  font-size: 18px;
+  /* 调整 emoji 大小 */
+  padding: 4px 10px;
+  /* 内边距 */
   border-radius: 999px;
   /* 圆形按钮 */
   background: #f1f5f9;
@@ -191,10 +191,14 @@ h1 {
   cursor: pointer;
   user-select: none;
   transition: background 0.15s ease, transform 0.15s ease;
-  height: 30px;
-  /* 设置固定高度 */
-  width: 30px;
-  /* 设置固定宽度 */
+  height: 32px;
+  /* 设置按钮高度 */
+  width: 32px;
+  /* 设置按钮宽度 */
+  line-height: 32px;
+  /* 使 emoji 垂直居中 */
+  text-align: center;
+  /* 水平居中 */
 }
 
 .image-toggle:hover,
