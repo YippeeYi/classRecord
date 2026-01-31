@@ -359,28 +359,19 @@ h1 {
 
 /* hover 时黑幕框轻微强调 */
 .redacted:hover {
-<<<<<<< Updated upstream
   box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
-=======
   box-shadow: 0 0 0 1px #333;
   transform: scale(1.05);
   /* 增加轻微的放大效果 */
 }
 
-/* 额外增强：适应多行文本黑幕效果 */
+/* 适应多行文本黑幕效果 */
 .redacted-content,
 .redacted-mask {
   display: inline-block;
   /* 避免遮罩层撑开行高 */
   word-break: break-word;
   /* 确保多行文本适应 */
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 }
 
 /* ===============================
