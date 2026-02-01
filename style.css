@@ -3,7 +3,7 @@
    =============================== */
 
 body {
-  font-family: "Ma Shan Zheng", "Segoe UI", Arial, sans-serif;
+  font-family: "Zhi Mang Xing", "Segoe UI", Arial, sans-serif;
   background: radial-gradient(circle at top, #f8fafc, #eef2f7);
   padding: 20px;
   color: #1f2937;
@@ -13,12 +13,11 @@ h1 {
   margin-bottom: 5px;
 }
 
-.ma-shan-zheng-regular {
-  font-family: "Ma Shan Zheng", cursive;
+.zhi-mang-xing-regular {
+  font-family: "Zhi Mang Xing", cursive;
   font-weight: 400;
   font-style: normal;
 }
-
 
 /* ===============================
    二、提示 / 说明类
