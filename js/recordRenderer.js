@@ -159,7 +159,7 @@ let lastMouseX = 0;
 let lastMouseY = 0;
 
 const TOOLTIP_DELAY = 200;
-const TOOLTIP_REMOVE_DELAY = 500; // 延迟时间，在鼠标移开后延迟移除 tooltip
+const TOOLTIP_REMOVE_DELAY = 300; // 延迟时间，在鼠标移开后延迟移除 tooltip
 
 // 加载 glossary
 async function ensureGlossary() {
