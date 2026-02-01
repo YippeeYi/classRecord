@@ -281,48 +281,8 @@ h1 {
 }
 
 .person-tag:hover {
-  position: relative;
   background: rgba(37, 99, 235, 0.08);
   border-bottom-color: #93c5fd;
-}
-
-/* hover 时显示 id */
-.person-tag:hover::after {
-  content: attr(data-id);
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-
-  margin-top: 6px;
-  padding: 4px 8px;
-
-  font-size: 12px;
-  color: #fff;
-  background: rgba(0, 0, 0, 0.85);
-  border-radius: 4px;
-  white-space: nowrap;
-
-  opacity: 0;
-  /* 初始时不显示 */
-  visibility: hidden;
-  /* 初始时隐藏 */
-  pointer-events: none;
-  z-index: 10;
-
-  /* 渐入渐出效果 */
-  transition: opacity 0.3s ease, visibility 0s 0.3s;
-  /* 设置渐入时间和延迟 */
-}
-
-/* hover 时渐入显示 */
-.person-tag:hover::after {
-  opacity: 1;
-  /* 变为可见 */
-  visibility: visible;
-  /* 显示 */
-  transition-delay: 0.2s;
-  /* 延迟 0.2 秒后显示 */
 }
 
 /* 术语 */
