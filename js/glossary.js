@@ -1,26 +1,21 @@
 /************************************************************
  * glossary.js
  * 班级辞典页面
- * 功能：
- * - 加载全部 glossary（统一走缓存模块）
- * - 按 since / term 排序
- * - 行点击跳转到 glossary.html?id=
  ************************************************************/
 
 const container = document.getElementById("glossary-list");
-
 let glossaryList = [];
 
 /* ===============================
-   启动加载流程（统一走缓存模块）
+   加载数据
    =============================== */
 loadAllGlossary().then(list => {
     glossaryList = list;
-    renderGlossary(); // 默认排序
+    renderGlossary();
 });
 
 /* ===============================
-   渲染 glossary 列表
+   渲染列表
    =============================== */
 function renderGlossary(sortKey = "since", sortOrder = "asc") {
     container.innerHTML = "";
@@ -29,7 +24,6 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
 
     const table = document.createElement("table");
     table.className = "glossary-table";
-
     table.innerHTML = `
     <thead>
       <tr>
@@ -40,9 +34,9 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
       </tr>
     </thead>
     <tbody>
-      ${list.map((g, index) => `
+      ${list.map((g, i) => `
         <tr data-id="${g.id}">
-          <td>${index + 1}</td>
+          <td>${i + 1}</td>
           <td>${g.id}</td>
           <td>${formatContent(g.term)}</td>
           <td>${g.since || "—"}</td>
@@ -50,7 +44,6 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
       `).join("")}
     </tbody>
   `;
-
     container.appendChild(table);
     bindRowClick();
 }
@@ -60,51 +53,32 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
    =============================== */
 function bindRowClick() {
     document.querySelectorAll(".glossary-table tbody tr").forEach(tr => {
-        tr.addEventListener("click", () => {
-            const id = tr.dataset.id;
-            location.href = `term.html?id=${id}`;
-        });
+        tr.onclick = () => {
+            location.href = `term.html?id=${tr.dataset.id}`;
+        };
     });
 }
 
 /* ===============================
-   排序函数
+   排序
    =============================== */
 function sortGlossary(list, key, order) {
-    const sorted = [...list];
-
-    sorted.forEach(g => {
-        g._since = g.since || "";
-        g._id = g.id || "";
+    return [...list].sort((a, b) => {
+        const A = a[key] || "";
+        const B = b[key] || "";
+        return order === "asc"
+            ? A.localeCompare(B)
+            : B.localeCompare(A);
     });
-
-    sorted.sort((a, b) => {
-        let valA, valB;
-
-        switch (key) {
-            case "id":
-                valA = a._id.toLowerCase();
-                valB = b._id.toLowerCase();
-                break;
-            case "since":
-            default:
-                valA = a._since;
-                valB = b._since;
-        }
-
-        if (valA < valB) return order === "asc" ? -1 : 1;
-        if (valA > valB) return order === "asc" ? 1 : -1;
-        return 0;
-    });
-
-    return sorted;
 }
 
 /* ===============================
-   绑定排序按钮事件
+   绑定排序按钮
    =============================== */
-document.getElementById("sort-btn").addEventListener("click", () => {
-    const key = document.getElementById("sort-key").value;
-    const order = document.getElementById("sort-order").value;
-    renderGlossary(key, order);
-});
+document.querySelector(".sort-controls .sort-btn")
+    .addEventListener("click", () => {
+        const wrap = document.querySelector(".sort-controls");
+        const key = wrap.querySelector(".sort-key").value;
+        const order = wrap.querySelector(".sort-order").value;
+        renderGlossary(key, order);
+    });

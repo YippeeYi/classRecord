@@ -465,3 +465,113 @@ h1 {
   white-space: pre-wrap;
   /* 支持换行 */
 }
+
+/* ===============================
+   十、页面切换按钮（人物页）
+   =============================== */
+
+.switch-group {
+  margin: 18px 0 14px;
+  display: flex;
+  gap: 10px;
+}
+
+.switch-btn {
+  padding: 7px 16px;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+
+  background: rgba(255, 255, 255, 0.85);
+  color: #374151;
+
+  cursor: pointer;
+  user-select: none;
+
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+
+  transition:
+    background 0.15s ease,
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.switch-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+.switch-btn.active {
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(99, 102, 241, 0.45);
+}
+
+/* ===============================
+   十一、排序控制区（人物 / 术语页）
+   =============================== */
+
+.sort-controls {
+  margin: 18px 0 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+
+  font-size: 14px;
+  color: #374151;
+}
+
+.sort-controls label {
+  font-weight: 600;
+  margin-right: 2px;
+}
+
+.sort-controls select {
+  padding: 6px 10px;
+  font-size: 14px;
+
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.85);
+
+  cursor: pointer;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.sort-controls select:hover {
+  border-color: #6366f1;
+}
+
+.sort-controls select:focus {
+  outline: none;
+  border-color: #4f46e5;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.25);
+}
+
+.sort-btn {
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 600;
+
+  border-radius: 999px;
+  border: none;
+
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  color: white;
+
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.sort-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+}

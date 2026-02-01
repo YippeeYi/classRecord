@@ -12,10 +12,10 @@ if (!personId) {
 }
 
 const recordContainer = document.getElementById("record-list");
-const btnParticipated = document.getElementById("btn-participated");
-const btnAuthored = document.getElementById("btn-authored");
 
-// 页面状态：记录列表
+const switchButtons = document.querySelectorAll(".switch-btn");
+
+// 页面状态
 let allRecords = [];
 let participatedRecords = [];
 let authoredRecords = [];
@@ -24,8 +24,8 @@ let authoredRecords = [];
    页面初始化
    =============================== */
 Promise.all([
-    loadAllPeople(),   // 从缓存/Store获取人物
-    loadAllRecords()   // 从缓存/Store获取记录
+    loadAllPeople(),
+    loadAllRecords()
 ]).then(([people, records]) => {
 
     allRecords = records;
@@ -53,21 +53,30 @@ Promise.all([
         r.author === personId
     );
 
-    // 排序
     sortRecords(participatedRecords);
     sortRecords(authoredRecords);
 
-    // 默认显示参与事件
+    // 默认显示：参与事件
     renderRecordList(participatedRecords, recordContainer);
 });
 
 /* ===============================
    按钮切换
    =============================== */
-btnParticipated.onclick = () => {
-    renderRecordList(participatedRecords, recordContainer);
-};
+switchButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
 
-btnAuthored.onclick = () => {
-    renderRecordList(authoredRecords, recordContainer);
-};
+        // ① 切换 active 状态
+        switchButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+
+        // ② 根据 data-type 决定渲染内容
+        const type = btn.dataset.type;
+
+        if (type === "participated") {
+            renderRecordList(participatedRecords, recordContainer);
+        } else if (type === "authored") {
+            renderRecordList(authoredRecords, recordContainer);
+        }
+    });
+});
