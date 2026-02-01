@@ -121,6 +121,27 @@ h1 {
   /* 鼠标悬停时加深阴影 */
 }
 
+/* hover 时显示 id */
+.person-name:hover::after {
+  content: attr(data-id);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  margin-bottom: 6px;
+  padding: 2px 6px;
+
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  white-space: nowrap;
+
+  pointer-events: none;
+  z-index: 10;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;
