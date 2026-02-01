@@ -146,7 +146,7 @@ h1 {
 
 /* 顶部信息行 */
 .meta {
-  margin-top: 10px;
+  margin-top: 8px;
   font-size: 14px;
   color: #6b7280;
   display: flex;
@@ -156,7 +156,7 @@ h1 {
 
 /* 内容 */
 .content {
-  margin-top: 18px;
+  margin-top: 8px;
   font-size: 18px;
   line-height: 1.75;
   letter-spacing: 0.02em;
