@@ -3,7 +3,7 @@
    =============================== */
 
 body {
-  font-family: "Inter", "Segoe UI", Arial, sans-serif;
+  font-family: "Google Sans Flex", "Segoe UI", Arial, sans-serif;
   background: radial-gradient(circle at top, #f8fafc, #eef2f7);
   padding: 20px;
   color: #1f2937;
@@ -13,11 +13,16 @@ h1 {
   margin-bottom: 5px;
 }
 
-.inter-regular {
-  font-family: "Inter", sans-serif;
+.google-sans-flex-regular {
+  font-family: "Google Sans Flex", sans-serif;
   font-optical-sizing: auto;
-  font-weight: 400;
+  font-weight: 700;
   font-style: normal;
+  font-variation-settings:
+    "slnt" 0,
+    "wdth" 100,
+    "GRAD" 0,
+    "ROND" 0;
 }
 
 /* ===============================
