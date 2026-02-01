@@ -306,6 +306,27 @@ h1 {
   border-bottom-color: #93c5fd;
 }
 
+/* hover 时显示 id */
+.person-tag:hover::after {
+  content: attr(data-id);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+
+  margin-bottom: 6px;
+  padding: 2px 6px;
+
+  font-size: 12px;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 4px;
+  white-space: nowrap;
+
+  pointer-events: none;
+  z-index: 10;
+}
+
 /* 术语 */
 .term-tag {
   display: inline-block;
