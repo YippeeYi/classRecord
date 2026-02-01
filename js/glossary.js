@@ -44,7 +44,7 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
         <tr data-id="${g.id}">
           <td>${index + 1}</td>
           <td>${g.id}</td>
-          <td>${g.term}</td>
+          <td>${formatContent(g.term)}</td>
           <td>${g.since || "—"}</td>
         </tr>
       `).join("")}
@@ -75,16 +75,16 @@ function sortGlossary(list, key, order) {
 
     sorted.forEach(g => {
         g._since = g.since || "";
-        g._term = g.term || "";
+        g._id = g.id || "";
     });
 
     sorted.sort((a, b) => {
         let valA, valB;
 
         switch (key) {
-            case "term":
-                valA = a._term.toLowerCase();
-                valB = b._term.toLowerCase();
+            case "id":
+                valA = a._id.toLowerCase();
+                valB = b._id.toLowerCase();
                 break;
             case "since":
             default:
