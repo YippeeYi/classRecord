@@ -36,7 +36,7 @@ Promise.all([
     }
 
     // === 渲染术语信息 ===
-    document.getElementById("term-id").textContent = term.term;
+    document.getElementById("term-id").textContent = formatContent(term.term);
 
     document.getElementById("term-definition").innerHTML =
         `<strong>${formatContent(term.definition || "—")}</strong>`;
