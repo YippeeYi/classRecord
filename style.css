@@ -146,6 +146,7 @@ h1 {
 
 /* 顶部信息行 */
 .meta {
+  margin-top: 10px;
   font-size: 14px;
   color: #6b7280;
   display: flex;
@@ -155,7 +156,7 @@ h1 {
 
 /* 内容 */
 .content {
-  margin-top: 18px;
+  margin-top: 10px;
   font-size: 18px;
   line-height: 1.75;
   letter-spacing: 0.02em;
@@ -472,12 +473,12 @@ h1 {
 
 .switch-group {
   margin: 18px 0 14px;
-  margin-bottom: 18px;
   display: flex;
   gap: 10px;
 }
 
 .switch-btn {
+  margin-bottom: 18px;
   padding: 7px 16px;
   font-size: 14px;
   font-weight: 600;
