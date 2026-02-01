@@ -154,10 +154,12 @@ let glossaryCache = null;
 let activeTooltip = null;
 let activeTermId = null;
 let tooltipTimer = null;
+let tooltipRemoveTimer = null; // 移除 tooltip 的定时器
 let lastMouseX = 0;
 let lastMouseY = 0;
 
 const TOOLTIP_DELAY = 200;
+const TOOLTIP_REMOVE_DELAY = 500; // 延迟时间，在鼠标移开后延迟移除 tooltip
 
 // 加载 glossary
 async function ensureGlossary() {
@@ -235,7 +237,7 @@ document.addEventListener("mouseover", e => {
     }, TOOLTIP_DELAY);
 });
 
-/* ---------- mouseout：只在真正离开时才清除 ---------- */
+/* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
     // 取消尚未触发的延迟显示
     if (tooltipTimer) {
@@ -255,7 +257,15 @@ document.addEventListener("mouseout", e => {
         return;
     }
 
-    removeTooltip();
+    // 如果已经有移除定时器，则清除它
+    if (tooltipRemoveTimer) {
+        clearTimeout(tooltipRemoveTimer);
+    }
+
+    // 延迟移除 tooltip
+    tooltipRemoveTimer = setTimeout(() => {
+        removeTooltip();
+    }, TOOLTIP_REMOVE_DELAY);
 });
 
 /* ---------- 移除 tooltip ---------- */
