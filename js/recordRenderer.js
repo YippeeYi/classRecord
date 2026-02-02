@@ -81,38 +81,38 @@ function renderRecordList(records, container) {
         div.className = `record importance-${importance}`;
 
         div.innerHTML = `
-            <div class="record-inner">
-                <div class="meta">
-                    <span>
-                        #${record.id} |
-                        📅 ${record.date} |
-                        ${timeText}
-                        ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
-                    </span>
-                    <span class="icon-group">
-                        ${record.image ? `<span class="image-toggle">📷</span>` : ""}
-                        ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
-                    </span>
-                </div>
-
-                <div class="content">
-                    ${formatContent(record.content)}
-                </div>
-
-                ${record.image ? `
-                    <div class="image-wrapper" style="display:none">
-                        <img src="${record.image}">
-                    </div>
-                ` : ""}
-
-                ${record.attachments?.length ? `
-                    <div class="attachments-wrapper" style="display:none">
-                        <ul>
-                            ${record.attachments.map(a => `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`).join("")}
-                        </ul>
-                    </div>
-                ` : ""}
+            <div class="meta">
+                <span>
+                    #${record.id} |
+                    📅 ${record.date} |
+                    ${timeText}
+                    ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
+                </span>
+                <span class="icon-group">
+                    ${record.image ? `<span class="image-toggle">📷</span>` : ""}
+                    ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
+                </span>
             </div>
+
+            <div class="content">
+                ${formatContent(record.content)}
+            </div>
+
+            ${record.image ? `
+                <div class="image-wrapper" style="display:none">
+                    <img src="${record.image}">
+                </div>
+            ` : ""}
+
+            ${record.attachments?.length ? `
+                <div class="attachments-wrapper" style="display:none">
+                    <ul>
+                        ${record.attachments.map(a =>
+            `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`
+        ).join("")}
+                    </ul>
+                </div>
+            ` : ""}
         `;
 
         bindToggle(div);
