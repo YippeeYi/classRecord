@@ -106,8 +106,14 @@ function countAsParticipant(id) {
    =============================== */
 function sortPeople(list, key, order) {
     return [...list].sort((a, b) => {
-        const A = a[key] || "";
-        const B = b[key] || "";
+        const get = p => ({
+            id: p.id,
+            participation: countAsParticipant(p.id),
+            record: p.role === "student" ? countAsAuthor(p.id) : 0
+        }[key]);
+
+        let A = get(a);
+        let B = get(b);
 
         // id 用字符串比较
         if (key === "id") {
