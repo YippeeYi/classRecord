@@ -109,6 +109,9 @@ function sortPeople(list, key, order) {
         const A = a[key] || "";
         const B = b[key] || "";
 
+        let A = get(a);
+        let B = get(b);
+
         // id 用字符串比较
         if (key === "id") {
             return order === "asc"
