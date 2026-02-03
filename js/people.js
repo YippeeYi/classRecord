@@ -112,7 +112,17 @@ function sortPeople(list, key, order) {
             record: p.role === "student" ? countAsAuthor(p.id) : 0
         }[key]);
 
-        const A = get(a), B = get(b);
+        let A = get(a);
+        let B = get(b);
+
+        // id 用字符串比较
+        if (key === "id") {
+            return order === "asc"
+                ? String(A).localeCompare(String(B), "zh-CN", { numeric: true })
+                : String(B).localeCompare(String(A), "zh-CN", { numeric: true });
+        }
+
+        // 其它字段用数字比较
         return order === "asc" ? A - B : B - A;
     });
 }
