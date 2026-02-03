@@ -129,7 +129,6 @@ h1 {
 }
 
 .record:hover {
-  transform: translateY(-4px);
   box-shadow: 0 16px 36px rgba(0, 0, 0, 0.14);
   /* 鼠标悬停时加深阴影 */
 }
