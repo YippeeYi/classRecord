@@ -106,13 +106,17 @@ function countAsParticipant(id) {
    =============================== */
 function sortPeople(list, key, order) {
     return [...list].sort((a, b) => {
-        const get = p => ({
-            id: p.id,
-            participation: countAsParticipant(p.id),
-            record: p.role === "student" ? countAsAuthor(p.id) : 0
-        }[key]);
+        const A = a[key] || "";
+        const B = b[key] || "";
 
-        const A = get(a), B = get(b);
+        // id 用字符串比较
+        if (key === "id") {
+            return order === "asc"
+                ? A.localeCompare(B)
+                : B.localeCompare(A);
+        }
+
+        // 其它字段用数字比较
         return order === "asc" ? A - B : B - A;
     });
 }
