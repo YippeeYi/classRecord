@@ -106,20 +106,14 @@ function countAsParticipant(id) {
    =============================== */
 function sortPeople(list, key, order) {
     return [...list].sort((a, b) => {
-        const get = p => ({
-            id: p.id,
-            participation: countAsParticipant(p.id),
-            record: p.role === "student" ? countAsAuthor(p.id) : 0
-        }[key]);
-
-        let A = get(a);
-        let B = get(b);
+        const A = a[key] || "";
+        const B = b[key] || "";
 
         // id 用字符串比较
         if (key === "id") {
             return order === "asc"
-                ? String(A).localeCompare(String(B), "zh-CN", { numeric: true })
-                : String(B).localeCompare(String(A), "zh-CN", { numeric: true });
+                ? A.localeCompare(B)
+                : B.localeCompare(A);
         }
 
         // 其它字段用数字比较
