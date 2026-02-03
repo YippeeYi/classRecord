@@ -107,7 +107,7 @@ function countAsParticipant(id) {
 function sortPeople(list, key, order) {
     return [...list].sort((a, b) => {
         const get = p => ({
-            id: p.id,
+            id: p[key] || "",
             participation: countAsParticipant(p.id),
             record: p.role === "student" ? countAsAuthor(p.id) : 0
         }[key]);
