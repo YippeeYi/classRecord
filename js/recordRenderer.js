@@ -157,6 +157,8 @@ let tooltipTimer = null;
 let tooltipRemoveTimer = null; // 移除 tooltip 的定时器
 let lastMouseX = 0;
 let lastMouseY = 0;
+let isHoveringTooltip = false;
+let isHoveringTerm = false;
 
 const TOOLTIP_DELAY = 200;
 const TOOLTIP_REMOVE_DELAY = 300; // 延迟时间，在鼠标移开后延迟移除 tooltip
@@ -182,6 +184,7 @@ document.addEventListener("mouseover", e => {
     if (!tag) return;
 
     const termId = tag.dataset.id;
+    isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
 
@@ -209,6 +212,17 @@ document.addEventListener("mouseover", e => {
         `;
 
         document.body.appendChild(activeTooltip);
+        activeTooltip.addEventListener("mouseenter", () => {
+            isHoveringTooltip = true;
+            if (tooltipRemoveTimer) {
+                clearTimeout(tooltipRemoveTimer);
+                tooltipRemoveTimer = null;
+            }
+        });
+        activeTooltip.addEventListener("mouseleave", () => {
+            isHoveringTooltip = false;
+            scheduleTooltipRemoval();
+        });
 
         // 计算位置（基于鼠标）
         const tooltipRect = activeTooltip.getBoundingClientRect();
@@ -239,6 +253,9 @@ document.addEventListener("mouseover", e => {
 
 /* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
+    if (e.target.closest(".term-tag")) {
+        isHoveringTerm = false;
+    }
     // 取消尚未触发的延迟显示
     if (tooltipTimer) {
         clearTimeout(tooltipTimer);
@@ -257,16 +274,30 @@ document.addEventListener("mouseout", e => {
         return;
     }
 
-    // 如果已经有移除定时器，则清除它
+    scheduleTooltipRemoval();
+});
+
+function scheduleTooltipRemoval() {
     if (tooltipRemoveTimer) {
         clearTimeout(tooltipRemoveTimer);
     }
 
-    // 延迟移除 tooltip
     tooltipRemoveTimer = setTimeout(() => {
+        const el = document.elementFromPoint(lastMouseX, lastMouseY);
+        const hovering =
+            isHoveringTerm ||
+            isHoveringTooltip ||
+            (el &&
+                (el.closest(".term-tag") ||
+                    el.closest(".term-tooltip")));
+
+        if (hovering) {
+            return;
+        }
+
         removeTooltip();
     }, TOOLTIP_REMOVE_DELAY);
-});
+}
 
 /* ---------- 移除 tooltip ---------- */
 function removeTooltip(immediate = false) {
@@ -277,6 +308,8 @@ function removeTooltip(immediate = false) {
     const el = activeTooltip;
     activeTooltip = null;
     activeTermId = null;
+    isHoveringTooltip = false;
+    isHoveringTerm = false;
 
     if (immediate) {
         el.remove();
@@ -290,6 +323,7 @@ document.addEventListener("click", e => {
     const tooltip = e.target.closest(".term-tooltip");
     if (!tooltip || !activeTermId) return;
 
+    removeTooltip(true);
     location.href = `term.html?id=${activeTermId}`;
 });
 
