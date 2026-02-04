@@ -323,10 +323,8 @@ document.addEventListener("click", e => {
     const tooltip = e.target.closest(".term-tooltip");
     if (!tooltip || !activeTermId) return;
 
-    removeTooltip(true);
     location.href = `term.html?id=${activeTermId}`;
     removeTooltip(true);
-
 });
 
 /* ===============================
