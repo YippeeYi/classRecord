@@ -291,6 +291,8 @@ document.addEventListener("click", e => {
     if (!tooltip || !activeTermId) return;
 
     location.href = `term.html?id=${activeTermId}`;
+    removeTooltip(true);
+
 });
 
 /* ===============================
