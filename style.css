@@ -184,6 +184,12 @@ h1 {
   }
 }
 
+/* 重要记录 */
+.record.importance-important .record-inner {
+  border-left: 6px solid #ef4444;
+  background: linear-gradient(90deg, #fff5f5, rgba(255, 255, 255, 0.95));
+}
+
 /* ===============================
    五、记录元信息与内容
    =============================== */
