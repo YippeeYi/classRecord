@@ -20,11 +20,13 @@ let relatedRecords = [];
 /* ===============================
    页面初始化
    =============================== */
-Promise.all([
+const cacheReady = window.cacheReadyPromise || Promise.resolve();
+
+cacheReady.then(() => Promise.all([
     loadAllGlossary(), // 术语
     loadAllPeople(),   // 相关人物
     loadAllRecords()   // 记录
-]).then(([glossary, people, records]) => {
+])).then(([glossary, people, records]) => {
 
     allRecords = records;
 

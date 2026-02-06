@@ -82,3 +82,61 @@ window.clearCache = function () {
     });
     console.log("🧹 已清除缓存");
 };
+
+function isCacheValid(key, expire) {
+    const dataKey = `${CACHE_PREFIX}:${key}:data`;
+    const timeKey = `${CACHE_PREFIX}:${key}:time`;
+    const cachedData = localStorage.getItem(dataKey);
+    const cachedTime = localStorage.getItem(timeKey);
+
+    if (!cachedData || !cachedTime) {
+        return false;
+    }
+
+    return Date.now() - Number(cachedTime) < expire;
+}
+
+function showLoadingOverlay() {
+    if (document.getElementById("loading-overlay")) {
+        return;
+    }
+
+    const overlay = document.createElement("div");
+    overlay.id = "loading-overlay";
+    overlay.innerHTML = `
+        <div class="loading-overlay-card">
+            <div class="loading-overlay-title">正在加载缓存数据…</div>
+            <div class="loading-overlay-subtitle">首次进入或清理缓存时会稍慢一些</div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
+
+function hideLoadingOverlay() {
+    const overlay = document.getElementById("loading-overlay");
+    if (overlay) {
+        overlay.remove();
+    }
+}
+
+window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000 } = {}) {
+    const needsLoad = !isCacheValid("records", expire)
+        || !isCacheValid("people", expire)
+        || !isCacheValid("glossary", expire);
+
+    if (!needsLoad) {
+        return;
+    }
+
+    showLoadingOverlay();
+
+    try {
+        await Promise.all([
+            loadAllRecords(),
+            loadAllPeople(),
+            loadAllGlossary()
+        ]);
+    } finally {
+        hideLoadingOverlay();
+    }
+};

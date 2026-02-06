@@ -2,6 +2,14 @@
    一、基础全局样式
    =============================== */
 
+@font-face {
+  font-family: "Google Sans Flex";
+  src: url("fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");
+  font-weight: 100 1000;
+  font-style: normal;
+  font-display: swap;
+}
+
 body {
   font-family: "Google Sans Flex", "Segoe UI", Arial, sans-serif;
   font-weight: 500;
@@ -24,6 +32,37 @@ h1 {
     "wdth" 100,
     "GRAD" 0,
     "ROND" 0;
+}
+
+#loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+
+.loading-overlay-card {
+  background: rgba(255, 255, 255, 0.94);
+  border-radius: 16px;
+  padding: 20px 26px;
+  box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
+  text-align: center;
+}
+
+.loading-overlay-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.loading-overlay-subtitle {
+  margin-top: 6px;
+  font-size: 14px;
+  color: #6b7280;
 }
 
 /* ===============================

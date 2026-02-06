@@ -9,10 +9,13 @@ let glossaryList = [];
 /* ===============================
    加载数据
    =============================== */
-loadAllGlossary().then(list => {
-    glossaryList = list;
-    renderGlossary();
-});
+const cacheReady = window.cacheReadyPromise || Promise.resolve();
+
+cacheReady.then(() => loadAllGlossary())
+    .then(list => {
+        glossaryList = list;
+        renderGlossary();
+    });
 
 /* ===============================
    渲染列表
