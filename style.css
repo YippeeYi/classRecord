@@ -185,7 +185,7 @@ h1 {
 }
 
 /* 重要记录 */
-.record.importance-important .record-inner {
+.record.importance-important {
   border-left: 6px solid #ef4444;
   background: linear-gradient(90deg, #fff5f5, rgba(255, 255, 255, 0.95));
 }
