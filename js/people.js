@@ -11,10 +11,12 @@ let records = [];
 /* ===============================
    启动加载流程
    =============================== */
-Promise.all([
+const cacheReady = window.cacheReadyPromise || Promise.resolve();
+
+cacheReady.then(() => Promise.all([
     loadAllPeople(),
     loadAllRecords()
-]).then(([people, allRecords]) => {
+])).then(([people, allRecords]) => {
     peopleList = people;
     records = allRecords;
     renderByRole(); // 默认排序
