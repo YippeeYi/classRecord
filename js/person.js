@@ -23,10 +23,12 @@ let authoredRecords = [];
 /* ===============================
    页面初始化
    =============================== */
-Promise.all([
+const cacheReady = window.cacheReadyPromise || Promise.resolve();
+
+cacheReady.then(() => Promise.all([
     loadAllPeople(),
     loadAllRecords()
-]).then(([people, records]) => {
+])).then(([people, records]) => {
 
     allRecords = records;
 
