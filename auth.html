@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <title>访问验证</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preload" href="fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
+        type="font/ttf">
+    <script src="js/authGate.js"></script>
+</head>
+
+<body class="auth-page">
+    <div class="auth-card">
+        <h1>🔒 访问验证</h1>
+        <p>请输入访问密钥以继续查看班级内容。</p>
+        <form class="auth-form">
+            <input type="password" name="accessKey" placeholder="访问密钥" required />
+            <button type="submit">验证并进入</button>
+        </form>
+        <p class="auth-hint">密钥仅保存在本机浏览器中。</p>
+        <p class="auth-error" aria-live="polite"></p>
+    </div>
+
+    <script src="js/authPage.js"></script>
+</body>
+
+</html>
