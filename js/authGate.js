@@ -8,14 +8,22 @@
 
 (() => {
     const STORAGE_KEY = 'classRecordAccessGranted';
-    const LOCK_CLASS = 'auth-locked';
+    const TARGET_KEY = 'classRecordRedirectTarget';
+    const AUTH_PAGE = 'auth.html';
     const DEFAULT_KEY_HASH = '721a57120df8535ec92f61a4a6e25dfbfbf142613f766381b5a877461424d89c';
     const ACCESS_KEY_HASH = window.CLASS_RECORD_ACCESS_KEY_HASH || DEFAULT_KEY_HASH;
+    let resolveAccess;
+    const accessPromise = new Promise((resolve) => {
+        resolveAccess = resolve;
+    });
 
-    const removeLock = (overlay) => {
-        document.documentElement.classList.remove(LOCK_CLASS);
-        if (overlay) {
-            overlay.remove();
+    window.waitForAccess = () => accessPromise;
+    window.dispatchEvent(new Event('authGateReady'));
+
+    const resolveAccessPromise = () => {
+        if (resolveAccess) {
+            resolveAccess();
+            resolveAccess = null;
         }
     };
 
@@ -27,63 +35,45 @@
             .join('');
     };
 
-    const buildOverlay = () => {
-        const overlay = document.createElement('div');
-        overlay.className = 'auth-overlay';
-        overlay.innerHTML = `
-            <div class="auth-card">
-                <h2>🔒 需要密钥访问</h2>
-                <p>请输入访问密钥以查看内容（本地验证，无需服务器）。</p>
-                <form class="auth-form">
-                    <input type="password" name="accessKey" placeholder="访问密钥" required />
-                    <button type="submit">进入</button>
-                </form>
-                <p class="auth-hint">提示：密钥只保存在当前设备浏览器里。</p>
-                <p class="auth-error" aria-live="polite"></p>
-            </div>
-        `;
-        return overlay;
-    };
+    const handleAuthGate = () => {
+        const path = window.location.pathname;
+        const isAuthPage = path.endsWith(`/${AUTH_PAGE}`) || path.endsWith(AUTH_PAGE);
+        const hasAccess = localStorage.getItem(STORAGE_KEY) === 'true';
 
-    const initAuthGate = () => {
-        if (localStorage.getItem(STORAGE_KEY) === 'true') {
-            document.documentElement.classList.remove(LOCK_CLASS);
+        if (hasAccess) {
+            resolveAccessPromise();
+            if (isAuthPage) {
+                const target = sessionStorage.getItem(TARGET_KEY) || 'index.html';
+                sessionStorage.removeItem(TARGET_KEY);
+                window.location.replace(target);
+            }
             return;
         }
 
-        document.documentElement.classList.add(LOCK_CLASS);
-        const overlay = buildOverlay();
-        document.body.appendChild(overlay);
-
-        const form = overlay.querySelector('.auth-form');
-        const errorText = overlay.querySelector('.auth-error');
-
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const input = form.querySelector('input[name="accessKey"]');
-            const rawKey = input.value.trim();
-            if (!rawKey) {
-                errorText.textContent = '请输入密钥。';
-                return;
-            }
-
-            try {
-                const inputHash = await sha256Hex(rawKey);
-                if (inputHash === ACCESS_KEY_HASH) {
-                    localStorage.setItem(STORAGE_KEY, 'true');
-                    removeLock(overlay);
-                } else {
-                    errorText.textContent = '密钥不正确，请重试。';
-                }
-            } catch (error) {
-                errorText.textContent = '浏览器不支持加密验证，请更换浏览器。';
-            }
-        });
+        if (!isAuthPage) {
+            const target = window.location.pathname + window.location.search + window.location.hash;
+            sessionStorage.setItem(TARGET_KEY, target);
+            window.location.replace(AUTH_PAGE);
+        }
     };
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initAuthGate);
-    } else {
-        initAuthGate();
-    }
+    handleAuthGate();
+
+    window.verifyAccessKey = async (rawKey) => {
+        if (!rawKey) {
+            return { ok: false, message: '请输入密钥。' };
+        }
+
+        try {
+            const inputHash = await sha256Hex(rawKey.trim());
+            if (inputHash === ACCESS_KEY_HASH) {
+                localStorage.setItem(STORAGE_KEY, 'true');
+                resolveAccessPromise();
+                return { ok: true };
+            }
+            return { ok: false, message: '密钥不正确，请重试。' };
+        } catch (error) {
+            return { ok: false, message: '浏览器不支持加密验证，请更换浏览器。' };
+        }
+    };
 })();
