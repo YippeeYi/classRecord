@@ -44,7 +44,7 @@
         overlay.innerHTML = `
             <div class="auth-card">
                 <h2>🔒 需要密钥访问</h2>
-                <p>请输入访问密钥以查看内容（本地验证，无需服务器）。</p>
+                <p>请输入访问密钥以查看内容</p>
                 <form class="auth-form">
                     <input type="password" name="accessKey" placeholder="访问密钥" required />
                     <button type="submit">进入</button>
