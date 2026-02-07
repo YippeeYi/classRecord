@@ -10,6 +10,10 @@
     }
 
     clearBtn.addEventListener('click', () => {
+        const confirmed = window.confirm('确定要移除已保存的访问密钥吗？');
+        if (!confirmed) {
+            return;
+        }
         if (typeof window.clearAccessKey === 'function') {
             window.clearAccessKey();
         }

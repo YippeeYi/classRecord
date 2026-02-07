@@ -19,6 +19,8 @@
         if (!result.ok) {
             errorText.textContent = result.message || '密钥验证失败。';
             if (hasFailedOnce) {
+                errorText.classList.remove('auth-error--emphasis');
+                void errorText.offsetWidth;
                 errorText.classList.add('auth-error--emphasis');
             }
             hasFailedOnce = true;
