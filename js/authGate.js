@@ -76,4 +76,9 @@
             return { ok: false, message: '浏览器不支持加密验证，请更换浏览器。' };
         }
     };
+
+    window.clearAccessKey = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        sessionStorage.removeItem(TARGET_KEY);
+    };
 })();
