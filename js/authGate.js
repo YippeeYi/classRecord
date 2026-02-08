@@ -1,16 +1,14 @@
 /************************************************************
  * authGate.js
  * 纯前端访问密钥保护（无服务器）
- * 说明：
- * 1) 将密钥的 SHA-256 哈希填入 CLASS_RECORD_ACCESS_KEY_HASH。
- * 2) 默认密钥为 "classrecord"，建议尽快替换为自定义密钥。
+ * 说明：将密钥的 SHA-256 哈希填入 CLASS_RECORD_ACCESS_KEY_HASH
  ************************************************************/
 
 (() => {
     const STORAGE_KEY = 'classRecordAccessGranted';
     const TARGET_KEY = 'classRecordRedirectTarget';
     const AUTH_PAGE = 'auth.html';
-    const DEFAULT_KEY_HASH = '721a57120df8535ec92f61a4a6e25dfbfbf142613f766381b5a877461424d89c';
+    const DEFAULT_KEY_HASH = '0ab2f2320f98a963fbe1d48ac2ff2e89f9ad59bbd5910f0398192e262db1fcb2';
     const ACCESS_KEY_HASH = window.CLASS_RECORD_ACCESS_KEY_HASH || DEFAULT_KEY_HASH;
     let resolveAccess;
     const accessPromise = new Promise((resolve) => {
