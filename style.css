@@ -70,7 +70,7 @@ h1 {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: clamp(60px, 12vh, 140px);
+  padding-top: clamp(90px, 16vh, 190px);
   background: radial-gradient(circle at top, #f8fafc, #e2e8f0);
 }
 
@@ -287,12 +287,26 @@ h1 {
   color: #fff;
   background: linear-gradient(135deg, #4f46e5, #6366f1);
   box-shadow: 0 8px 18px rgba(99, 102, 241, 0.3);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.record-filter button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(99, 102, 241, 0.4);
+}
+
+.record-filter button:focus {
+  outline: none;
 }
 
 .record-filter button.secondary {
   color: #1e293b;
   background: #e2e8f0;
   box-shadow: none;
+}
+
+.record-filter button.secondary:hover {
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
 }
 
 .record-filter .filter-status {
