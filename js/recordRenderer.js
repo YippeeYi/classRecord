@@ -121,6 +121,135 @@ function renderRecordList(records, container) {
 }
 
 /* ===============================
+   筛选控件（年/月/日）
+   =============================== */
+function filterRecordsByDate(records, { year, month, day }) {
+    const hasYear = Boolean(year);
+    const hasMonth = Boolean(month);
+    const hasDay = Boolean(day);
+
+    if (!hasYear && !hasMonth && !hasDay) {
+        return records.slice();
+    }
+
+    return records.filter(record => {
+        if (!record.date) return false;
+        const [rYear, rMonth, rDay] = record.date.split("-");
+        if (hasYear && rYear !== year) return false;
+        if (hasMonth && rMonth !== month) return false;
+        if (hasDay && rDay !== day) return false;
+        return true;
+    });
+}
+
+function normalizeNumberInput(value, length) {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    const numeric = Number.parseInt(trimmed, 10);
+    if (Number.isNaN(numeric)) return "";
+    return String(numeric).padStart(length, "0");
+}
+
+function renderRecordFilter({ container, onFilterChange, initial = {} }) {
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "record-filter";
+
+    wrapper.innerHTML = `
+        <div class="filter-field">
+            <label for="filter-year">年</label>
+            <input id="filter-year" type="number" inputmode="numeric" placeholder="YYYY" min="1900" max="2100">
+        </div>
+        <div class="filter-field">
+            <label for="filter-month">月</label>
+            <input id="filter-month" type="number" inputmode="numeric" placeholder="MM" min="1" max="12">
+        </div>
+        <div class="filter-field">
+            <label for="filter-day">日</label>
+            <input id="filter-day" type="number" inputmode="numeric" placeholder="DD" min="1" max="31">
+        </div>
+        <div class="filter-actions">
+            <button type="button" class="apply">筛选</button>
+            <button type="button" class="secondary clear">清空</button>
+        </div>
+        <div class="filter-status">支持任意组合筛选，例如仅填年或年月。</div>
+    `;
+
+    container.appendChild(wrapper);
+
+    const yearInput = wrapper.querySelector("#filter-year");
+    const monthInput = wrapper.querySelector("#filter-month");
+    const dayInput = wrapper.querySelector("#filter-day");
+    const status = wrapper.querySelector(".filter-status");
+    const applyButton = wrapper.querySelector(".apply");
+    const clearButton = wrapper.querySelector(".clear");
+
+    yearInput.value = initial.year || "";
+    monthInput.value = initial.month || "";
+    dayInput.value = initial.day || "";
+
+    const applyFilter = () => {
+        const criteria = {
+            year: normalizeNumberInput(yearInput.value, 4),
+            month: normalizeNumberInput(monthInput.value, 2),
+            day: normalizeNumberInput(dayInput.value, 2)
+        };
+
+        if (!criteria.year && yearInput.value.trim()) {
+            yearInput.value = "";
+        } else if (criteria.year) {
+            yearInput.value = criteria.year;
+        }
+        if (!criteria.month && monthInput.value.trim()) {
+            monthInput.value = "";
+        } else if (criteria.month) {
+            monthInput.value = criteria.month;
+        }
+        if (!criteria.day && dayInput.value.trim()) {
+            dayInput.value = "";
+        } else if (criteria.day) {
+            dayInput.value = criteria.day;
+        }
+
+        const summary = [
+            criteria.year ? `${criteria.year}年` : "",
+            criteria.month ? `${criteria.month}月` : "",
+            criteria.day ? `${criteria.day}日` : ""
+        ].filter(Boolean).join("");
+        status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
+
+        if (typeof onFilterChange === "function") {
+            onFilterChange(criteria);
+        }
+    };
+
+    const clearFilter = () => {
+        yearInput.value = "";
+        monthInput.value = "";
+        dayInput.value = "";
+        status.textContent = "未设置筛选条件，显示全部记录。";
+        if (typeof onFilterChange === "function") {
+            onFilterChange({ year: "", month: "", day: "" });
+        }
+    };
+
+    applyButton.addEventListener("click", applyFilter);
+    clearButton.addEventListener("click", clearFilter);
+
+    [yearInput, monthInput, dayInput].forEach(input => {
+        input.addEventListener("keydown", event => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                applyFilter();
+            }
+        });
+    });
+}
+
+/* ===============================
    图片 / 附件切换
    =============================== */
 function bindToggle(recordDiv) {
