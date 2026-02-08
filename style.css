@@ -70,7 +70,7 @@ h1 {
   display: flex;
   align-items: flex-start;
   justify-content: center;
-  padding-top: clamp(90px, 16vh, 190px);
+  padding-top: clamp(120px, 20vh, 240px);
   background: radial-gradient(circle at top, #f8fafc, #e2e8f0);
 }
 
