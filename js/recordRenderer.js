@@ -199,21 +199,15 @@ function renderRecordFilter({
     wrapper.innerHTML = `
         <div class="filter-field">
             <label for="filter-year">年</label>
-            <select id="filter-year">
-                <option value="">全部</option>
-            </select>
+            <div id="filter-year" class="filter-options" role="group" aria-label="按年筛选"></div>
         </div>
         <div class="filter-field">
             <label for="filter-month">月</label>
-            <select id="filter-month">
-                <option value="">全部</option>
-            </select>
+            <div id="filter-month" class="filter-options" role="group" aria-label="按月筛选"></div>
         </div>
         <div class="filter-field">
             <label for="filter-day">日</label>
-            <select id="filter-day">
-                <option value="">全部</option>
-            </select>
+            <div id="filter-day" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
             <button type="button" class="secondary clear">清空</button>
@@ -223,9 +217,9 @@ function renderRecordFilter({
 
     container.appendChild(wrapper);
 
-    const yearSelect = wrapper.querySelector("#filter-year");
-    const monthSelect = wrapper.querySelector("#filter-month");
-    const daySelect = wrapper.querySelector("#filter-day");
+    const yearOptions = wrapper.querySelector("#filter-year");
+    const monthOptions = wrapper.querySelector("#filter-month");
+    const dayOptions = wrapper.querySelector("#filter-day");
     const status = wrapper.querySelector(".filter-status");
     const clearButton = wrapper.querySelector(".clear");
 
@@ -246,23 +240,22 @@ function renderRecordFilter({
 
     const renderSelectOptions = () => {
         const records = typeof getRecords === "function" ? getRecords() : [];
-        const { yearOptions, monthOptions, dayOptions } = buildOptions(records, currentCriteria);
-
-        const fillOptions = (select, options, selectedValue) => {
+        const options = buildOptions(records, currentCriteria);
+        const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
             const selected = selectedValue || "";
-            select.innerHTML = `<option value="">全部</option>${options
-                .map(value => `<option value="${value}">${value}</option>`)
-                .join("")}`;
-            if (options.includes(selected)) {
-                select.value = selected;
-            } else {
-                select.value = "";
-            }
+            const buttons = [
+                `<button type="button" class="filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
+                ...optionValues.map(value => {
+                    const isActive = value === selected;
+                    return `<button type="button" class="filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
+                })
+            ];
+            containerEl.innerHTML = buttons.join("");
         };
 
-        fillOptions(yearSelect, yearOptions, currentCriteria.year);
-        fillOptions(monthSelect, monthOptions, currentCriteria.month);
-        fillOptions(daySelect, dayOptions, currentCriteria.day);
+        fillOptions(yearOptions, options.yearOptions, currentCriteria.year, "year");
+        fillOptions(monthOptions, options.monthOptions, currentCriteria.month, "month");
+        fillOptions(dayOptions, options.dayOptions, currentCriteria.day, "day");
     };
 
     const applyCriteria = criteria => {
@@ -278,26 +271,20 @@ function renderRecordFilter({
         applyCriteria({ year: "", month: "", day: "" });
     };
 
-    yearSelect.addEventListener("change", () => {
+    const handleOptionClick = event => {
+        const target = event.target.closest(".filter-option");
+        if (!target) return;
+        const field = target.dataset.field;
+        if (!field) return;
         applyCriteria({
             ...currentCriteria,
-            year: yearSelect.value
+            [field]: target.dataset.value || ""
         });
-    });
+    };
 
-    monthSelect.addEventListener("change", () => {
-        applyCriteria({
-            ...currentCriteria,
-            month: monthSelect.value
-        });
-    });
-
-    daySelect.addEventListener("change", () => {
-        applyCriteria({
-            ...currentCriteria,
-            day: daySelect.value
-        });
-    });
+    yearOptions.addEventListener("click", handleOptionClick);
+    monthOptions.addEventListener("click", handleOptionClick);
+    dayOptions.addEventListener("click", handleOptionClick);
 
     clearButton.addEventListener("click", clearFilter);
 

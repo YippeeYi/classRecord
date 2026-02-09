@@ -264,13 +264,34 @@ h1 {
   color: #475569;
 }
 
-.record-filter input,
-.record-filter select {
-  width: 96px;
-  padding: 8px 10px;
+.record-filter .filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.record-filter .filter-option {
+  min-width: 64px;
+  padding: 6px 10px;
   border-radius: 10px;
   border: 1px solid rgba(148, 163, 184, 0.6);
-  font-size: 14px;
+  background: #fff;
+  font-size: 13px;
+  color: #334155;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.record-filter .filter-option:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.12);
+}
+
+.record-filter .filter-option.is-active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: 0 8px 18px rgba(99, 102, 241, 0.3);
 }
 
 .record-filter .filter-actions {
