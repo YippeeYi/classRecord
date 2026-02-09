@@ -139,6 +139,7 @@ h1 {
 }
 
 @keyframes auth-error-blink {
+
   0%,
   100% {
     opacity: 1;
