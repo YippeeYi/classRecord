@@ -121,6 +121,178 @@ function renderRecordList(records, container) {
 }
 
 /* ===============================
+   筛选控件（年/月/日）
+   =============================== */
+function filterRecordsByDate(records, { year, month, day }) {
+    const hasYear = Boolean(year);
+    const hasMonth = Boolean(month);
+    const hasDay = Boolean(day);
+
+    if (!hasYear && !hasMonth && !hasDay) {
+        return records.slice();
+    }
+
+    return records.filter(record => {
+        if (!record.date) return false;
+        const [rYear, rMonth, rDay] = record.date.split("-");
+        if (hasYear && rYear !== year) return false;
+        if (hasMonth && rMonth !== month) return false;
+        if (hasDay && rDay !== day) return false;
+        return true;
+    });
+}
+
+function parseDateParts(records) {
+    return records
+        .map(record => record.date)
+        .filter(Boolean)
+        .map(date => {
+            const [year, month, day] = date.split("-");
+            return { year, month, day };
+        });
+}
+
+function uniqueSorted(values) {
+    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+}
+
+function buildOptions(records, criteria) {
+    const dates = parseDateParts(records);
+
+    const yearOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.month || date.month === criteria.month)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.year)
+    );
+
+    const monthOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.month)
+    );
+
+    const dayOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.month || date.month === criteria.month))
+            .map(date => date.day)
+    );
+
+    return { yearOptions, monthOptions, dayOptions };
+}
+
+function renderRecordFilter({
+    container,
+    onFilterChange,
+    getRecords,
+    initial = {}
+}) {
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "record-filter";
+
+    wrapper.innerHTML = `
+        <div class="filter-field">
+            <label for="filter-year">年</label>
+            <div id="filter-year" class="filter-options" role="group" aria-label="按年筛选"></div>
+        </div>
+        <div class="filter-field">
+            <label for="filter-month">月</label>
+            <div id="filter-month" class="filter-options" role="group" aria-label="按月筛选"></div>
+        </div>
+        <div class="filter-field">
+            <label for="filter-day">日</label>
+            <div id="filter-day" class="filter-options" role="group" aria-label="按日筛选"></div>
+        </div>
+        <div class="filter-actions">
+            <button type="button" class="secondary clear">清空</button>
+        </div>
+        <div class="filter-status">支持任意组合筛选，例如仅选年或年月。</div>
+    `;
+
+    container.appendChild(wrapper);
+
+    const yearOptions = wrapper.querySelector("#filter-year");
+    const monthOptions = wrapper.querySelector("#filter-month");
+    const dayOptions = wrapper.querySelector("#filter-day");
+    const status = wrapper.querySelector(".filter-status");
+    const clearButton = wrapper.querySelector(".clear");
+
+    let currentCriteria = {
+        year: initial.year || "",
+        month: initial.month || "",
+        day: initial.day || ""
+    };
+
+    const updateStatus = criteria => {
+        const summary = [
+            criteria.year ? `${criteria.year}年` : "",
+            criteria.month ? `${criteria.month}月` : "",
+            criteria.day ? `${criteria.day}日` : ""
+        ].filter(Boolean).join("");
+        status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
+    };
+
+    const renderSelectOptions = () => {
+        const records = typeof getRecords === "function" ? getRecords() : [];
+        const options = buildOptions(records, currentCriteria);
+        const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
+            const selected = selectedValue || "";
+            const buttons = [
+                `<button type="button" class="filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
+                ...optionValues.map(value => {
+                    const isActive = value === selected;
+                    return `<button type="button" class="filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
+                })
+            ];
+            containerEl.innerHTML = buttons.join("");
+        };
+
+        fillOptions(yearOptions, options.yearOptions, currentCriteria.year, "year");
+        fillOptions(monthOptions, options.monthOptions, currentCriteria.month, "month");
+        fillOptions(dayOptions, options.dayOptions, currentCriteria.day, "day");
+    };
+
+    const applyCriteria = criteria => {
+        currentCriteria = { ...criteria };
+        renderSelectOptions();
+        updateStatus(currentCriteria);
+        if (typeof onFilterChange === "function") {
+            onFilterChange(currentCriteria);
+        }
+    };
+
+    const clearFilter = () => {
+        applyCriteria({ year: "", month: "", day: "" });
+    };
+
+    const handleOptionClick = event => {
+        const target = event.target.closest(".filter-option");
+        if (!target) return;
+        const field = target.dataset.field;
+        if (!field) return;
+        applyCriteria({
+            ...currentCriteria,
+            [field]: target.dataset.value || ""
+        });
+    };
+
+    yearOptions.addEventListener("click", handleOptionClick);
+    monthOptions.addEventListener("click", handleOptionClick);
+    dayOptions.addEventListener("click", handleOptionClick);
+
+    clearButton.addEventListener("click", clearFilter);
+
+    renderSelectOptions();
+    updateStatus(currentCriteria);
+}
+
+/* ===============================
    图片 / 附件切换
    =============================== */
 function bindToggle(recordDiv) {
