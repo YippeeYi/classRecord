@@ -12,6 +12,7 @@ if (!personId) {
 }
 
 const recordContainer = document.getElementById("record-list");
+const filterContainer = document.getElementById("record-filter");
 
 const switchButtons = document.querySelectorAll(".switch-btn");
 
@@ -19,6 +20,34 @@ const switchButtons = document.querySelectorAll(".switch-btn");
 let allRecords = [];
 let participatedRecords = [];
 let authoredRecords = [];
+let currentFilter = { year: "", month: "", day: "" };
+
+function getActiveRecords() {
+    const active = document.querySelector(".switch-btn.active");
+    if (active?.dataset.type === "authored") {
+        return authoredRecords;
+    }
+    return participatedRecords;
+}
+
+function renderFilteredRecords() {
+    const activeRecords = getActiveRecords();
+    const filtered = filterRecordsByDate(activeRecords, currentFilter);
+    sortRecords(filtered);
+    renderRecordList(filtered, recordContainer);
+}
+
+function renderFilterUI() {
+    renderRecordFilter({
+        container: filterContainer,
+        getRecords: () => getActiveRecords(),
+        initial: currentFilter,
+        onFilterChange: criteria => {
+            currentFilter = criteria;
+            renderFilteredRecords();
+        }
+    });
+}
 
 /* ===============================
    页面初始化
@@ -60,6 +89,8 @@ cacheReady.then(() => Promise.all([
 
     // 默认显示：参与事件
     renderRecordList(participatedRecords, recordContainer);
+
+    renderFilterUI();
 });
 
 /* ===============================
@@ -76,9 +107,13 @@ switchButtons.forEach(btn => {
         const type = btn.dataset.type;
 
         if (type === "participated") {
-            renderRecordList(participatedRecords, recordContainer);
+            currentFilter = { year: "", month: "", day: "" };
+            renderFilterUI();
+            renderFilteredRecords();
         } else if (type === "authored") {
-            renderRecordList(authoredRecords, recordContainer);
+            currentFilter = { year: "", month: "", day: "" };
+            renderFilterUI();
+            renderFilteredRecords();
         }
     });
 });
