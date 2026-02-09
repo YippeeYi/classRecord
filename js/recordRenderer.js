@@ -121,6 +121,233 @@ function renderRecordList(records, container) {
 }
 
 /* ===============================
+   筛选控件（年/月/日）
+   =============================== */
+function filterRecordsByDate(records, { year, month, day }) {
+    const hasYear = Boolean(year);
+    const hasMonth = Boolean(month);
+    const hasDay = Boolean(day);
+
+    if (!hasYear && !hasMonth && !hasDay) {
+        return records.slice();
+    }
+
+    return records.filter(record => {
+        if (!record.date) return false;
+        const [rYear, rMonth, rDay] = record.date.split("-");
+        if (hasYear && rYear !== year) return false;
+        if (hasMonth && rMonth !== month) return false;
+        if (hasDay && rDay !== day) return false;
+        return true;
+    });
+}
+
+function parseDateParts(records) {
+    return records
+        .map(record => record.date)
+        .filter(Boolean)
+        .map(date => {
+            const [year, month, day] = date.split("-");
+            return { year, month, day };
+        });
+}
+
+function uniqueSorted(values) {
+    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+}
+
+function buildOptions(records, criteria) {
+    const dates = parseDateParts(records);
+
+    const yearOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.month || date.month === criteria.month)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.year)
+    );
+
+    const monthOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.month)
+    );
+
+    const dayOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.month || date.month === criteria.month))
+            .map(date => date.day)
+    );
+
+    return { yearOptions, monthOptions, dayOptions };
+}
+
+function renderRecordFilter({
+    container,
+    onFilterChange,
+    getRecords,
+    initial = {}
+}) {
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "record-filter";
+
+    wrapper.innerHTML = `
+        <div class="filter-field">
+            <label for="filter-year">年</label>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-year-options">
+                选择年
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-year-options" class="filter-options" role="group" aria-label="按年筛选"></div>
+        </div>
+        <div class="filter-field">
+            <label for="filter-month">月</label>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-month-options">
+                选择月
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-month-options" class="filter-options" role="group" aria-label="按月筛选"></div>
+        </div>
+        <div class="filter-field">
+            <label for="filter-day">日</label>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-day-options">
+                选择日
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
+        </div>
+        <div class="filter-actions">
+            <button type="button" class="secondary clear">清空</button>
+        </div>
+        <div class="filter-status">支持任意组合筛选，例如仅选年或年月。</div>
+    `;
+
+    container.appendChild(wrapper);
+
+    const yearOptions = wrapper.querySelector("#filter-year-options");
+    const monthOptions = wrapper.querySelector("#filter-month-options");
+    const dayOptions = wrapper.querySelector("#filter-day-options");
+    const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
+    const status = wrapper.querySelector(".filter-status");
+    const clearButton = wrapper.querySelector(".clear");
+
+    let currentCriteria = {
+        year: initial.year || "",
+        month: initial.month || "",
+        day: initial.day || ""
+    };
+
+    const updateStatus = criteria => {
+        const summary = [
+            criteria.year ? `${criteria.year}年` : "",
+            criteria.month ? `${criteria.month}月` : "",
+            criteria.day ? `${criteria.day}日` : ""
+        ].filter(Boolean).join("");
+        status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
+    };
+
+    const updateTriggerLabels = criteria => {
+        const labels = {
+            year: criteria.year ? `${criteria.year}年` : "选择年",
+            month: criteria.month ? `${criteria.month}月` : "选择月",
+            day: criteria.day ? `${criteria.day}日` : "选择日"
+        };
+        dropdownTriggers.forEach(trigger => {
+            const target = trigger.dataset.target;
+            if (!target) return;
+            if (target.includes("year")) {
+                trigger.childNodes[0].textContent = labels.year + " ";
+            } else if (target.includes("month")) {
+                trigger.childNodes[0].textContent = labels.month + " ";
+            } else if (target.includes("day")) {
+                trigger.childNodes[0].textContent = labels.day + " ";
+            }
+        });
+    };
+
+    const renderSelectOptions = () => {
+        const records = typeof getRecords === "function" ? getRecords() : [];
+        const options = buildOptions(records, currentCriteria);
+        const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
+            const selected = selectedValue || "";
+            const buttons = [
+                `<button type="button" class="filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
+                ...optionValues.map(value => {
+                    const isActive = value === selected;
+                    return `<button type="button" class="filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
+                })
+            ];
+            containerEl.innerHTML = buttons.join("");
+        };
+
+        fillOptions(yearOptions, options.yearOptions, currentCriteria.year, "year");
+        fillOptions(monthOptions, options.monthOptions, currentCriteria.month, "month");
+        fillOptions(dayOptions, options.dayOptions, currentCriteria.day, "day");
+    };
+
+    const applyCriteria = criteria => {
+        currentCriteria = { ...criteria };
+        renderSelectOptions();
+        updateStatus(currentCriteria);
+        updateTriggerLabels(currentCriteria);
+        if (typeof onFilterChange === "function") {
+            onFilterChange(currentCriteria);
+        }
+    };
+
+    const clearFilter = () => {
+        applyCriteria({ year: "", month: "", day: "" });
+    };
+
+    const handleOptionClick = event => {
+        const target = event.target.closest(".filter-option");
+        if (!target) return;
+        const field = target.dataset.field;
+        if (!field) return;
+        applyCriteria({
+            ...currentCriteria,
+            [field]: target.dataset.value || ""
+        });
+    };
+
+    yearOptions.addEventListener("click", handleOptionClick);
+    monthOptions.addEventListener("click", handleOptionClick);
+    dayOptions.addEventListener("click", handleOptionClick);
+    dropdownTriggers.forEach(trigger => {
+        trigger.addEventListener("click", () => {
+            const targetId = trigger.dataset.target;
+            if (!targetId) return;
+            const target = wrapper.querySelector(`#${targetId}`);
+            if (!target) return;
+            const isOpen = target.classList.contains("is-open");
+            wrapper.querySelectorAll(".filter-options").forEach(options => {
+                options.classList.remove("is-open");
+            });
+            if (!isOpen) {
+                target.classList.add("is-open");
+            }
+        });
+    });
+
+    clearButton.addEventListener("click", clearFilter);
+    document.addEventListener("click", event => {
+        if (wrapper.contains(event.target)) return;
+        wrapper.querySelectorAll(".filter-options").forEach(options => {
+            options.classList.remove("is-open");
+        });
+    });
+
+    renderSelectOptions();
+    updateStatus(currentCriteria);
+    updateTriggerLabels(currentCriteria);
+}
+
+/* ===============================
    图片 / 附件切换
    =============================== */
 function bindToggle(recordDiv) {
