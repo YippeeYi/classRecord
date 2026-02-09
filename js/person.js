@@ -80,6 +80,7 @@ cacheReady.then(() => Promise.all([
 
     renderRecordFilter({
         container: filterContainer,
+        getRecords: () => getActiveRecords(),
         onFilterChange: criteria => {
             currentFilter = criteria;
             renderFilteredRecords();

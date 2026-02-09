@@ -142,15 +142,53 @@ function filterRecordsByDate(records, { year, month, day }) {
     });
 }
 
-function normalizeNumberInput(value, length) {
-    const trimmed = value.trim();
-    if (!trimmed) return "";
-    const numeric = Number.parseInt(trimmed, 10);
-    if (Number.isNaN(numeric)) return "";
-    return String(numeric).padStart(length, "0");
+function parseDateParts(records) {
+    return records
+        .map(record => record.date)
+        .filter(Boolean)
+        .map(date => {
+            const [year, month, day] = date.split("-");
+            return { year, month, day };
+        });
 }
 
-function renderRecordFilter({ container, onFilterChange, initial = {} }) {
+function uniqueSorted(values) {
+    return Array.from(new Set(values)).sort((a, b) => a.localeCompare(b));
+}
+
+function buildOptions(records, criteria) {
+    const dates = parseDateParts(records);
+
+    const yearOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.month || date.month === criteria.month)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.year)
+    );
+
+    const monthOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.day || date.day === criteria.day))
+            .map(date => date.month)
+    );
+
+    const dayOptions = uniqueSorted(
+        dates
+            .filter(date => (!criteria.year || date.year === criteria.year)
+                && (!criteria.month || date.month === criteria.month))
+            .map(date => date.day)
+    );
+
+    return { yearOptions, monthOptions, dayOptions };
+}
+
+function renderRecordFilter({
+    container,
+    onFilterChange,
+    getRecords,
+    initial = {}
+}) {
     if (!container) return;
 
     container.innerHTML = "";
@@ -161,92 +199,110 @@ function renderRecordFilter({ container, onFilterChange, initial = {} }) {
     wrapper.innerHTML = `
         <div class="filter-field">
             <label for="filter-year">年</label>
-            <input id="filter-year" type="number" inputmode="numeric" placeholder="YYYY" min="1900" max="2100">
+            <select id="filter-year">
+                <option value="">全部</option>
+            </select>
         </div>
         <div class="filter-field">
             <label for="filter-month">月</label>
-            <input id="filter-month" type="number" inputmode="numeric" placeholder="MM" min="1" max="12">
+            <select id="filter-month">
+                <option value="">全部</option>
+            </select>
         </div>
         <div class="filter-field">
             <label for="filter-day">日</label>
-            <input id="filter-day" type="number" inputmode="numeric" placeholder="DD" min="1" max="31">
+            <select id="filter-day">
+                <option value="">全部</option>
+            </select>
         </div>
         <div class="filter-actions">
-            <button type="button" class="apply">筛选</button>
             <button type="button" class="secondary clear">清空</button>
         </div>
-        <div class="filter-status">支持任意组合筛选，例如仅填年或年月。</div>
+        <div class="filter-status">支持任意组合筛选，例如仅选年或年月。</div>
     `;
 
     container.appendChild(wrapper);
 
-    const yearInput = wrapper.querySelector("#filter-year");
-    const monthInput = wrapper.querySelector("#filter-month");
-    const dayInput = wrapper.querySelector("#filter-day");
+    const yearSelect = wrapper.querySelector("#filter-year");
+    const monthSelect = wrapper.querySelector("#filter-month");
+    const daySelect = wrapper.querySelector("#filter-day");
     const status = wrapper.querySelector(".filter-status");
-    const applyButton = wrapper.querySelector(".apply");
     const clearButton = wrapper.querySelector(".clear");
 
-    yearInput.value = initial.year || "";
-    monthInput.value = initial.month || "";
-    dayInput.value = initial.day || "";
+    let currentCriteria = {
+        year: initial.year || "",
+        month: initial.month || "",
+        day: initial.day || ""
+    };
 
-    const applyFilter = () => {
-        const criteria = {
-            year: normalizeNumberInput(yearInput.value, 4),
-            month: normalizeNumberInput(monthInput.value, 2),
-            day: normalizeNumberInput(dayInput.value, 2)
-        };
-
-        if (!criteria.year && yearInput.value.trim()) {
-            yearInput.value = "";
-        } else if (criteria.year) {
-            yearInput.value = criteria.year;
-        }
-        if (!criteria.month && monthInput.value.trim()) {
-            monthInput.value = "";
-        } else if (criteria.month) {
-            monthInput.value = criteria.month;
-        }
-        if (!criteria.day && dayInput.value.trim()) {
-            dayInput.value = "";
-        } else if (criteria.day) {
-            dayInput.value = criteria.day;
-        }
-
+    const updateStatus = criteria => {
         const summary = [
             criteria.year ? `${criteria.year}年` : "",
             criteria.month ? `${criteria.month}月` : "",
             criteria.day ? `${criteria.day}日` : ""
         ].filter(Boolean).join("");
         status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
+    };
 
+    const renderSelectOptions = () => {
+        const records = typeof getRecords === "function" ? getRecords() : [];
+        const { yearOptions, monthOptions, dayOptions } = buildOptions(records, currentCriteria);
+
+        const fillOptions = (select, options, selectedValue) => {
+            const selected = selectedValue || "";
+            select.innerHTML = `<option value="">全部</option>${options
+                .map(value => `<option value="${value}">${value}</option>`)
+                .join("")}`;
+            if (options.includes(selected)) {
+                select.value = selected;
+            } else {
+                select.value = "";
+            }
+        };
+
+        fillOptions(yearSelect, yearOptions, currentCriteria.year);
+        fillOptions(monthSelect, monthOptions, currentCriteria.month);
+        fillOptions(daySelect, dayOptions, currentCriteria.day);
+    };
+
+    const applyCriteria = criteria => {
+        currentCriteria = { ...criteria };
+        renderSelectOptions();
+        updateStatus(currentCriteria);
         if (typeof onFilterChange === "function") {
-            onFilterChange(criteria);
+            onFilterChange(currentCriteria);
         }
     };
 
     const clearFilter = () => {
-        yearInput.value = "";
-        monthInput.value = "";
-        dayInput.value = "";
-        status.textContent = "未设置筛选条件，显示全部记录。";
-        if (typeof onFilterChange === "function") {
-            onFilterChange({ year: "", month: "", day: "" });
-        }
+        applyCriteria({ year: "", month: "", day: "" });
     };
 
-    applyButton.addEventListener("click", applyFilter);
-    clearButton.addEventListener("click", clearFilter);
-
-    [yearInput, monthInput, dayInput].forEach(input => {
-        input.addEventListener("keydown", event => {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                applyFilter();
-            }
+    yearSelect.addEventListener("change", () => {
+        applyCriteria({
+            ...currentCriteria,
+            year: yearSelect.value
         });
     });
+
+    monthSelect.addEventListener("change", () => {
+        applyCriteria({
+            ...currentCriteria,
+            month: monthSelect.value
+        });
+    });
+
+    daySelect.addEventListener("change", () => {
+        applyCriteria({
+            ...currentCriteria,
+            day: daySelect.value
+        });
+    });
+
+    clearButton.addEventListener("click", clearFilter);
+
+    renderSelectOptions();
+    updateStatus(currentCriteria);
 }
 
 /* ===============================

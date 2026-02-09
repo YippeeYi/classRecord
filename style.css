@@ -264,7 +264,8 @@ h1 {
   color: #475569;
 }
 
-.record-filter input {
+.record-filter input,
+.record-filter select {
   width: 96px;
   padding: 8px 10px;
   border-radius: 10px;

@@ -20,6 +20,7 @@ cacheReady.then(() => loadAllRecords())
 
     renderRecordFilter({
       container: filterContainer,
+      getRecords: () => allRecords,
       onFilterChange: criteria => {
         const filtered = filterRecordsByDate(allRecords, criteria);
         sortRecords(filtered);
