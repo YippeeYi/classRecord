@@ -257,6 +257,8 @@ h1 {
   display: flex;
   align-items: center;
   gap: 6px;
+  flex-wrap: wrap;
+  position: relative;
 }
 
 .record-filter label {
@@ -265,9 +267,44 @@ h1 {
 }
 
 .record-filter .filter-options {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   gap: 8px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  width: min(320px, 80vw);
+  margin-top: 4px;
+}
+
+.record-filter .filter-options.is-open {
+  display: flex;
+}
+
+.record-filter .filter-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.record-filter .filter-dropdown-trigger:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.12);
+}
+
+.record-filter .filter-dropdown-trigger:focus {
+  outline: none;
 }
 
 .record-filter .filter-option {

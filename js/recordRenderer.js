@@ -199,15 +199,27 @@ function renderRecordFilter({
     wrapper.innerHTML = `
         <div class="filter-field">
             <label for="filter-year">年</label>
-            <div id="filter-year" class="filter-options" role="group" aria-label="按年筛选"></div>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-year-options">
+                选择年
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-year-options" class="filter-options" role="group" aria-label="按年筛选"></div>
         </div>
         <div class="filter-field">
             <label for="filter-month">月</label>
-            <div id="filter-month" class="filter-options" role="group" aria-label="按月筛选"></div>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-month-options">
+                选择月
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-month-options" class="filter-options" role="group" aria-label="按月筛选"></div>
         </div>
         <div class="filter-field">
             <label for="filter-day">日</label>
-            <div id="filter-day" class="filter-options" role="group" aria-label="按日筛选"></div>
+            <button type="button" class="filter-dropdown-trigger" data-target="filter-day-options">
+                选择日
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
             <button type="button" class="secondary clear">清空</button>
@@ -217,9 +229,10 @@ function renderRecordFilter({
 
     container.appendChild(wrapper);
 
-    const yearOptions = wrapper.querySelector("#filter-year");
-    const monthOptions = wrapper.querySelector("#filter-month");
-    const dayOptions = wrapper.querySelector("#filter-day");
+    const yearOptions = wrapper.querySelector("#filter-year-options");
+    const monthOptions = wrapper.querySelector("#filter-month-options");
+    const dayOptions = wrapper.querySelector("#filter-day-options");
+    const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
     const status = wrapper.querySelector(".filter-status");
     const clearButton = wrapper.querySelector(".clear");
 
@@ -236,6 +249,25 @@ function renderRecordFilter({
             criteria.day ? `${criteria.day}日` : ""
         ].filter(Boolean).join("");
         status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
+    };
+
+    const updateTriggerLabels = criteria => {
+        const labels = {
+            year: criteria.year ? `${criteria.year}年` : "选择年",
+            month: criteria.month ? `${criteria.month}月` : "选择月",
+            day: criteria.day ? `${criteria.day}日` : "选择日"
+        };
+        dropdownTriggers.forEach(trigger => {
+            const target = trigger.dataset.target;
+            if (!target) return;
+            if (target.includes("year")) {
+                trigger.childNodes[0].textContent = labels.year + " ";
+            } else if (target.includes("month")) {
+                trigger.childNodes[0].textContent = labels.month + " ";
+            } else if (target.includes("day")) {
+                trigger.childNodes[0].textContent = labels.day + " ";
+            }
+        });
     };
 
     const renderSelectOptions = () => {
@@ -262,6 +294,7 @@ function renderRecordFilter({
         currentCriteria = { ...criteria };
         renderSelectOptions();
         updateStatus(currentCriteria);
+        updateTriggerLabels(currentCriteria);
         if (typeof onFilterChange === "function") {
             onFilterChange(currentCriteria);
         }
@@ -285,11 +318,33 @@ function renderRecordFilter({
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
+    dropdownTriggers.forEach(trigger => {
+        trigger.addEventListener("click", () => {
+            const targetId = trigger.dataset.target;
+            if (!targetId) return;
+            const target = wrapper.querySelector(`#${targetId}`);
+            if (!target) return;
+            const isOpen = target.classList.contains("is-open");
+            wrapper.querySelectorAll(".filter-options").forEach(options => {
+                options.classList.remove("is-open");
+            });
+            if (!isOpen) {
+                target.classList.add("is-open");
+            }
+        });
+    });
 
     clearButton.addEventListener("click", clearFilter);
+    document.addEventListener("click", event => {
+        if (wrapper.contains(event.target)) return;
+        wrapper.querySelectorAll(".filter-options").forEach(options => {
+            options.classList.remove("is-open");
+        });
+    });
 
     renderSelectOptions();
     updateStatus(currentCriteria);
+    updateTriggerLabels(currentCriteria);
 }
 
 /* ===============================
