@@ -37,6 +37,18 @@ function renderFilteredRecords() {
     renderRecordList(filtered, recordContainer);
 }
 
+function renderFilterUI() {
+    renderRecordFilter({
+        container: filterContainer,
+        getRecords: () => getActiveRecords(),
+        initial: currentFilter,
+        onFilterChange: criteria => {
+            currentFilter = criteria;
+            renderFilteredRecords();
+        }
+    });
+}
+
 /* ===============================
    页面初始化
    =============================== */
@@ -78,14 +90,7 @@ cacheReady.then(() => Promise.all([
     // 默认显示：参与事件
     renderRecordList(participatedRecords, recordContainer);
 
-    renderRecordFilter({
-        container: filterContainer,
-        getRecords: () => getActiveRecords(),
-        onFilterChange: criteria => {
-            currentFilter = criteria;
-            renderFilteredRecords();
-        }
-    });
+    renderFilterUI();
 });
 
 /* ===============================
@@ -102,8 +107,12 @@ switchButtons.forEach(btn => {
         const type = btn.dataset.type;
 
         if (type === "participated") {
+            currentFilter = { year: "", month: "", day: "" };
+            renderFilterUI();
             renderFilteredRecords();
         } else if (type === "authored") {
+            currentFilter = { year: "", month: "", day: "" };
+            renderFilterUI();
             renderFilteredRecords();
         }
     });
