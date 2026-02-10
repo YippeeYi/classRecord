@@ -20,8 +20,14 @@
     </div>
 
     <main class="guide-main">
-        <div class="guide-logo" aria-label="logo">📘 编日史</div>
-        <p id="guide-loading-text" class="guide-loading-text" hidden>正在加载缓存...</p>
+        <img class="guide-logo" src="images/logo-guide.svg" alt="编日史 logo">
+
+        <div id="guide-progress" class="guide-progress" hidden>
+            <div class="guide-progress-track">
+                <div id="guide-progress-fill" class="guide-progress-fill"></div>
+            </div>
+            <p id="guide-progress-text" class="guide-progress-text">缓存加载中 0%</p>
+        </div>
 
         <div id="guide-nav" class="guide-nav" hidden>
             <button onclick="location.href='record.html'">记录页面</button>
@@ -34,7 +40,6 @@
     <script src="js/recordStore.js"></script>
     <script src="js/peopleStore.js"></script>
     <script src="js/glossaryStore.js"></script>
-    <script src="js/bootstrap.js"></script>
     <script src="js/guide.js"></script>
     <script src="js/authControls.js"></script>
 </body>

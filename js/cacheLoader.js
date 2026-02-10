@@ -125,7 +125,7 @@ function hideLoadingOverlay() {
     }
 }
 
-window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, showOverlay = true } = {}) {
+window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, showOverlay = true, onProgress } = {}) {
     const needsLoad = window.needsCacheLoad({ expire });
 
     if (!needsLoad) {
@@ -137,11 +137,20 @@ window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, s
     }
 
     try {
-        await Promise.all([
-            loadAllRecords(),
-            loadAllPeople(),
-            loadAllGlossary()
-        ]);
+        if (typeof onProgress === "function") {
+            const tasks = [loadAllRecords, loadAllPeople, loadAllGlossary];
+            onProgress(0);
+            for (let i = 0; i < tasks.length; i += 1) {
+                await tasks[i]();
+                onProgress((i + 1) / tasks.length);
+            }
+        } else {
+            await Promise.all([
+                loadAllRecords(),
+                loadAllPeople(),
+                loadAllGlossary()
+            ]);
+        }
     } finally {
         if (showOverlay) {
             hideLoadingOverlay();

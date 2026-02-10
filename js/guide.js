@@ -4,12 +4,24 @@
  ************************************************************/
 
 (() => {
-    const loadingText = document.getElementById('guide-loading-text');
+    const progressWrap = document.getElementById('guide-progress');
+    const progressFill = document.getElementById('guide-progress-fill');
+    const progressText = document.getElementById('guide-progress-text');
     const nav = document.getElementById('guide-nav');
 
+    const setProgress = (value) => {
+        const percent = Math.max(0, Math.min(100, Math.round(value * 100)));
+        if (progressFill) {
+            progressFill.style.width = `${percent}%`;
+        }
+        if (progressText) {
+            progressText.textContent = `缓存加载中 ${percent}%`;
+        }
+    };
+
     const showNav = () => {
-        if (loadingText) {
-            loadingText.hidden = true;
+        if (progressWrap) {
+            progressWrap.hidden = true;
         }
         if (nav) {
             nav.hidden = false;
@@ -17,12 +29,39 @@
         }
     };
 
-    if (loadingText && typeof window.needsCacheLoad === 'function' && window.needsCacheLoad()) {
-        loadingText.hidden = false;
-    }
+    const waitForAccess = () => {
+        if (typeof window.waitForAccess === 'function') {
+            return window.waitForAccess();
+        }
 
-    const cacheReady = window.cacheReadyPromise || Promise.resolve();
-    cacheReady.finally(showNav);
+        return new Promise((resolve) => {
+            window.addEventListener('authGateReady', () => {
+                window.waitForAccess().then(resolve);
+            }, { once: true });
+        });
+    };
+
+    window.cacheReadyPromise = (async () => {
+        await waitForAccess();
+
+        const needsLoad = typeof window.needsCacheLoad === 'function' && window.needsCacheLoad();
+        if (needsLoad && progressWrap) {
+            progressWrap.hidden = false;
+            setProgress(0);
+        }
+
+        await window.ensureAllCachesLoaded({
+            showOverlay: false,
+            onProgress: (progress) => {
+                if (progressWrap) {
+                    progressWrap.hidden = false;
+                }
+                setProgress(progress);
+            }
+        });
+    })();
+
+    window.cacheReadyPromise.finally(showNav);
 
     const refreshBtn = document.getElementById('refresh-cache-btn');
     if (refreshBtn) {
