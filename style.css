@@ -869,18 +869,18 @@ h1 {
 .back-to-guide-btn {
   padding: 7px 14px;
   border: none;
-  background: linear-gradient(135deg, #4f46e5, #6366f1);
-  color: white;
+  background: #fff;
+  color: #1f2937;
   font-weight: 600;
   cursor: pointer;
   border-radius: 999px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.18);
 }
 
 .back-to-guide-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.24);
 }
 
 .guide-page {
