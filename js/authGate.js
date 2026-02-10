@@ -6,7 +6,9 @@
 
 (() => {
     const STORAGE_KEY = 'classRecordAccessGranted';
+    const ACCESS_TIME_KEY = 'classRecordAccessGrantedAt';
     const TARGET_KEY = 'classRecordRedirectTarget';
+    const ACCESS_EXPIRE_MS = 24 * 60 * 60 * 1000;
     const AUTH_PAGE = 'auth.html';
     const DEFAULT_KEY_HASH = '0ab2f2320f98a963fbe1d48ac2ff2e89f9ad59bbd5910f0398192e262db1fcb2';
     const ACCESS_KEY_HASH = window.CLASS_RECORD_ACCESS_KEY_HASH || DEFAULT_KEY_HASH;
@@ -33,10 +35,35 @@
             .join('');
     };
 
+    const clearStoredAccess = () => {
+        localStorage.removeItem(STORAGE_KEY);
+        localStorage.removeItem(ACCESS_TIME_KEY);
+        sessionStorage.removeItem(TARGET_KEY);
+    };
+
+    const hasValidAccess = () => {
+        if (localStorage.getItem(STORAGE_KEY) !== 'true') {
+            return false;
+        }
+
+        const grantedAt = Number(localStorage.getItem(ACCESS_TIME_KEY));
+        if (!grantedAt || Number.isNaN(grantedAt)) {
+            clearStoredAccess();
+            return false;
+        }
+
+        if (Date.now() - grantedAt >= ACCESS_EXPIRE_MS) {
+            clearStoredAccess();
+            return false;
+        }
+
+        return true;
+    };
+
     const handleAuthGate = () => {
         const path = window.location.pathname;
         const isAuthPage = path.endsWith(`/${AUTH_PAGE}`) || path.endsWith(AUTH_PAGE);
-        const hasAccess = localStorage.getItem(STORAGE_KEY) === 'true';
+        const hasAccess = hasValidAccess();
 
         if (hasAccess) {
             resolveAccessPromise();
@@ -66,6 +93,7 @@
             const inputHash = await sha256Hex(rawKey.trim());
             if (inputHash === ACCESS_KEY_HASH) {
                 localStorage.setItem(STORAGE_KEY, 'true');
+                localStorage.setItem(ACCESS_TIME_KEY, Date.now().toString());
                 resolveAccessPromise();
                 return { ok: true };
             }
@@ -76,7 +104,6 @@
     };
 
     window.clearAccessKey = () => {
-        localStorage.removeItem(STORAGE_KEY);
-        sessionStorage.removeItem(TARGET_KEY);
+        clearStoredAccess();
     };
 })();
