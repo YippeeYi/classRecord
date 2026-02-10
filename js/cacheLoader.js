@@ -83,6 +83,12 @@ window.clearCache = function () {
     console.log("🧹 已清除缓存");
 };
 
+window.needsCacheLoad = function ({ expire = 24 * 60 * 60 * 1000 } = {}) {
+    return !isCacheValid("records", expire)
+        || !isCacheValid("people", expire)
+        || !isCacheValid("glossary", expire);
+};
+
 function isCacheValid(key, expire) {
     const dataKey = `${CACHE_PREFIX}:${key}:data`;
     const timeKey = `${CACHE_PREFIX}:${key}:time`;
@@ -119,24 +125,35 @@ function hideLoadingOverlay() {
     }
 }
 
-window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000 } = {}) {
-    const needsLoad = !isCacheValid("records", expire)
-        || !isCacheValid("people", expire)
-        || !isCacheValid("glossary", expire);
+window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, showOverlay = true, onProgress } = {}) {
+    const needsLoad = window.needsCacheLoad({ expire });
 
     if (!needsLoad) {
         return;
     }
 
-    showLoadingOverlay();
+    if (showOverlay) {
+        showLoadingOverlay();
+    }
 
     try {
-        await Promise.all([
-            loadAllRecords(),
-            loadAllPeople(),
-            loadAllGlossary()
-        ]);
+        if (typeof onProgress === "function") {
+            const tasks = [loadAllRecords, loadAllPeople, loadAllGlossary];
+            onProgress(0);
+            for (let i = 0; i < tasks.length; i += 1) {
+                await tasks[i]();
+                onProgress((i + 1) / tasks.length);
+            }
+        } else {
+            await Promise.all([
+                loadAllRecords(),
+                loadAllPeople(),
+                loadAllGlossary()
+            ]);
+        }
     } finally {
-        hideLoadingOverlay();
+        if (showOverlay) {
+            hideLoadingOverlay();
+        }
     }
 };
