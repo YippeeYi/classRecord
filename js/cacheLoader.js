@@ -83,6 +83,12 @@ window.clearCache = function () {
     console.log("🧹 已清除缓存");
 };
 
+window.needsCacheLoad = function ({ expire = 24 * 60 * 60 * 1000 } = {}) {
+    return !isCacheValid("records", expire)
+        || !isCacheValid("people", expire)
+        || !isCacheValid("glossary", expire);
+};
+
 function isCacheValid(key, expire) {
     const dataKey = `${CACHE_PREFIX}:${key}:data`;
     const timeKey = `${CACHE_PREFIX}:${key}:time`;
@@ -119,16 +125,16 @@ function hideLoadingOverlay() {
     }
 }
 
-window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000 } = {}) {
-    const needsLoad = !isCacheValid("records", expire)
-        || !isCacheValid("people", expire)
-        || !isCacheValid("glossary", expire);
+window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, showOverlay = true } = {}) {
+    const needsLoad = window.needsCacheLoad({ expire });
 
     if (!needsLoad) {
         return;
     }
 
-    showLoadingOverlay();
+    if (showOverlay) {
+        showLoadingOverlay();
+    }
 
     try {
         await Promise.all([
@@ -137,6 +143,8 @@ window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000 } 
             loadAllGlossary()
         ]);
     } finally {
-        hideLoadingOverlay();
+        if (showOverlay) {
+            hideLoadingOverlay();
+        }
     }
 };

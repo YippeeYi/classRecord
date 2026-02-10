@@ -21,5 +21,6 @@ const waitForAccess = () => {
 
 window.cacheReadyPromise = (async () => {
     await waitForAccess();
-    return window.ensureAllCachesLoaded();
+    const isGuidePage = document.body.classList.contains('guide-page');
+    return window.ensureAllCachesLoaded({ showOverlay: !isGuidePage });
 })();
