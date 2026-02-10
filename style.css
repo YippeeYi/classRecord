@@ -68,8 +68,9 @@ h1 {
 .auth-page {
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
+  padding-top: clamp(120px, 20vh, 240px);
   background: radial-gradient(circle at top, #f8fafc, #e2e8f0);
 }
 
@@ -236,6 +237,148 @@ h1 {
 /* ===============================
    四、记录卡片（Record） 
    =============================== */
+
+/* 记录筛选 */
+.record-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  justify-content: center;
+  margin: 18px auto 16px;
+  padding: 12px 16px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+  width: min(720px, 94vw);
+}
+
+.record-filter .filter-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  position: relative;
+}
+
+.record-filter label {
+  font-size: 13px;
+  color: #475569;
+}
+
+.record-filter .filter-options {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
+  gap: 8px;
+  padding: 10px;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  width: min(320px, 80vw);
+  margin-top: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+}
+
+.record-filter .filter-options.is-open {
+  display: grid;
+}
+
+.record-filter .filter-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.record-filter .filter-dropdown-trigger:hover {
+  background: #f8fafc;
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.record-filter .filter-dropdown-trigger:focus {
+  outline: none;
+}
+
+.record-filter .filter-option {
+  width: 100%;
+  height: 28px;
+  padding: 0 6px;
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  background: #fff;
+  font-size: 12px;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.record-filter .filter-option:hover {
+  background: #eef2ff;
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.record-filter .filter-option.is-active {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(135deg, #4f46e5, #6366f1);
+  box-shadow: none;
+}
+
+.record-filter .filter-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.record-filter button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  background: #fff;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.record-filter button:hover {
+  background: #f8fafc;
+  border-color: rgba(99, 102, 241, 0.5);
+}
+
+.record-filter button:focus {
+  outline: none;
+}
+
+.record-filter button.secondary {
+  color: #1e293b;
+  background: #fff;
+}
+
+.record-filter button.secondary:hover {
+  background: #f8fafc;
+}
+
+.record-filter .filter-status {
+  flex-basis: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+}
 
 /* 单条记录卡片 */
 .record {
