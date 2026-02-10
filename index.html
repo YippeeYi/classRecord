@@ -3,8 +3,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 添加 viewport -->
-    <title>编日史</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编日史 · 导览</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico">
     <link rel="preload" href="fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
@@ -12,55 +12,31 @@
     <script src="js/authGate.js"></script>
 </head>
 
-<body>
-    <!-- 右上角功能按钮 -->
+<body class="guide-page">
     <div class="top-right-actions">
-        <button id="refresh-cache-btn" class="top-action-btn">
-            🧹 清空缓存
-        </button>
-        <button id="clear-access-btn" class="top-action-btn">
-            🔒 移除密钥
-        </button>
-        <button class="top-action-btn" onclick="window.open('docs/record-format.html', '_blank')">
-            📄 记录格式说明
-        </button>
+        <button id="refresh-cache-btn" class="top-action-btn">🧹 清空缓存</button>
+        <button id="clear-access-btn" class="top-action-btn">🔒 移除密钥</button>
+        <button class="top-action-btn" onclick="window.open('docs/record-format.html', '_blank')">📄 记录格式说明</button>
     </div>
 
-    <!-- 顶部导航 -->
-    <nav class="top-nav">
-        <button onclick="location.href='index.html'">主页面</button>
-        <button onclick="location.href='people.html'">人物名单</button>
-        <button onclick="location.href='glossary.html'">班级辞典</button>
-    </nav>
+    <main class="guide-main">
+        <div class="guide-logo" aria-label="logo">📘 编日史</div>
+        <p id="guide-loading-text" class="guide-loading-text" hidden>正在加载缓存...</p>
 
-    <h1>📘 编日史</h1>
-    <p class="notice">⚠ 本页面仅供本班内部查看，请勿外传。</p>
+        <div id="guide-nav" class="guide-nav" hidden>
+            <button onclick="location.href='record.html'">记录页面</button>
+            <button onclick="location.href='people.html'">人物名单</button>
+            <button onclick="location.href='glossary.html'">术语</button>
+        </div>
+    </main>
 
-    <div id="record-filter"></div>
-
-    <!-- 记录列表容器 -->
-    <div id="record-list"></div>
-
-    <!-- Cache + Store -->
     <script src="js/cacheLoader.js"></script>
     <script src="js/recordStore.js"></script>
     <script src="js/peopleStore.js"></script>
     <script src="js/glossaryStore.js"></script>
     <script src="js/bootstrap.js"></script>
-
-    <!-- 渲染和页面逻辑 -->
-    <script src="js/recordRenderer.js"></script>
-    <script src="js/script.js"></script>
+    <script src="js/guide.js"></script>
     <script src="js/authControls.js"></script>
-
-    <footer class="footer">
-        本站使用匿名访问统计，仅用于了解页面使用情况，不收集任何个人信息。
-    </footer>
-
-    <!-- Cloudflare Web Analytics -->
-    <script defer src='https://static.cloudflareinsights.com/beacon.min.js'
-        data-cf-beacon='{"token": "1111e0403f354ef6a4e0ef29b62e3e2e"}'></script>
-    <!-- End Cloudflare Web Analytics -->
 </body>
 
 </html>
