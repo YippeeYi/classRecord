@@ -35,10 +35,19 @@
             .join('');
     };
 
+    const clearProjectCache = () => {
+        Object.keys(localStorage).forEach((key) => {
+            if (key.startsWith('classRecord:')) {
+                localStorage.removeItem(key);
+            }
+        });
+    };
+
     const clearStoredAccess = () => {
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem(ACCESS_TIME_KEY);
         sessionStorage.removeItem(TARGET_KEY);
+        clearProjectCache();
     };
 
     const hasValidAccess = () => {
