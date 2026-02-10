@@ -20,11 +20,17 @@
     };
 
 
-    const renderGuideHighlights = () => {
+    const renderGuideHighlights = async () => {
         const wrap = document.getElementById('guide-highlights');
         if (!wrap) {
             return;
         }
+
+        await Promise.all([
+            typeof window.loadAllRecords === 'function' ? window.loadAllRecords() : Promise.resolve([]),
+            typeof window.loadAllPeople === 'function' ? window.loadAllPeople() : Promise.resolve([]),
+            typeof window.loadAllGlossary === 'function' ? window.loadAllGlossary() : Promise.resolve([])
+        ]);
 
         const records = Array.isArray(window.RecordStore?.records) ? window.RecordStore.records : [];
         const people = Array.isArray(window.PeopleStore?.people) ? window.PeopleStore.people : [];

@@ -887,7 +887,8 @@ h1 {
   min-height: 100vh;
   margin: 0;
   padding: 20px;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .guide-main {
@@ -1002,19 +1003,26 @@ h1 {
 }
 
 .guide-nav {
-  position: fixed;
-  left: 50%;
-  bottom: 56px;
-  transform: translateX(-50%) translateY(120px);
+  margin-top: 22px;
+  margin-bottom: 20px;
   opacity: 0;
   display: flex;
   gap: 12px;
+  transform: translateY(24px);
   transition: transform 0.42s ease, opacity 0.42s ease;
 }
 
 .guide-nav.is-visible {
-  transform: translateX(-50%) translateY(0);
+  transform: translateY(0);
   opacity: 1;
+}
+
+
+@media (max-width: 560px) {
+  .guide-nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }
 
 .guide-nav button {
