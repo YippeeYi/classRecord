@@ -934,7 +934,7 @@ h1 {
 .guide-nav {
   position: fixed;
   left: 50%;
-  bottom: 22px;
+  bottom: 56px;
   transform: translateX(-50%) translateY(120px);
   opacity: 0;
   display: flex;
