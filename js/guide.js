@@ -20,6 +20,49 @@
     };
 
 
+    let tipTimer = null;
+
+    const startTipRotation = (tipEl) => {
+        const tips = [
+            '💡 小提示：人物页支持多维排序，适合快速找人。',
+            '📝 小提示：记录页可先看最新日期，再按兴趣筛选。',
+            '📚 小提示：术语页可以快速补齐班级“黑话”背景。',
+            '🔎 小提示：记录详情里的人名和术语都可点击跳转查看。',
+            '📅 小提示：按日期先浏览，再看人物关系会更容易串起事件。',
+            '🧠 小提示：先看速览数据，再进入具体页面会更高效。'
+        ];
+
+        if (!tipEl || tips.length === 0) {
+            return;
+        }
+
+        let currentIndex = Math.floor(Math.random() * tips.length);
+        tipEl.textContent = tips[currentIndex];
+
+        if (tips.length === 1) {
+            return;
+        }
+
+        const switchTip = () => {
+            let nextIndex = currentIndex;
+            while (nextIndex === currentIndex) {
+                nextIndex = Math.floor(Math.random() * tips.length);
+            }
+
+            tipEl.classList.add('is-switching');
+            window.setTimeout(() => {
+                currentIndex = nextIndex;
+                tipEl.textContent = tips[currentIndex];
+                tipEl.classList.remove('is-switching');
+            }, 280);
+        };
+
+        if (tipTimer) {
+            window.clearInterval(tipTimer);
+        }
+        tipTimer = window.setInterval(switchTip, 3600);
+    };
+
     const renderGuideHighlights = async () => {
         const wrap = document.getElementById('guide-highlights');
         if (!wrap) {
@@ -56,12 +99,7 @@
 
         const tipEl = document.getElementById('guide-tip');
         if (tipEl) {
-            const tips = [
-                '💡 小提示：人物页支持多维排序，适合快速找人。',
-                '📝 小提示：记录页可先看最新日期，再按兴趣筛选。',
-                '📚 小提示：术语页可以快速补齐班级“黑话”背景。'
-            ];
-            tipEl.textContent = tips[Math.floor(Math.random() * tips.length)];
+            startTipRotation(tipEl);
         }
 
         wrap.hidden = false;
