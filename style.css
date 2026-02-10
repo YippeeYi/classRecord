@@ -888,29 +888,36 @@ h1 {
   margin: 0;
   padding: 20px;
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
+}
+
+
+@media (max-width: 900px) {
+  .guide-page {
+    overflow-y: auto;
+  }
 }
 
 .guide-main {
-  min-height: calc(100vh - 40px);
+  min-height: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding-top: clamp(70px, 16vh, 180px);
+  padding-top: clamp(16px, 4vh, 48px);
 }
 
 .guide-logo {
-  width: min(560px, 84vw);
+  width: min(500px, 76vw);
   height: auto;
 }
 
 .guide-highlights {
-  margin-top: 26px;
+  margin-top: 14px;
   width: min(980px, 92vw);
   text-align: left;
-  padding: 18px;
+  padding: 14px;
   border-radius: 18px;
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(4px);
@@ -919,7 +926,7 @@ h1 {
 
 .guide-highlights h2 {
   margin: 0 0 12px;
-  font-size: clamp(18px, 2.6vw, 24px);
+  font-size: clamp(17px, 2.2vw, 22px);
 }
 
 .guide-stats-grid {
@@ -930,7 +937,7 @@ h1 {
 
 .guide-stat-card {
   border-radius: 14px;
-  padding: 14px;
+  padding: 12px;
   background: linear-gradient(160deg, #ffffff, #eff6ff);
   border: 1px solid rgba(148, 163, 184, 0.35);
 }
@@ -942,19 +949,19 @@ h1 {
 }
 
 .guide-stat-value {
-  margin: 8px 0 0;
-  font-size: clamp(24px, 3.5vw, 34px);
+  margin: 6px 0 0;
+  font-size: clamp(20px, 2.8vw, 28px);
   line-height: 1.1;
   font-weight: 700;
   color: #1e293b;
 }
 
 .guide-stat-date {
-  font-size: clamp(16px, 2.4vw, 22px);
+  font-size: clamp(14px, 2vw, 18px);
 }
 
 .guide-tip {
-  margin: 12px 0 0;
+  margin: 8px 0 0;
   color: #334155;
   font-size: 14px;
 }
@@ -994,7 +1001,7 @@ h1 {
 
 @media (max-width: 560px) {
   .guide-highlights {
-    padding: 14px;
+    padding: 12px;
   }
 
   .guide-stats-grid {
@@ -1003,8 +1010,8 @@ h1 {
 }
 
 .guide-nav {
-  margin-top: 22px;
-  margin-bottom: 20px;
+  margin-top: 14px;
+  margin-bottom: 8px;
   opacity: 0;
   display: flex;
   gap: 12px;
@@ -1043,6 +1050,19 @@ h1 {
 }
 
 .top-right-actions {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  z-index: 20;
   display: flex;
   gap: 8px;
+}
+
+@media (max-width: 900px) {
+  .top-right-actions {
+    position: static;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
 }
