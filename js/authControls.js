@@ -17,6 +17,9 @@
         if (typeof window.clearAccessKey === 'function') {
             window.clearAccessKey();
         }
+        if (typeof window.clearCache === 'function') {
+            window.clearCache();
+        }
         window.location.replace('auth.html');
     });
 })();
