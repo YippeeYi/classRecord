@@ -7,7 +7,6 @@
     const progressWrap = document.getElementById('guide-progress');
     const progressFill = document.getElementById('guide-progress-fill');
     const progressText = document.getElementById('guide-progress-text');
-    const nav = document.getElementById('guide-nav');
 
     const setProgress = (value) => {
         const percent = Math.max(0, Math.min(100, Math.round(value * 100)));
@@ -63,6 +62,28 @@
         tipTimer = window.setInterval(switchTip, 3600);
     };
 
+
+    const bindStatCardLinks = () => {
+        const cards = document.querySelectorAll('.guide-stat-link[data-target]');
+        cards.forEach((card) => {
+            const target = card.getAttribute('data-target');
+            if (!target) {
+                return;
+            }
+
+            card.addEventListener('click', () => {
+                location.href = target;
+            });
+
+            card.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    location.href = target;
+                }
+            });
+        });
+    };
+
     const renderGuideHighlights = async () => {
         const wrap = document.getElementById('guide-highlights');
         if (!wrap) {
@@ -109,10 +130,6 @@
         if (progressWrap) {
             progressWrap.hidden = true;
         }
-        if (nav) {
-            nav.hidden = false;
-            requestAnimationFrame(() => nav.classList.add('is-visible'));
-        }
     };
 
     const waitForAccess = () => {
@@ -146,6 +163,8 @@
             }
         });
     })();
+
+    bindStatCardLinks();
 
     window.cacheReadyPromise
         .then(renderGuideHighlights)
