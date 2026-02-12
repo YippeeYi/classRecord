@@ -138,12 +138,33 @@ window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, s
 
     try {
         if (typeof onProgress === "function") {
-            const tasks = [loadAllRecords, loadAllPeople, loadAllGlossary];
+            let totalSteps = 0;
+            let completedSteps = 0;
+
+            const emitProgress = () => {
+                if (totalSteps === 0) {
+                    onProgress(0);
+                    return;
+                }
+                onProgress(completedSteps / totalSteps);
+            };
+
+            const createLoaderOptions = () => ({
+                onBatchSize: (size) => {
+                    totalSteps += size;
+                    emitProgress();
+                },
+                onProgressStep: () => {
+                    completedSteps += 1;
+                    emitProgress();
+                }
+            });
+
             onProgress(0);
-            for (let i = 0; i < tasks.length; i += 1) {
-                await tasks[i]();
-                onProgress((i + 1) / tasks.length);
-            }
+            await loadAllRecords(createLoaderOptions());
+            await loadAllPeople(createLoaderOptions());
+            await loadAllGlossary(createLoaderOptions());
+            onProgress(1);
         } else {
             await Promise.all([
                 loadAllRecords(),
