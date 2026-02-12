@@ -21,23 +21,23 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
             const files = await indexRes.json();
 
 
-            const records = [];
+            const records = await Promise.all(
+                files.map(async (file, i) => {
+                    const res = await fetch(`data/record/${file}`);
+                    const record = await res.json();
 
-            for (let i = 0; i < files.length; i++) {
-                const res = await fetch(`data/record/${files[i]}`);
-                const record = await res.json();
+                    // 生成id
+                    if (!record.id) {
+                        record.id = `R${String(i + 1).padStart(3, "0")}`;
+                    }
 
-                // 生成id
-                if (!record.id) {
-                    record.id = `R${String(i + 1).padStart(3, "0")}`;
-                }
+                    if (typeof onProgressStep === "function") {
+                        onProgressStep();
+                    }
 
-                records.push(record);
-
-                if (typeof onProgressStep === "function") {
-                    onProgressStep();
-                }
-            }
+                    return record;
+                })
+            );
 
             return records;
         }

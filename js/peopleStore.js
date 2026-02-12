@@ -21,16 +21,18 @@ window.loadAllPeople = async function ({ onProgressStep } = {}) {
             const files = await indexRes.json();
 
 
-            const people = [];
+            const people = await Promise.all(
+                files.map(async (f) => {
+                    const res = await fetch(`data/people/${f}`);
+                    const person = await res.json();
 
-            for (const f of files) {
-                const res = await fetch(`data/people/${f}`);
-                people.push(await res.json());
+                    if (typeof onProgressStep === "function") {
+                        onProgressStep();
+                    }
 
-                if (typeof onProgressStep === "function") {
-                    onProgressStep();
-                }
-            }
+                    return person;
+                })
+            );
 
             return people;
         }
