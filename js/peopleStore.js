@@ -8,7 +8,7 @@ window.PeopleStore = {
     loaded: false
 };
 
-window.loadAllPeople = async function () {
+window.loadAllPeople = async function ({ onProgressStep } = {}) {
     if (PeopleStore.loaded) {
         return PeopleStore.people;
     }
@@ -20,12 +20,19 @@ window.loadAllPeople = async function () {
             const indexRes = await fetch("data/people/people_index.json");
             const files = await indexRes.json();
 
-            const people = [];
 
-            for (const f of files) {
-                const res = await fetch(`data/people/${f}`);
-                people.push(await res.json());
-            }
+            const people = await Promise.all(
+                files.map(async (f) => {
+                    const res = await fetch(`data/people/${f}`);
+                    const person = await res.json();
+
+                    if (typeof onProgressStep === "function") {
+                        onProgressStep();
+                    }
+
+                    return person;
+                })
+            );
 
             return people;
         }

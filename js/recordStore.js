@@ -8,7 +8,7 @@ window.RecordStore = {
     loaded: false
 };
 
-window.loadAllRecords = async function () {
+window.loadAllRecords = async function ({ onProgressStep } = {}) {
     if (RecordStore.loaded) {
         return RecordStore.records;
     }
@@ -20,19 +20,24 @@ window.loadAllRecords = async function () {
             const indexRes = await fetch("data/record/records_index.json");
             const files = await indexRes.json();
 
-            const records = [];
 
-            for (let i = 0; i < files.length; i++) {
-                const res = await fetch(`data/record/${files[i]}`);
-                const record = await res.json();
+            const records = await Promise.all(
+                files.map(async (file, i) => {
+                    const res = await fetch(`data/record/${file}`);
+                    const record = await res.json();
 
-                // 生成id
-                if (!record.id) {
-                    record.id = `R${String(i + 1).padStart(3, "0")}`;
-                }
+                    // 生成id
+                    if (!record.id) {
+                        record.id = `R${String(i + 1).padStart(3, "0")}`;
+                    }
 
-                records.push(record);
-            }
+                    if (typeof onProgressStep === "function") {
+                        onProgressStep();
+                    }
+
+                    return record;
+                })
+            );
 
             return records;
         }
