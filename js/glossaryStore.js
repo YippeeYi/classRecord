@@ -8,7 +8,7 @@ window.GlossaryStore = {
     loaded: false
 };
 
-window.loadAllGlossary = async function ({ onBatchSize, onProgressStep } = {}) {
+window.loadAllGlossary = async function ({ onProgressStep } = {}) {
     if (GlossaryStore.loaded) {
         return GlossaryStore.terms;
     }
@@ -22,9 +22,6 @@ window.loadAllGlossary = async function ({ onBatchSize, onProgressStep } = {}) {
             const indexRes = await fetch("data/glossary/glossary_index.json");
             const files = await indexRes.json();
 
-            if (typeof onBatchSize === "function") {
-                onBatchSize(files.length);
-            }
 
             const terms = [];
 

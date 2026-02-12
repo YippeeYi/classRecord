@@ -8,7 +8,7 @@ window.RecordStore = {
     loaded: false
 };
 
-window.loadAllRecords = async function ({ onBatchSize, onProgressStep } = {}) {
+window.loadAllRecords = async function ({ onProgressStep } = {}) {
     if (RecordStore.loaded) {
         return RecordStore.records;
     }
@@ -20,9 +20,6 @@ window.loadAllRecords = async function ({ onBatchSize, onProgressStep } = {}) {
             const indexRes = await fetch("data/record/records_index.json");
             const files = await indexRes.json();
 
-            if (typeof onBatchSize === "function") {
-                onBatchSize(files.length);
-            }
 
             const records = [];
 

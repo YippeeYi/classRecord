@@ -138,32 +138,41 @@ window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, s
 
     try {
         if (typeof onProgress === "function") {
-            let totalSteps = 0;
+            const getBatchSize = async (indexPath) => {
+                const res = await fetch(indexPath);
+                const files = await res.json();
+                return Array.isArray(files) ? files.length : 0;
+            };
+
+            const [recordCount, peopleCount, glossaryCount] = await Promise.all([
+                getBatchSize("data/record/records_index.json"),
+                getBatchSize("data/people/people_index.json"),
+                getBatchSize("data/glossary/glossary_index.json")
+            ]);
+
+            const totalSteps = recordCount + peopleCount + glossaryCount;
             let completedSteps = 0;
+            let lastProgress = 0;
 
             const emitProgress = () => {
-                if (totalSteps === 0) {
+                if (totalSteps <= 0) {
                     onProgress(0);
                     return;
                 }
-                onProgress(completedSteps / totalSteps);
+                const nextProgress = completedSteps / totalSteps;
+                lastProgress = Math.max(lastProgress, nextProgress);
+                onProgress(lastProgress);
             };
 
-            const createLoaderOptions = () => ({
-                onBatchSize: (size) => {
-                    totalSteps += size;
-                    emitProgress();
-                },
-                onProgressStep: () => {
-                    completedSteps += 1;
-                    emitProgress();
-                }
-            });
+            const onProgressStep = () => {
+                completedSteps += 1;
+                emitProgress();
+            };
 
             onProgress(0);
-            await loadAllRecords(createLoaderOptions());
-            await loadAllPeople(createLoaderOptions());
-            await loadAllGlossary(createLoaderOptions());
+            await loadAllRecords({ onProgressStep });
+            await loadAllPeople({ onProgressStep });
+            await loadAllGlossary({ onProgressStep });
             onProgress(1);
         } else {
             await Promise.all([

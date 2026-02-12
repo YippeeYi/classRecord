@@ -8,7 +8,7 @@ window.PeopleStore = {
     loaded: false
 };
 
-window.loadAllPeople = async function ({ onBatchSize, onProgressStep } = {}) {
+window.loadAllPeople = async function ({ onProgressStep } = {}) {
     if (PeopleStore.loaded) {
         return PeopleStore.people;
     }
@@ -20,9 +20,6 @@ window.loadAllPeople = async function ({ onBatchSize, onProgressStep } = {}) {
             const indexRes = await fetch("data/people/people_index.json");
             const files = await indexRes.json();
 
-            if (typeof onBatchSize === "function") {
-                onBatchSize(files.length);
-            }
 
             const people = [];
 
