@@ -138,12 +138,42 @@ window.ensureAllCachesLoaded = async function ({ expire = 24 * 60 * 60 * 1000, s
 
     try {
         if (typeof onProgress === "function") {
-            const tasks = [loadAllRecords, loadAllPeople, loadAllGlossary];
+            const getBatchSize = async (indexPath) => {
+                const res = await fetch(indexPath);
+                const files = await res.json();
+                return Array.isArray(files) ? files.length : 0;
+            };
+
+            const [recordCount, peopleCount, glossaryCount] = await Promise.all([
+                getBatchSize("data/record/records_index.json"),
+                getBatchSize("data/people/people_index.json"),
+                getBatchSize("data/glossary/glossary_index.json")
+            ]);
+
+            const totalSteps = recordCount + peopleCount + glossaryCount;
+            let completedSteps = 0;
+            let lastProgress = 0;
+
+            const emitProgress = () => {
+                if (totalSteps <= 0) {
+                    onProgress(0);
+                    return;
+                }
+                const nextProgress = completedSteps / totalSteps;
+                lastProgress = Math.max(lastProgress, nextProgress);
+                onProgress(lastProgress);
+            };
+
+            const onProgressStep = () => {
+                completedSteps += 1;
+                emitProgress();
+            };
+
             onProgress(0);
-            for (let i = 0; i < tasks.length; i += 1) {
-                await tasks[i]();
-                onProgress((i + 1) / tasks.length);
-            }
+            await loadAllRecords({ onProgressStep });
+            await loadAllPeople({ onProgressStep });
+            await loadAllGlossary({ onProgressStep });
+            onProgress(1);
         } else {
             await Promise.all([
                 loadAllRecords(),

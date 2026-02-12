@@ -8,7 +8,7 @@ window.GlossaryStore = {
     loaded: false
 };
 
-window.loadAllGlossary = async function () {
+window.loadAllGlossary = async function ({ onProgressStep } = {}) {
     if (GlossaryStore.loaded) {
         return GlossaryStore.terms;
     }
@@ -22,12 +22,17 @@ window.loadAllGlossary = async function () {
             const indexRes = await fetch("data/glossary/glossary_index.json");
             const files = await indexRes.json();
 
+
             const terms = [];
 
             // 遍历每个文件加载内容
             for (const f of files) {
                 const res = await fetch(`data/glossary/${f}`);
                 terms.push(await res.json());
+
+                if (typeof onProgressStep === "function") {
+                    onProgressStep();
+                }
             }
 
             return terms;
