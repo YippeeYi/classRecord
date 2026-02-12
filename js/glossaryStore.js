@@ -23,17 +23,18 @@ window.loadAllGlossary = async function ({ onProgressStep } = {}) {
             const files = await indexRes.json();
 
 
-            const terms = [];
+            const terms = await Promise.all(
+                files.map(async (f) => {
+                    const res = await fetch(`data/glossary/${f}`);
+                    const term = await res.json();
 
-            // 遍历每个文件加载内容
-            for (const f of files) {
-                const res = await fetch(`data/glossary/${f}`);
-                terms.push(await res.json());
+                    if (typeof onProgressStep === "function") {
+                        onProgressStep();
+                    }
 
-                if (typeof onProgressStep === "function") {
-                    onProgressStep();
-                }
-            }
+                    return term;
+                })
+            );
 
             return terms;
         }
