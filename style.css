@@ -1098,47 +1098,51 @@ h1 {
 }
 
 /* ===============================
-   十二、Minecraft Wiki 风格改版（配色 / 字体 / 布局）
+   十二、Ubisoft 风格改版（配色 / 字体 / 布局）
    =============================== */
 
 :root {
-  --wiki-bg: #eaecf0;
-  --wiki-surface: #ffffff;
-  --wiki-surface-muted: #f8f9fa;
-  --wiki-border: #c8ccd1;
-  --wiki-text: #202122;
-  --wiki-subtext: #54595d;
-  --wiki-link: #36c;
-  --wiki-link-hover: #2a4b8d;
-  --wiki-accent: #5b8f3b;
-  --wiki-accent-soft: #e7f0e2;
+  --ubi-bg: #0d0f13;
+  --ubi-bg-soft: #151922;
+  --ubi-surface: #1c2230;
+  --ubi-surface-2: #242c3d;
+  --ubi-border: #2f3a52;
+  --ubi-text: #f5f7ff;
+  --ubi-subtext: #b6c0d6;
+  --ubi-accent: #2f80ff;
+  --ubi-accent-hover: #5a9bff;
+  --ubi-danger: #ff4d67;
 }
 
 body {
-  background: var(--wiki-bg);
-  color: var(--wiki-text);
-  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, "PingFang SC", "Noto Sans CJK SC", sans-serif;
-  font-weight: 400;
-  line-height: 1.65;
   margin: 0;
-  padding: 16px;
+  padding: 20px;
+  background:
+    radial-gradient(circle at 18% -10%, rgba(47, 128, 255, 0.2), transparent 36%),
+    radial-gradient(circle at 84% -6%, rgba(255, 77, 103, 0.12), transparent 30%),
+    linear-gradient(180deg, #0c0f16 0%, var(--ubi-bg) 100%);
+  color: var(--ubi-text);
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  font-weight: 450;
+  line-height: 1.65;
 }
 
 h1,
 h2,
 h3,
 h4 {
-  font-family: Georgia, "Times New Roman", "Noto Serif CJK SC", serif;
-  color: #111;
-  letter-spacing: 0.01em;
+  font-family: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  color: #fff;
 }
 
 a {
-  color: var(--wiki-link);
+  color: var(--ubi-accent);
 }
 
 a:hover {
-  color: var(--wiki-link-hover);
+  color: var(--ubi-accent-hover);
 }
 
 main,
@@ -1151,45 +1155,31 @@ main,
 .sort-controls,
 .notice,
 .footer {
-  max-width: 1080px;
+  width: min(1140px, 96vw);
   margin-left: auto;
   margin-right: auto;
 }
 
+.notice,
+.footer,
+.record-filter,
 .record,
 .people-table,
 .glossary-table,
 .person-info,
 .guide-highlights,
-.record-filter,
 .sort-controls {
-  background: var(--wiki-surface);
-  border: 1px solid var(--wiki-border);
-  border-radius: 2px;
-  box-shadow: none;
-  backdrop-filter: none;
+  border: 1px solid var(--ubi-border);
+  border-radius: 14px;
+  background: linear-gradient(150deg, rgba(36, 44, 61, 0.92), rgba(28, 34, 48, 0.96));
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
 }
 
 .notice,
 .footer {
-  background: var(--wiki-surface-muted);
-  border: 1px solid var(--wiki-border);
-  border-radius: 2px;
-  padding: 10px 12px;
-  color: var(--wiki-subtext);
-}
-
-.footer {
-  margin-top: 24px;
-}
-
-.record {
-  padding: 14px 16px;
-}
-
-.record.importance-important {
-  border-left: 4px solid #b32424;
-  background: #fff7f7;
+  color: var(--ubi-subtext);
+  padding: 12px 14px;
 }
 
 .meta,
@@ -1198,11 +1188,25 @@ main,
 .sort-controls,
 .record-filter label,
 .record-filter .filter-status {
-  color: var(--wiki-subtext);
+  color: var(--ubi-subtext);
 }
 
 .content {
-  font-size: 17px;
+  font-size: 18px;
+}
+
+.record {
+  padding: 16px 18px;
+  border-left: 3px solid transparent;
+}
+
+.record:hover {
+  border-left-color: var(--ubi-accent);
+}
+
+.record.importance-important {
+  border-left: 4px solid var(--ubi-danger);
+  background: linear-gradient(145deg, rgba(62, 28, 38, 0.95), rgba(28, 34, 48, 0.97));
 }
 
 .top-action-btn,
@@ -1210,11 +1214,14 @@ main,
 .sort-btn,
 .switch-btn,
 .record-filter button,
-.record-filter .filter-dropdown-trigger {
-  border-radius: 2px;
-  background: linear-gradient(#f8f9fa, #eaecf0);
-  border: 1px solid #a2a9b1;
-  color: #202122;
+.record-filter .filter-dropdown-trigger,
+.record-filter .filter-option,
+.sort-controls select,
+.auth-page .auth-form button {
+  border-radius: 999px;
+  border: 1px solid var(--ubi-border);
+  background: linear-gradient(140deg, #283552, #1d2740);
+  color: var(--ubi-text);
   box-shadow: none;
 }
 
@@ -1223,57 +1230,62 @@ main,
 .sort-btn:hover,
 .switch-btn:hover,
 .record-filter button:hover,
-.record-filter .filter-dropdown-trigger:hover {
-  background: #f8f9fa;
-  border-color: #72777d;
-  transform: none;
+.record-filter .filter-dropdown-trigger:hover,
+.record-filter .filter-option:hover,
+.sort-controls select:hover,
+.auth-page .auth-form button:hover {
+  background: linear-gradient(140deg, #2f80ff, #255dc2);
+  border-color: #4c92ff;
+  transform: translateY(-1px);
 }
 
 .switch-btn.active,
 .record-filter .filter-option.is-active {
-  background: var(--wiki-accent);
-  border-color: #3d6a23;
+  background: linear-gradient(140deg, #2f80ff, #2d63ff);
+  border-color: #66a5ff;
   color: #fff;
 }
 
 .page-header,
 .top-right-actions {
   position: sticky;
-  top: 8px;
+  top: 12px;
   right: auto;
   margin: 0 auto 12px;
-  width: min(1080px, calc(100vw - 32px));
+  width: min(1140px, calc(100vw - 32px));
   display: flex;
   justify-content: flex-end;
   gap: 8px;
-  z-index: 50;
+  z-index: 60;
 }
 
 .guide-main {
   min-height: auto;
-  padding: 0 0 16px;
-  gap: 16px;
-}
-
-.guide-logo {
-  width: min(500px, 90vw);
+  padding-top: 4px;
+  padding-bottom: 16px;
+  gap: 18px;
 }
 
 .guide-highlights h2 {
-  border-bottom: 1px solid var(--wiki-border);
+  margin-bottom: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
   padding-bottom: 8px;
 }
 
 .guide-stat-card {
-  border: 1px solid var(--wiki-border);
-  border-radius: 2px;
-  background: var(--wiki-surface-muted);
+  border: 1px solid #334569;
+  border-radius: 12px;
+  background: linear-gradient(140deg, #20293a, #1a2130);
+}
+
+.guide-stat-value {
+  color: #fff;
 }
 
 .guide-stat-link:hover {
-  border-color: var(--wiki-link);
-  box-shadow: none;
-  transform: none;
+  border-color: #5a9bff;
+  box-shadow: 0 16px 28px rgba(16, 24, 40, 0.5);
+  transform: translateY(-2px);
 }
 
 .people-table,
@@ -1283,18 +1295,40 @@ main,
 
 .people-table th,
 .glossary-table th {
-  background: var(--wiki-accent-soft);
-  color: #1f3a12;
+  background: linear-gradient(140deg, #2f80ff, #2a4e9d);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.people-table td,
+.glossary-table td {
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 .people-table tbody tr:hover,
 .glossary-table tbody tr:hover {
-  background: #f5faff;
+  background: rgba(47, 128, 255, 0.16);
 }
 
 .info-label {
   width: 72px;
-  color: #111;
+  color: #fff;
+}
+
+.auth-page {
+  background:
+    radial-gradient(circle at top, rgba(47, 128, 255, 0.25), transparent 42%),
+    linear-gradient(180deg, #0a0d13, #101625);
+}
+
+.auth-page .auth-card {
+  background: linear-gradient(165deg, rgba(34, 42, 58, 0.95), rgba(18, 24, 38, 0.96));
+  border: 1px solid var(--ubi-border);
+}
+
+.auth-page .auth-card p,
+.auth-page .auth-hint {
+  color: var(--ubi-subtext);
 }
 
 @media (max-width: 900px) {
