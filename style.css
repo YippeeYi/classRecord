@@ -1096,3 +1096,214 @@ h1 {
     gap: 14px;
   }
 }
+
+/* ===============================
+   十二、Minecraft Wiki 风格改版（配色 / 字体 / 布局）
+   =============================== */
+
+:root {
+  --wiki-bg: #eaecf0;
+  --wiki-surface: #ffffff;
+  --wiki-surface-muted: #f8f9fa;
+  --wiki-border: #c8ccd1;
+  --wiki-text: #202122;
+  --wiki-subtext: #54595d;
+  --wiki-link: #36c;
+  --wiki-link-hover: #2a4b8d;
+  --wiki-accent: #5b8f3b;
+  --wiki-accent-soft: #e7f0e2;
+}
+
+body {
+  background: var(--wiki-bg);
+  color: var(--wiki-text);
+  font-family: "Helvetica Neue", Helvetica, "Segoe UI", Arial, "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  font-weight: 400;
+  line-height: 1.65;
+  margin: 0;
+  padding: 16px;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-family: Georgia, "Times New Roman", "Noto Serif CJK SC", serif;
+  color: #111;
+  letter-spacing: 0.01em;
+}
+
+a {
+  color: var(--wiki-link);
+}
+
+a:hover {
+  color: var(--wiki-link-hover);
+}
+
+main,
+.record-filter,
+.record,
+.people-table,
+.glossary-table,
+.person-info,
+.guide-highlights,
+.sort-controls,
+.notice,
+.footer {
+  max-width: 1080px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.record,
+.people-table,
+.glossary-table,
+.person-info,
+.guide-highlights,
+.record-filter,
+.sort-controls {
+  background: var(--wiki-surface);
+  border: 1px solid var(--wiki-border);
+  border-radius: 2px;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.notice,
+.footer {
+  background: var(--wiki-surface-muted);
+  border: 1px solid var(--wiki-border);
+  border-radius: 2px;
+  padding: 10px 12px;
+  color: var(--wiki-subtext);
+}
+
+.footer {
+  margin-top: 24px;
+}
+
+.record {
+  padding: 14px 16px;
+}
+
+.record.importance-important {
+  border-left: 4px solid #b32424;
+  background: #fff7f7;
+}
+
+.meta,
+.guide-stat-label,
+.guide-tip,
+.sort-controls,
+.record-filter label,
+.record-filter .filter-status {
+  color: var(--wiki-subtext);
+}
+
+.content {
+  font-size: 17px;
+}
+
+.top-action-btn,
+.back-to-guide-btn,
+.sort-btn,
+.switch-btn,
+.record-filter button,
+.record-filter .filter-dropdown-trigger {
+  border-radius: 2px;
+  background: linear-gradient(#f8f9fa, #eaecf0);
+  border: 1px solid #a2a9b1;
+  color: #202122;
+  box-shadow: none;
+}
+
+.top-action-btn:hover,
+.back-to-guide-btn:hover,
+.sort-btn:hover,
+.switch-btn:hover,
+.record-filter button:hover,
+.record-filter .filter-dropdown-trigger:hover {
+  background: #f8f9fa;
+  border-color: #72777d;
+  transform: none;
+}
+
+.switch-btn.active,
+.record-filter .filter-option.is-active {
+  background: var(--wiki-accent);
+  border-color: #3d6a23;
+  color: #fff;
+}
+
+.page-header,
+.top-right-actions {
+  position: sticky;
+  top: 8px;
+  right: auto;
+  margin: 0 auto 12px;
+  width: min(1080px, calc(100vw - 32px));
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  z-index: 50;
+}
+
+.guide-main {
+  min-height: auto;
+  padding: 0 0 16px;
+  gap: 16px;
+}
+
+.guide-logo {
+  width: min(500px, 90vw);
+}
+
+.guide-highlights h2 {
+  border-bottom: 1px solid var(--wiki-border);
+  padding-bottom: 8px;
+}
+
+.guide-stat-card {
+  border: 1px solid var(--wiki-border);
+  border-radius: 2px;
+  background: var(--wiki-surface-muted);
+}
+
+.guide-stat-link:hover {
+  border-color: var(--wiki-link);
+  box-shadow: none;
+  transform: none;
+}
+
+.people-table,
+.glossary-table {
+  overflow: hidden;
+}
+
+.people-table th,
+.glossary-table th {
+  background: var(--wiki-accent-soft);
+  color: #1f3a12;
+}
+
+.people-table tbody tr:hover,
+.glossary-table tbody tr:hover {
+  background: #f5faff;
+}
+
+.info-label {
+  width: 72px;
+  color: #111;
+}
+
+@media (max-width: 900px) {
+  .page-header,
+  .top-right-actions {
+    position: static;
+    width: auto;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+  }
+}
