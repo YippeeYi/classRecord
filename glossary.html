@@ -20,18 +20,29 @@
     <h1>班级辞典</h1>
 
     <div class="sort-controls">
-        <label>排序依据：</label>
-        <select class="sort-key">
-            <option value="since">起源时间</option>
-            <option value="id">词条名称</option>
-        </select>
+        <div class="filter-field sort-field" data-sort-field="key">
+            <label>排序依据：</label>
+            <button type="button" class="filter-dropdown-trigger" data-default-value="since">
+                <span class="selected-label">起源时间</span>
+                <span aria-hidden="true">▼</span>
+            </button>
+            <div class="filter-options" role="listbox" aria-label="排序依据选项">
+                <button type="button" class="filter-option is-active" data-value="since">起源时间</button>
+                <button type="button" class="filter-option" data-value="id">词条名称</button>
+            </div>
+        </div>
 
-        <label>顺序：</label>
-        <select class="sort-order">
-            <option value="asc">升序</option>
-            <option value="desc">降序</option>
-        </select>
-
+        <div class="filter-field sort-field" data-sort-field="order">
+            <label>顺序：</label>
+            <button type="button" class="filter-dropdown-trigger" data-default-value="asc">
+                <span class="selected-label">升序</span>
+                <span aria-hidden="true">▼</span>
+            </button>
+            <div class="filter-options" role="listbox" aria-label="排序顺序选项">
+                <button type="button" class="filter-option is-active" data-value="asc">升序</button>
+                <button type="button" class="filter-option" data-value="desc">降序</button>
+            </div>
+        </div>
     </div>
 
     <div id="glossary-list"></div>
