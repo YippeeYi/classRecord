@@ -130,12 +130,15 @@ function sortPeople(list, key, order) {
 }
 
 /* ===============================
-   绑定排序按钮
+   绑定排序选择器（即选即排）
    =============================== */
-document.querySelector(".sort-controls .sort-btn")
-    .addEventListener("click", () => {
-        const wrap = document.querySelector(".sort-controls");
-        const key = wrap.querySelector(".sort-key").value;
-        const order = wrap.querySelector(".sort-order").value;
-        renderByRole(key, order);
-    });
+const sortWrap = document.querySelector(".sort-controls");
+const sortKeySelect = sortWrap.querySelector(".sort-key");
+const sortOrderSelect = sortWrap.querySelector(".sort-order");
+
+function rerenderByCurrentSort() {
+    renderByRole(sortKeySelect.value, sortOrderSelect.value);
+}
+
+sortKeySelect.addEventListener("change", rerenderByCurrentSort);
+sortOrderSelect.addEventListener("change", rerenderByCurrentSort);
