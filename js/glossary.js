@@ -76,12 +76,65 @@ function sortGlossary(list, key, order) {
 }
 
 /* ===============================
-   绑定排序按钮
+   绑定排序控件
    =============================== */
-document.querySelector(".sort-controls .sort-btn")
-  .addEventListener("click", () => {
-    const wrap = document.querySelector(".sort-controls");
-    const key = wrap.querySelector(".sort-key").value;
-    const order = wrap.querySelector(".sort-order").value;
-    renderGlossary(key, order);
+const sortWrap = document.querySelector(".sort-controls");
+const sortState = { key: "since", order: "asc" };
+const orderToggle = sortWrap.querySelector(".sort-order-toggle");
+const applyButton = sortWrap.querySelector(".sort-apply-btn");
+
+function applyCurrentSort() {
+  renderGlossary(sortState.key, sortState.order);
+}
+
+function closeSortPanels(exceptOptions = null) {
+  sortWrap.querySelectorAll(".filter-options").forEach(panel => {
+    if (panel !== exceptOptions) panel.classList.remove("is-open");
   });
+}
+
+function initSortField(fieldElement, stateKey) {
+  const trigger = fieldElement.querySelector(".filter-dropdown-trigger");
+  const panel = fieldElement.querySelector(".filter-options");
+  const label = trigger.querySelector(".selected-label");
+  const options = panel.querySelectorAll(".filter-option");
+
+  trigger.addEventListener("click", () => {
+    const willOpen = !panel.classList.contains("is-open");
+    closeSortPanels(willOpen ? panel : null);
+    panel.classList.toggle("is-open", willOpen);
+  });
+
+  options.forEach(option => {
+    option.addEventListener("click", () => {
+      options.forEach(item => item.classList.remove("is-active"));
+      option.classList.add("is-active");
+      sortState[stateKey] = option.dataset.value;
+      label.textContent = option.textContent.trim();
+      panel.classList.remove("is-open");
+      applyCurrentSort();
+    });
+  });
+}
+
+function syncOrderToggleLabel() {
+  orderToggle.textContent = sortState.order === "asc" ? "升序" : "降序";
+  orderToggle.dataset.order = sortState.order;
+}
+
+initSortField(sortWrap.querySelector('[data-sort-field="key"]'), "key");
+syncOrderToggleLabel();
+
+orderToggle.addEventListener("click", () => {
+  sortState.order = sortState.order === "asc" ? "desc" : "asc";
+  syncOrderToggleLabel();
+  applyCurrentSort();
+});
+
+applyButton.addEventListener("click", applyCurrentSort);
+
+document.addEventListener("click", event => {
+  if (!sortWrap.contains(event.target)) {
+    closeSortPanels();
+  }
+});

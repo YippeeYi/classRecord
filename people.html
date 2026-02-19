@@ -20,20 +20,21 @@
     <h1>人物名单</h1>
 
     <div class="sort-controls">
-        <label>排序依据：</label>
-        <select class="sort-key">
-            <option value="id">id</option>
-            <option value="participation">参与事件数</option>
-            <option value="record">记录事件数</option>
-        </select>
+        <div class="filter-field sort-field" data-sort-field="key">
+            <label>排序依据：</label>
+            <button type="button" class="filter-dropdown-trigger" data-default-value="id">
+                <span class="selected-label">id</span>
+                <span aria-hidden="true">▾</span>
+            </button>
+            <div class="filter-options" role="listbox" aria-label="排序依据选项">
+                <button type="button" class="filter-option is-active" data-value="id">id</button>
+                <button type="button" class="filter-option" data-value="participation">参与事件数</button>
+                <button type="button" class="filter-option" data-value="record">记录事件数</button>
+            </div>
+        </div>
 
-        <label>顺序：</label>
-        <select class="sort-order">
-            <option value="asc">升序</option>
-            <option value="desc">降序</option>
-        </select>
-
-        <button class="sort-btn">排序</button>
+        <button type="button" class="sort-order-toggle" data-order="asc" aria-label="切换排序顺序">升序</button>
+        <button type="button" class="sort-apply-btn">排序</button>
     </div>
 
     <div id="people-list"></div>
