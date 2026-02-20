@@ -401,18 +401,12 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(value, max));
 }
 
-function updateTooltipHorizontalPosition() {
-    if (!activeTooltip) return;
-
-    const tooltipRect = activeTooltip.getBoundingClientRect();
-    const padding = 12;
-    const left = clamp(
-        lastMouseX - tooltipRect.width / 2,
-        padding,
-        window.innerWidth - tooltipRect.width - padding
-    );
-
-    activeTooltip.style.left = left + window.scrollX + "px";
+function getClosestTermTag(node) {
+    if (!node) return null;
+    if (node.nodeType === Node.ELEMENT_NODE) {
+        return node.closest(".term-tag");
+    }
+    return node.parentElement ? node.parentElement.closest(".term-tag") : null;
 }
 
 // 加载 glossary
@@ -436,7 +430,7 @@ document.addEventListener("mousemove", e => {
 
 /* ---------- mouseover：延迟显示 tooltip ---------- */
 document.addEventListener("mouseover", e => {
-    const tag = e.target.closest(".term-tag");
+    const tag = getClosestTermTag(e.target);
     if (!tag) return;
 
     const termId = tag.dataset.id;
@@ -515,12 +509,16 @@ document.addEventListener("mouseover", e => {
 
 /* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
-    const fromTag = e.target.closest(".term-tag");
+    const fromTag = getClosestTermTag(e.target);
     const to = e.relatedTarget;
-    const toTag = to && to.closest(".term-tag");
+    const toTag = getClosestTermTag(to);
 
-    // 在同一个术语文字范围内移动时，保持 hover 状态，避免误触发隐藏/重建
-    if (fromTag && toTag === fromTag) {
+    // 在同一个术语内部移动时，保持 tooltip 位置不变
+    if (
+        fromTag &&
+        toTag &&
+        fromTag.dataset.id === toTag.dataset.id
+    ) {
         return;
     }
 
@@ -539,7 +537,7 @@ document.addEventListener("mouseout", e => {
     // 只要进入 term-tag 或 tooltip，都不清除
     if (
         to &&
-        (toTag || to.closest(".term-tooltip"))
+        (toTag || (to && to.nodeType === Node.ELEMENT_NODE && to.closest(".term-tooltip")))
     ) {
         return;
     }
