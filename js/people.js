@@ -7,6 +7,8 @@ const container = document.getElementById("people-list");
 
 let peopleList = [];
 let records = [];
+let currentSortKey = "id";
+let currentSortOrder = "asc";
 
 /* ===============================
    启动加载流程
@@ -19,7 +21,7 @@ cacheReady.then(() => Promise.all([
 ])).then(([people, allRecords]) => {
     peopleList = people;
     records = allRecords;
-    renderByRole(); // 默认排序
+    renderByRole(currentSortKey, currentSortOrder);
 });
 
 /* ===============================
@@ -132,10 +134,43 @@ function sortPeople(list, key, order) {
 /* ===============================
    绑定排序按钮
    =============================== */
-document.querySelector(".sort-controls .sort-btn")
-    .addEventListener("click", () => {
-        const wrap = document.querySelector(".sort-controls");
-        const key = wrap.querySelector(".sort-key").value;
-        const order = wrap.querySelector(".sort-order").value;
-        renderByRole(key, order);
+const sortControls = document.querySelector(".sort-controls");
+const keyTrigger = sortControls.querySelector(".dropdown-trigger");
+const keyLabel = keyTrigger.querySelector(".dropdown-label");
+const orderToggle = sortControls.querySelector(".sort-order-toggle");
+
+const sortKeyText = {
+    id: "按 id",
+    participation: "按参与事件数",
+    record: "按记录事件数"
+};
+
+function updateSortControls() {
+    keyTrigger.dataset.value = currentSortKey;
+    keyLabel.textContent = sortKeyText[currentSortKey] || "按 id";
+
+    orderToggle.dataset.value = currentSortOrder;
+    orderToggle.textContent = currentSortOrder === "asc" ? "升序" : "降序";
+
+    sortControls.querySelectorAll(".sort-option").forEach(option => {
+        option.classList.toggle("is-active", option.dataset.value === currentSortKey);
     });
+}
+
+sortControls.addEventListener("click", event => {
+    const option = event.target.closest(".sort-option");
+    if (option) {
+        currentSortKey = option.dataset.value || "id";
+        updateSortControls();
+        renderByRole(currentSortKey, currentSortOrder);
+        return;
+    }
+
+    if (event.target.closest(".sort-order-toggle")) {
+        currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+        updateSortControls();
+        renderByRole(currentSortKey, currentSortOrder);
+    }
+});
+
+updateSortControls();

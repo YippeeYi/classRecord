@@ -5,6 +5,8 @@
 
 const container = document.getElementById("glossary-list");
 let glossaryList = [];
+let currentSortKey = "since";
+let currentSortOrder = "asc";
 
 /* ===============================
    加载数据
@@ -14,7 +16,7 @@ const cacheReady = window.cacheReadyPromise || Promise.resolve();
 cacheReady.then(() => loadAllGlossary())
   .then(list => {
     glossaryList = list;
-    renderGlossary();
+    renderGlossary(currentSortKey, currentSortOrder);
   });
 
 /* ===============================
@@ -78,10 +80,42 @@ function sortGlossary(list, key, order) {
 /* ===============================
    绑定排序按钮
    =============================== */
-document.querySelector(".sort-controls .sort-btn")
-  .addEventListener("click", () => {
-    const wrap = document.querySelector(".sort-controls");
-    const key = wrap.querySelector(".sort-key").value;
-    const order = wrap.querySelector(".sort-order").value;
-    renderGlossary(key, order);
+const sortControls = document.querySelector(".sort-controls");
+const keyTrigger = sortControls.querySelector(".dropdown-trigger");
+const keyLabel = keyTrigger.querySelector(".dropdown-label");
+const orderToggle = sortControls.querySelector(".sort-order-toggle");
+
+const sortKeyText = {
+  since: "按起源时间",
+  id: "按词条名称"
+};
+
+function updateSortControls() {
+  keyTrigger.dataset.value = currentSortKey;
+  keyLabel.textContent = sortKeyText[currentSortKey] || "按起源时间";
+
+  orderToggle.dataset.value = currentSortOrder;
+  orderToggle.textContent = currentSortOrder === "asc" ? "升序" : "降序";
+
+  sortControls.querySelectorAll(".sort-option").forEach(option => {
+    option.classList.toggle("is-active", option.dataset.value === currentSortKey);
   });
+}
+
+sortControls.addEventListener("click", event => {
+  const option = event.target.closest(".sort-option");
+  if (option) {
+    currentSortKey = option.dataset.value || "since";
+    updateSortControls();
+    renderGlossary(currentSortKey, currentSortOrder);
+    return;
+  }
+
+  if (event.target.closest(".sort-order-toggle")) {
+    currentSortOrder = currentSortOrder === "asc" ? "desc" : "asc";
+    updateSortControls();
+    renderGlossary(currentSortKey, currentSortOrder);
+  }
+});
+
+updateSortControls();

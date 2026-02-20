@@ -199,7 +199,7 @@ function renderRecordFilter({
     wrapper.innerHTML = `
         <div class="filter-field">
             <label for="filter-year">年</label>
-            <button type="button" class="filter-dropdown-trigger" data-target="filter-year-options">
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-year-options">
                 选择年
                 <span aria-hidden="true">▾</span>
             </button>
@@ -207,7 +207,7 @@ function renderRecordFilter({
         </div>
         <div class="filter-field">
             <label for="filter-month">月</label>
-            <button type="button" class="filter-dropdown-trigger" data-target="filter-month-options">
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-month-options">
                 选择月
                 <span aria-hidden="true">▾</span>
             </button>
@@ -215,16 +215,15 @@ function renderRecordFilter({
         </div>
         <div class="filter-field">
             <label for="filter-day">日</label>
-            <button type="button" class="filter-dropdown-trigger" data-target="filter-day-options">
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-day-options">
                 选择日
                 <span aria-hidden="true">▾</span>
             </button>
             <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
-            <button type="button" class="secondary clear">清空</button>
+            <button type="button" class="btn-action secondary clear">清空</button>
         </div>
-        <div class="filter-status">支持任意组合筛选，例如仅选年或年月。</div>
     `;
 
     container.appendChild(wrapper);
@@ -233,22 +232,12 @@ function renderRecordFilter({
     const monthOptions = wrapper.querySelector("#filter-month-options");
     const dayOptions = wrapper.querySelector("#filter-day-options");
     const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
-    const status = wrapper.querySelector(".filter-status");
     const clearButton = wrapper.querySelector(".clear");
 
     let currentCriteria = {
         year: initial.year || "",
         month: initial.month || "",
         day: initial.day || ""
-    };
-
-    const updateStatus = criteria => {
-        const summary = [
-            criteria.year ? `${criteria.year}年` : "",
-            criteria.month ? `${criteria.month}月` : "",
-            criteria.day ? `${criteria.day}日` : ""
-        ].filter(Boolean).join("");
-        status.textContent = summary ? `当前筛选：${summary}` : "未设置筛选条件，显示全部记录。";
     };
 
     const updateTriggerLabels = criteria => {
@@ -276,10 +265,10 @@ function renderRecordFilter({
         const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
             const selected = selectedValue || "";
             const buttons = [
-                `<button type="button" class="filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
+                `<button type="button" class="btn-action filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
                 ...optionValues.map(value => {
                     const isActive = value === selected;
-                    return `<button type="button" class="filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
+                    return `<button type="button" class="btn-action filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
                 })
             ];
             containerEl.innerHTML = buttons.join("");
@@ -293,7 +282,6 @@ function renderRecordFilter({
     const applyCriteria = criteria => {
         currentCriteria = { ...criteria };
         renderSelectOptions();
-        updateStatus(currentCriteria);
         updateTriggerLabels(currentCriteria);
         if (typeof onFilterChange === "function") {
             onFilterChange(currentCriteria);
@@ -318,32 +306,9 @@ function renderRecordFilter({
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
-    dropdownTriggers.forEach(trigger => {
-        trigger.addEventListener("click", () => {
-            const targetId = trigger.dataset.target;
-            if (!targetId) return;
-            const target = wrapper.querySelector(`#${targetId}`);
-            if (!target) return;
-            const isOpen = target.classList.contains("is-open");
-            wrapper.querySelectorAll(".filter-options").forEach(options => {
-                options.classList.remove("is-open");
-            });
-            if (!isOpen) {
-                target.classList.add("is-open");
-            }
-        });
-    });
-
     clearButton.addEventListener("click", clearFilter);
-    document.addEventListener("click", event => {
-        if (wrapper.contains(event.target)) return;
-        wrapper.querySelectorAll(".filter-options").forEach(options => {
-            options.classList.remove("is-open");
-        });
-    });
 
     renderSelectOptions();
-    updateStatus(currentCriteria);
     updateTriggerLabels(currentCriteria);
 }
 
