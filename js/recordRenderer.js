@@ -462,35 +462,24 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置（优先基于术语元素，避免受图片按钮等 hover 控件影响）
+        // 计算位置：tooltip 出现后锁定，不再随鼠标移动
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
+        const verticalGap = 10;
+        const mouseXAtShow = lastMouseX;
 
-        let left = tagRect.left;
-        let top = tagRect.bottom + 10;
-
-        // 回退：极端情况下（元素尺寸异常）仍基于鼠标
-        if (!Number.isFinite(left) || !Number.isFinite(top)) {
-            left = lastMouseX + 14;
-            top = lastMouseY + 14;
-        }
-
-        // 先按下方显示，不够则翻转到上方
+        let top = tagRect.bottom + verticalGap;
         if (top + tooltipRect.height > window.innerHeight - padding) {
-            top = tagRect.top - tooltipRect.height - 10;
+            top = tagRect.top - tooltipRect.height - verticalGap;
+        }
+        if (!Number.isFinite(top)) {
+            top = lastMouseY + verticalGap;
         }
 
-        // 最终边界夹取，避免过度偏左/偏上
-        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
-        top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
-
-        // 再次边缘避让（兜底）
-        if (left + tooltipRect.width > window.innerWidth) {
-            left = lastMouseX - tooltipRect.width - padding;
-        }
-        if (top + tooltipRect.height > window.innerHeight) {
-            top = lastMouseY - tooltipRect.height - padding;
+        let left = mouseXAtShow - tooltipRect.width / 2;
+        if (!Number.isFinite(left)) {
+            left = mouseXAtShow;
         }
 
         left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
@@ -510,9 +499,19 @@ document.addEventListener("mouseover", e => {
 
 /* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
-    if (e.target.closest(".term-tag")) {
+    const fromTag = e.target.closest(".term-tag");
+    const to = e.relatedTarget;
+    const toTag = to && to.closest(".term-tag");
+
+    // 在同一个术语文字范围内移动时，保持 hover 状态，避免误触发隐藏/重建
+    if (fromTag && toTag === fromTag) {
+        return;
+    }
+
+    if (fromTag) {
         isHoveringTerm = false;
     }
+
     // 取消尚未触发的延迟显示
     if (tooltipTimer) {
         clearTimeout(tooltipTimer);
@@ -521,12 +520,10 @@ document.addEventListener("mouseout", e => {
 
     if (!activeTooltip) return;
 
-    const to = e.relatedTarget;
-
     // 只要进入 term-tag 或 tooltip，都不清除
     if (
         to &&
-        (to.closest(".term-tag") || to.closest(".term-tooltip"))
+        (toTag || to.closest(".term-tooltip"))
     ) {
         return;
     }
