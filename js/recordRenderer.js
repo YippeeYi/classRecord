@@ -480,19 +480,24 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置：上下固定到术语文字上/下方，左右基于触发时鼠标位置并锁定
+        // 计算位置：tooltip 出现后锁定，不再随鼠标移动
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
         const verticalGap = 10;
+        const mouseXAtShow = lastMouseX;
 
         let top = tagRect.bottom + verticalGap;
         if (top + tooltipRect.height > window.innerHeight - padding) {
             top = tagRect.top - tooltipRect.height - verticalGap;
         }
-
         if (!Number.isFinite(top)) {
             top = lastMouseY + verticalGap;
+        }
+
+        let left = mouseXAtShow - tooltipRect.width / 2;
+        if (!Number.isFinite(left)) {
+            left = mouseXAtShow;
         }
 
         top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
