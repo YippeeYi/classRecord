@@ -401,6 +401,20 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(value, max));
 }
 
+function updateTooltipHorizontalPosition() {
+    if (!activeTooltip) return;
+
+    const tooltipRect = activeTooltip.getBoundingClientRect();
+    const padding = 12;
+    const left = clamp(
+        lastMouseX - tooltipRect.width / 2,
+        padding,
+        window.innerWidth - tooltipRect.width - padding
+    );
+
+    activeTooltip.style.left = left + window.scrollX + "px";
+}
+
 // 加载 glossary
 async function ensureGlossary() {
     if (!glossaryCache) {
@@ -462,43 +476,25 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置（优先基于术语元素，避免受图片按钮等 hover 控件影响）
+        // 计算位置：上下固定到术语文字上/下方，左右基于触发时鼠标位置并锁定
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
+        const verticalGap = 10;
 
-        let left = tagRect.left;
-        let top = tagRect.bottom + 10;
-
-        // 回退：极端情况下（元素尺寸异常）仍基于鼠标
-        if (!Number.isFinite(left) || !Number.isFinite(top)) {
-            left = lastMouseX + 14;
-            top = lastMouseY + 14;
-        }
-
-        // 先按下方显示，不够则翻转到上方
+        let top = tagRect.bottom + verticalGap;
         if (top + tooltipRect.height > window.innerHeight - padding) {
-            top = tagRect.top - tooltipRect.height - 10;
+            top = tagRect.top - tooltipRect.height - verticalGap;
         }
 
-        // 最终边界夹取，避免过度偏左/偏上
-        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
+        if (!Number.isFinite(top)) {
+            top = lastMouseY + verticalGap;
+        }
+
         top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
-
-        // 再次边缘避让（兜底）
-        if (left + tooltipRect.width > window.innerWidth) {
-            left = lastMouseX - tooltipRect.width - padding;
-        }
-        if (top + tooltipRect.height > window.innerHeight) {
-            top = lastMouseY - tooltipRect.height - padding;
-        }
-
-        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
-        top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
-
         activeTooltip.style.position = "absolute";
-        activeTooltip.style.left = left + window.scrollX + "px";
         activeTooltip.style.top = top + window.scrollY + "px";
+        updateTooltipHorizontalPosition();
 
         // 渐入
         requestAnimationFrame(() => {
