@@ -201,7 +201,7 @@ function renderRecordFilter({
             <label for="filter-year">年</label>
             <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-year-options">
                 选择年
-                <span aria-hidden="true">▾</span>
+                <span class="dropdown-arrow" aria-hidden="true">▾</span>
             </button>
             <div id="filter-year-options" class="filter-options" role="group" aria-label="按年筛选"></div>
         </div>
@@ -209,7 +209,7 @@ function renderRecordFilter({
             <label for="filter-month">月</label>
             <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-month-options">
                 选择月
-                <span aria-hidden="true">▾</span>
+                <span class="dropdown-arrow" aria-hidden="true">▾</span>
             </button>
             <div id="filter-month-options" class="filter-options" role="group" aria-label="按月筛选"></div>
         </div>
@@ -217,7 +217,7 @@ function renderRecordFilter({
             <label for="filter-day">日</label>
             <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-day-options">
                 选择日
-                <span aria-hidden="true">▾</span>
+                <span class="dropdown-arrow" aria-hidden="true">▾</span>
             </button>
             <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
@@ -232,6 +232,7 @@ function renderRecordFilter({
     const monthOptions = wrapper.querySelector("#filter-month-options");
     const dayOptions = wrapper.querySelector("#filter-day-options");
     const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
+    const filterFields = wrapper.querySelectorAll(".filter-field");
     const clearButton = wrapper.querySelector(".clear");
 
     let currentCriteria = {
@@ -297,11 +298,22 @@ function renderRecordFilter({
         if (!target) return;
         const field = target.dataset.field;
         if (!field) return;
+        target.closest(".filter-field")?.classList.remove("is-open");
         applyCriteria({
             ...currentCriteria,
             [field]: target.dataset.value || ""
         });
     };
+
+    filterFields.forEach(field => {
+        field.addEventListener("mouseenter", () => {
+            field.classList.add("is-open");
+        });
+
+        field.addEventListener("mouseleave", () => {
+            field.classList.remove("is-open");
+        });
+    });
 
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);

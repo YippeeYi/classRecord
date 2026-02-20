@@ -310,20 +310,24 @@ body>footer {
 .top-action-btn {
   position: relative;
   overflow: hidden;
-  padding: 6px 14px;
-  font-size: 14px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1a1a1c;
   background: var(--control-bg);
   border: 1px solid var(--control-border);
   border-radius: 999px;
   cursor: pointer;
   box-shadow: var(--control-shadow);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 
 .top-action-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  background: #fff8ee;
+  border-color: rgba(13, 13, 14, 0.32);
+  box-shadow: var(--control-shadow-hover);
 }
 
 /* ===============================
@@ -391,8 +395,10 @@ body>footer {
 
 .record-filter .filter-field:hover .filter-options,
 .record-filter .filter-field:focus-within .filter-options,
+.record-filter .filter-field.is-open .filter-options,
 .sort-dropdown:hover .select-menu,
-.sort-dropdown:focus-within .select-menu {
+.sort-dropdown:focus-within .select-menu,
+.sort-dropdown.is-open .select-menu {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
@@ -988,6 +994,11 @@ body>footer {
 
 .select-menu .sort-option {
   justify-content: flex-start;
+}
+
+.select-menu .sort-option.is-active {
+  color: #f2f2f2;
+  border-color: transparent;
 }
 
 .sort-order-toggle {
