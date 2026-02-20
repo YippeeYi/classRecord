@@ -401,12 +401,18 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(value, max));
 }
 
-function getClosestTermTag(node) {
-    if (!node) return null;
-    if (node.nodeType === Node.ELEMENT_NODE) {
-        return node.closest(".term-tag");
-    }
-    return node.parentElement ? node.parentElement.closest(".term-tag") : null;
+function updateTooltipHorizontalPosition() {
+    if (!activeTooltip) return;
+
+    const tooltipRect = activeTooltip.getBoundingClientRect();
+    const padding = 12;
+    const left = clamp(
+        lastMouseX - tooltipRect.width / 2,
+        padding,
+        window.innerWidth - tooltipRect.width - padding
+    );
+
+    activeTooltip.style.left = left + window.scrollX + "px";
 }
 
 // 加载 glossary
@@ -430,7 +436,7 @@ document.addEventListener("mousemove", e => {
 
 /* ---------- mouseover：延迟显示 tooltip ---------- */
 document.addEventListener("mouseover", e => {
-    const tag = getClosestTermTag(e.target);
+    const tag = e.target.closest(".term-tag");
     if (!tag) return;
 
     const termId = tag.dataset.id;
@@ -474,24 +480,19 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置：tooltip 出现后锁定，不再随鼠标移动
+        // 计算位置：上下固定到术语文字上/下方，左右跟随鼠标
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
         const verticalGap = 10;
-        const mouseXAtShow = lastMouseX;
 
         let top = tagRect.bottom + verticalGap;
         if (top + tooltipRect.height > window.innerHeight - padding) {
             top = tagRect.top - tooltipRect.height - verticalGap;
         }
+
         if (!Number.isFinite(top)) {
             top = lastMouseY + verticalGap;
-        }
-
-        let left = mouseXAtShow - tooltipRect.width / 2;
-        if (!Number.isFinite(left)) {
-            left = mouseXAtShow;
         }
 
         top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
@@ -509,23 +510,9 @@ document.addEventListener("mouseover", e => {
 
 /* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
-    const fromTag = getClosestTermTag(e.target);
-    const to = e.relatedTarget;
-    const toTag = getClosestTermTag(to);
-
-    // 在同一个术语内部移动时，保持 tooltip 位置不变
-    if (
-        fromTag &&
-        toTag &&
-        fromTag.dataset.id === toTag.dataset.id
-    ) {
-        return;
-    }
-
-    if (fromTag) {
+    if (e.target.closest(".term-tag")) {
         isHoveringTerm = false;
     }
-
     // 取消尚未触发的延迟显示
     if (tooltipTimer) {
         clearTimeout(tooltipTimer);
@@ -534,10 +521,12 @@ document.addEventListener("mouseout", e => {
 
     if (!activeTooltip) return;
 
+    const to = e.relatedTarget;
+
     // 只要进入 term-tag 或 tooltip，都不清除
     if (
         to &&
-        (toTag || (to && to.nodeType === Node.ELEMENT_NODE && to.closest(".term-tooltip")))
+        (to.closest(".term-tag") || to.closest(".term-tooltip"))
     ) {
         return;
     }
