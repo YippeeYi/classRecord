@@ -81,6 +81,7 @@ function sortGlossary(list, key, order) {
    绑定排序按钮
    =============================== */
 const sortControls = document.querySelector(".sort-controls");
+const sortDropdown = sortControls.querySelector(".sort-dropdown");
 const keyTrigger = sortControls.querySelector(".dropdown-trigger");
 const keyLabel = keyTrigger.querySelector(".dropdown-label");
 const orderToggle = sortControls.querySelector(".sort-order-toggle");
@@ -106,6 +107,7 @@ sortControls.addEventListener("click", event => {
   const option = event.target.closest(".sort-option");
   if (option) {
     currentSortKey = option.dataset.value || "since";
+    sortDropdown.classList.remove("is-open");
     updateSortControls();
     renderGlossary(currentSortKey, currentSortOrder);
     return;
@@ -116,6 +118,14 @@ sortControls.addEventListener("click", event => {
     updateSortControls();
     renderGlossary(currentSortKey, currentSortOrder);
   }
+});
+
+sortDropdown.addEventListener("mouseenter", () => {
+  sortDropdown.classList.add("is-open");
+});
+
+sortDropdown.addEventListener("mouseleave", () => {
+  sortDropdown.classList.remove("is-open");
 });
 
 updateSortControls();
