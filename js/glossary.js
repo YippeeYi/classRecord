@@ -107,7 +107,7 @@ sortControls.addEventListener("click", event => {
   const option = event.target.closest(".sort-option");
   if (option) {
     currentSortKey = option.dataset.value || "since";
-    sortDropdown.classList.remove("is-open");
+    closeSortDropdown(false);
     updateSortControls();
     renderGlossary(currentSortKey, currentSortOrder);
     return;
@@ -120,12 +120,35 @@ sortControls.addEventListener("click", event => {
   }
 });
 
-sortDropdown.addEventListener("mouseenter", () => {
-  sortDropdown.classList.add("is-open");
-});
+const DROPDOWN_CLOSE_DELAY = 140;
+let dropdownCloseTimer = null;
 
-sortDropdown.addEventListener("mouseleave", () => {
-  sortDropdown.classList.remove("is-open");
-});
+function openSortDropdown() {
+  if (dropdownCloseTimer) {
+    clearTimeout(dropdownCloseTimer);
+    dropdownCloseTimer = null;
+  }
+  sortDropdown.classList.add("is-open");
+}
+
+function closeSortDropdown(withDelay = true) {
+  if (dropdownCloseTimer) {
+    clearTimeout(dropdownCloseTimer);
+  }
+
+  if (!withDelay) {
+    sortDropdown.classList.remove("is-open");
+    dropdownCloseTimer = null;
+    return;
+  }
+
+  dropdownCloseTimer = setTimeout(() => {
+    sortDropdown.classList.remove("is-open");
+    dropdownCloseTimer = null;
+  }, DROPDOWN_CLOSE_DELAY);
+}
+
+sortDropdown.addEventListener("mouseenter", openSortDropdown);
+sortDropdown.addEventListener("mouseleave", () => closeSortDropdown(true));
 
 updateSortControls();
