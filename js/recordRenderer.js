@@ -465,13 +465,20 @@ document.addEventListener("mouseover", e => {
         let left = lastMouseX + 14;
         let top = lastMouseY + 14;
 
-        // 屏幕边缘避让
-        if (left + tooltipRect.width > window.innerWidth) {
+        // 太靠右时切换到鼠标左下角
+        if (left + tooltipRect.width > window.innerWidth - padding) {
             left = lastMouseX - tooltipRect.width - padding;
         }
-        if (top + tooltipRect.height > window.innerHeight) {
-            top = lastMouseY - tooltipRect.height - padding;
-        }
+
+        // 垂直方向优先保持在鼠标下方，再做边界夹取
+        const maxTop = window.innerHeight - tooltipRect.height - padding;
+        top = Math.min(top, maxTop);
+        top = Math.max(top, padding);
+
+        // 再次处理左右边界，避免极窄窗口时越界
+        const maxLeft = window.innerWidth - tooltipRect.width - padding;
+        left = Math.min(left, maxLeft);
+        left = Math.max(left, padding);
 
         activeTooltip.style.position = "absolute";
         activeTooltip.style.left = left + window.scrollX + "px";
