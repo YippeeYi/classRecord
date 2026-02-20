@@ -515,9 +515,19 @@ document.addEventListener("mouseover", e => {
 
 /* ---------- mouseout：延迟移除 tooltip ---------- */
 document.addEventListener("mouseout", e => {
-    if (e.target.closest(".term-tag")) {
+    const fromTag = e.target.closest(".term-tag");
+    const to = e.relatedTarget;
+    const toTag = to && to.closest(".term-tag");
+
+    // 在同一个术语文字范围内移动时，保持 hover 状态，避免误触发隐藏/重建
+    if (fromTag && toTag === fromTag) {
+        return;
+    }
+
+    if (fromTag) {
         isHoveringTerm = false;
     }
+
     // 取消尚未触发的延迟显示
     if (tooltipTimer) {
         clearTimeout(tooltipTimer);
@@ -526,12 +536,10 @@ document.addEventListener("mouseout", e => {
 
     if (!activeTooltip) return;
 
-    const to = e.relatedTarget;
-
     // 只要进入 term-tag 或 tooltip，都不清除
     if (
         to &&
-        (to.closest(".term-tag") || to.closest(".term-tooltip"))
+        (toTag || to.closest(".term-tooltip"))
     ) {
         return;
     }
