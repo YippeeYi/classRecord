@@ -452,6 +452,8 @@ document.addEventListener("mouseover", e => {
     if (!tag) return;
 
     const termId = tag.dataset.id;
+    const anchorX = e.clientX || lastMouseX;
+    const anchorY = e.clientY || lastMouseY;
     isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
