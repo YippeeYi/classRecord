@@ -428,10 +428,6 @@ async function ensureGlossary() {
 document.addEventListener("mousemove", e => {
     lastMouseX = e.clientX;
     lastMouseY = e.clientY;
-
-    if (activeTooltip && isHoveringTerm) {
-        updateTooltipHorizontalPosition();
-    }
 });
 
 /* ---------- mouseover：延迟显示 tooltip ---------- */
