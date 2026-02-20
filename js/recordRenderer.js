@@ -462,7 +462,7 @@ document.addEventListener("mouseover", e => {
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const padding = 12;
 
-        const preferredOffset = 14;
+        const preferredOffset = 8;
         let left = lastMouseX + preferredOffset;
         let top = lastMouseY + preferredOffset;
 
