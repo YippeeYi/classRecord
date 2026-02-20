@@ -480,7 +480,7 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置：上下固定到术语文字上/下方，左右跟随鼠标
+        // 计算位置：上下固定到术语文字上/下方，左右基于触发时鼠标位置并锁定
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
