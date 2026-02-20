@@ -462,23 +462,29 @@ document.addEventListener("mouseover", e => {
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const padding = 12;
 
-        let left = lastMouseX + 14;
-        let top = lastMouseY + 14;
+        const preferredOffset = 14;
+        let left = lastMouseX + preferredOffset;
+        let top = lastMouseY + preferredOffset;
+
+        const rightOverflow =
+            left + tooltipRect.width > window.innerWidth - padding;
 
         // 太靠右时切换到鼠标左下角
-        if (left + tooltipRect.width > window.innerWidth - padding) {
+        if (rightOverflow) {
             left = lastMouseX - tooltipRect.width - padding;
+            top = lastMouseY + preferredOffset;
         }
 
-        // 垂直方向优先保持在鼠标下方，再做边界夹取
-        const maxTop = window.innerHeight - tooltipRect.height - padding;
-        top = Math.min(top, maxTop);
-        top = Math.max(top, padding);
+        // 优先保持在鼠标下方，放不下时切到鼠标上方
+        if (top + tooltipRect.height > window.innerHeight - padding) {
+            top = lastMouseY - tooltipRect.height - padding;
+        }
 
-        // 再次处理左右边界，避免极窄窗口时越界
+        // 最终边界夹取，避免极窄窗口时越界
         const maxLeft = window.innerWidth - tooltipRect.width - padding;
         left = Math.min(left, maxLeft);
         left = Math.max(left, padding);
+        top = Math.max(top, padding);
 
         activeTooltip.style.position = "absolute";
         activeTooltip.style.left = left + window.scrollX + "px";
