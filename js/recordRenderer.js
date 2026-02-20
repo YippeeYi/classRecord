@@ -452,8 +452,8 @@ document.addEventListener("mouseover", e => {
     if (!tag) return;
 
     const termId = tag.dataset.id;
-    const anchorX = e.clientX || lastMouseX;
-    const anchorY = e.clientY || lastMouseY;
+    const anchorX = e.clientX;
+    const anchorY = e.clientY;
     isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
@@ -466,7 +466,7 @@ document.addEventListener("mouseover", e => {
 
         // 已存在同一个 tooltip：直接重定位到当前鼠标位置
         if (activeTooltip && activeTermId === termId) {
-            positionTooltipAtCursor(activeTooltip, lastMouseX, lastMouseY);
+            positionTooltipAtCursor(activeTooltip, anchorX, anchorY);
             return;
         }
 
@@ -498,7 +498,7 @@ document.addEventListener("mouseover", e => {
         });
 
         // 计算位置（基于鼠标）
-        positionTooltipAtCursor(activeTooltip, lastMouseX, lastMouseY);
+        positionTooltipAtCursor(activeTooltip, anchorX, anchorY);
 
         // 渐入
         requestAnimationFrame(() => {
