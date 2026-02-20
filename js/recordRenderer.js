@@ -471,7 +471,7 @@ document.addEventListener("mouseover", e => {
 
         // 太靠右时切换到鼠标左下角
         if (rightOverflow) {
-            left = lastMouseX - tooltipRect.width - padding;
+            left = lastMouseX - tooltipRect.width - preferredOffset;
             top = lastMouseY + preferredOffset;
         }
 
