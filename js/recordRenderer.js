@@ -401,6 +401,20 @@ function clamp(value, min, max) {
     return Math.max(min, Math.min(value, max));
 }
 
+function updateTooltipHorizontalPosition() {
+    if (!activeTooltip) return;
+
+    const tooltipRect = activeTooltip.getBoundingClientRect();
+    const padding = 12;
+    const left = clamp(
+        lastMouseX - tooltipRect.width / 2,
+        padding,
+        window.innerWidth - tooltipRect.width - padding
+    );
+
+    activeTooltip.style.left = left + window.scrollX + "px";
+}
+
 // 加载 glossary
 async function ensureGlossary() {
     if (!glossaryCache) {
@@ -414,6 +428,10 @@ async function ensureGlossary() {
 document.addEventListener("mousemove", e => {
     lastMouseX = e.clientX;
     lastMouseY = e.clientY;
+
+    if (activeTooltip && isHoveringTerm) {
+        updateTooltipHorizontalPosition();
+    }
 });
 
 /* ---------- mouseover：延迟显示 tooltip ---------- */
@@ -482,12 +500,10 @@ document.addEventListener("mouseover", e => {
             left = mouseXAtShow;
         }
 
-        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
         top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
-
         activeTooltip.style.position = "absolute";
-        activeTooltip.style.left = left + window.scrollX + "px";
         activeTooltip.style.top = top + window.scrollY + "px";
+        updateTooltipHorizontalPosition();
 
         // 渐入
         requestAnimationFrame(() => {
