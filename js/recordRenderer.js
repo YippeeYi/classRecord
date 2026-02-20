@@ -222,7 +222,7 @@ function renderRecordFilter({
             <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
-            <button type="button" class="btn-action secondary clear">清空</button>
+            <button type="button" class="btn-action clear">清空</button>
         </div>
     `;
 
@@ -298,21 +298,51 @@ function renderRecordFilter({
         if (!target) return;
         const field = target.dataset.field;
         if (!field) return;
-        target.closest(".filter-field")?.classList.remove("is-open");
+        const fieldElement = target.closest(".filter-field");
+        if (fieldElement) {
+            closeField(fieldElement, false);
+        }
         applyCriteria({
             ...currentCriteria,
             [field]: target.dataset.value || ""
         });
     };
 
-    filterFields.forEach(field => {
-        field.addEventListener("mouseenter", () => {
-            field.classList.add("is-open");
-        });
+    const DROPDOWN_CLOSE_DELAY = 140;
+    const closeTimers = new WeakMap();
 
-        field.addEventListener("mouseleave", () => {
+    const openField = field => {
+        const timer = closeTimers.get(field);
+        if (timer) {
+            clearTimeout(timer);
+            closeTimers.delete(field);
+        }
+        field.classList.add("is-open");
+    };
+
+    const closeField = (field, withDelay = true) => {
+        const timer = closeTimers.get(field);
+        if (timer) {
+            clearTimeout(timer);
+        }
+
+        if (!withDelay) {
             field.classList.remove("is-open");
-        });
+            closeTimers.delete(field);
+            return;
+        }
+
+        const closeTimer = setTimeout(() => {
+            field.classList.remove("is-open");
+            closeTimers.delete(field);
+        }, DROPDOWN_CLOSE_DELAY);
+
+        closeTimers.set(field, closeTimer);
+    };
+
+    filterFields.forEach(field => {
+        field.addEventListener("mouseenter", () => openField(field));
+        field.addEventListener("mouseleave", () => closeField(field, true));
     });
 
     yearOptions.addEventListener("click", handleOptionClick);

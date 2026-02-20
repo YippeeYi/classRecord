@@ -394,10 +394,8 @@ body>footer {
   white-space: nowrap;
 }
 
-.record-filter .filter-field:hover .filter-options,
 .record-filter .filter-field:focus-within .filter-options,
 .record-filter .filter-field.is-open .filter-options,
-.sort-dropdown:hover .select-menu,
 .sort-dropdown:focus-within .select-menu,
 .sort-dropdown.is-open .select-menu {
   opacity: 1;
@@ -1000,6 +998,8 @@ body>footer {
 .select-menu .sort-option.is-active {
   color: #f2f2f2;
   border-color: transparent;
+  background: linear-gradient(135deg, #232325, #3d3d40);
+  box-shadow: none;
 }
 
 .sort-order-toggle {
