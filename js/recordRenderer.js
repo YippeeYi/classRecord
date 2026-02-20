@@ -412,48 +412,12 @@ document.addEventListener("mousemove", e => {
     lastMouseY = e.clientY;
 });
 
-
-function positionTooltipAtCursor(tooltip, anchorX, anchorY) {
-    const tooltipRect = tooltip.getBoundingClientRect();
-    const padding = 12;
-    const preferredOffset = 8;
-
-    let left = anchorX + preferredOffset;
-    let top = anchorY + preferredOffset;
-
-    const rightOverflow =
-        left + tooltipRect.width > window.innerWidth - padding;
-
-    // 太靠右时切换到鼠标左下角
-    if (rightOverflow) {
-        left = anchorX - tooltipRect.width - preferredOffset;
-        top = anchorY + preferredOffset;
-    }
-
-    // 优先保持在鼠标下方，放不下时切到鼠标上方
-    if (top + tooltipRect.height > window.innerHeight - padding) {
-        top = anchorY - tooltipRect.height - padding;
-    }
-
-    // 最终边界夹取，避免极窄窗口时越界
-    const maxLeft = window.innerWidth - tooltipRect.width - padding;
-    left = Math.min(left, maxLeft);
-    left = Math.max(left, padding);
-    top = Math.max(top, padding);
-
-    tooltip.style.position = "absolute";
-    tooltip.style.left = left + window.scrollX + "px";
-    tooltip.style.top = top + window.scrollY + "px";
-}
-
 /* ---------- mouseover：延迟显示 tooltip ---------- */
 document.addEventListener("mouseover", e => {
     const tag = e.target.closest(".term-tag");
     if (!tag) return;
 
     const termId = tag.dataset.id;
-    const anchorX = e.clientX;
-    const anchorY = e.clientY;
     isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
@@ -464,11 +428,8 @@ document.addEventListener("mouseover", e => {
         const term = glossaryCache[termId];
         if (!term) return;
 
-        // 已存在同一个 tooltip：直接重定位到当前鼠标位置
-        if (activeTooltip && activeTermId === termId) {
-            positionTooltipAtCursor(activeTooltip, anchorX, anchorY);
-            return;
-        }
+        // 已存在同一个 tooltip 不重复创建
+        if (activeTooltip && activeTermId === termId) return;
 
         removeTooltip(true);
 
@@ -498,7 +459,23 @@ document.addEventListener("mouseover", e => {
         });
 
         // 计算位置（基于鼠标）
-        positionTooltipAtCursor(activeTooltip, anchorX, anchorY);
+        const tooltipRect = activeTooltip.getBoundingClientRect();
+        const padding = 12;
+
+        let left = lastMouseX + 14;
+        let top = lastMouseY + 14;
+
+        // 屏幕边缘避让
+        if (left + tooltipRect.width > window.innerWidth) {
+            left = lastMouseX - tooltipRect.width - padding;
+        }
+        if (top + tooltipRect.height > window.innerHeight) {
+            top = lastMouseY - tooltipRect.height - padding;
+        }
+
+        activeTooltip.style.position = "absolute";
+        activeTooltip.style.left = left + window.scrollX + "px";
+        activeTooltip.style.top = top + window.scrollY + "px";
 
         // 渐入
         requestAnimationFrame(() => {
