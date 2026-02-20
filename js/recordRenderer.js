@@ -418,6 +418,8 @@ document.addEventListener("mouseover", e => {
     if (!tag) return;
 
     const termId = tag.dataset.id;
+    const anchorX = e.clientX || lastMouseX;
+    const anchorY = e.clientY || lastMouseY;
     isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
@@ -462,16 +464,29 @@ document.addEventListener("mouseover", e => {
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const padding = 12;
 
-        let left = lastMouseX + 14;
-        let top = lastMouseY + 14;
+        const preferredOffset = 8;
+        let left = anchorX + preferredOffset;
+        let top = anchorY + preferredOffset;
 
-        // 屏幕边缘避让
-        if (left + tooltipRect.width > window.innerWidth) {
-            left = lastMouseX - tooltipRect.width - padding;
+        const rightOverflow =
+            left + tooltipRect.width > window.innerWidth - padding;
+
+        // 太靠右时切换到鼠标左下角
+        if (rightOverflow) {
+            left = anchorX - tooltipRect.width - preferredOffset;
+            top = anchorY + preferredOffset;
         }
-        if (top + tooltipRect.height > window.innerHeight) {
-            top = lastMouseY - tooltipRect.height - padding;
+
+        // 优先保持在鼠标下方，放不下时切到鼠标上方
+        if (top + tooltipRect.height > window.innerHeight - padding) {
+            top = anchorY - tooltipRect.height - padding;
         }
+
+        // 最终边界夹取，避免极窄窗口时越界
+        const maxLeft = window.innerWidth - tooltipRect.width - padding;
+        left = Math.min(left, maxLeft);
+        left = Math.max(left, padding);
+        top = Math.max(top, padding);
 
         activeTooltip.style.position = "absolute";
         activeTooltip.style.left = left + window.scrollX + "px";
