@@ -397,6 +397,10 @@ let isHoveringTerm = false;
 const TOOLTIP_DELAY = 200;
 const TOOLTIP_REMOVE_DELAY = 300; // 延迟时间，在鼠标移开后延迟移除 tooltip
 
+function clamp(value, min, max) {
+    return Math.max(min, Math.min(value, max));
+}
+
 // 加载 glossary
 async function ensureGlossary() {
     if (!glossaryCache) {
@@ -458,20 +462,39 @@ document.addEventListener("mouseover", e => {
             scheduleTooltipRemoval();
         });
 
-        // 计算位置（基于鼠标）
+        // 计算位置（优先基于术语元素，避免受图片按钮等 hover 控件影响）
         const tooltipRect = activeTooltip.getBoundingClientRect();
+        const tagRect = tag.getBoundingClientRect();
         const padding = 12;
 
-        let left = lastMouseX + 14;
-        let top = lastMouseY + 14;
+        let left = tagRect.left;
+        let top = tagRect.bottom + 10;
 
-        // 屏幕边缘避让
+        // 回退：极端情况下（元素尺寸异常）仍基于鼠标
+        if (!Number.isFinite(left) || !Number.isFinite(top)) {
+            left = lastMouseX + 14;
+            top = lastMouseY + 14;
+        }
+
+        // 先按下方显示，不够则翻转到上方
+        if (top + tooltipRect.height > window.innerHeight - padding) {
+            top = tagRect.top - tooltipRect.height - 10;
+        }
+
+        // 最终边界夹取，避免过度偏左/偏上
+        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
+        top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
+
+        // 再次边缘避让（兜底）
         if (left + tooltipRect.width > window.innerWidth) {
             left = lastMouseX - tooltipRect.width - padding;
         }
         if (top + tooltipRect.height > window.innerHeight) {
             top = lastMouseY - tooltipRect.height - padding;
         }
+
+        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
+        top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
 
         activeTooltip.style.position = "absolute";
         activeTooltip.style.left = left + window.scrollX + "px";
