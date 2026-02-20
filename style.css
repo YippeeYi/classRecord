@@ -65,20 +65,22 @@ body>footer {
 
 
 :is(.top-action-btn,
+  .btn-action,
+  .btn-select,
   .record-filter .filter-dropdown-trigger,
-  .record-filter button,
+  .record-filter .filter-option,
   .image-toggle,
   .attach-toggle,
   .switch-btn,
   .back-to-guide-btn,
-  .sort-controls select) {
+  .sort-controls .dropdown-trigger) {
   background-image:
     linear-gradient(130deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 35%),
     linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9);
 }
 
 :is(.top-nav button,
-  .sort-btn,
+  .sort-option.is-active,
   .auth-page .auth-form button,
   .record-filter .filter-option.is-active,
   .switch-btn.active) {
@@ -90,11 +92,12 @@ body>footer {
 :is(.top-nav button,
   .top-action-btn,
   .record-filter .filter-dropdown-trigger,
-  .record-filter button,
+  .btn-action,
+  .btn-select,
+  .record-filter .filter-option,
   .image-toggle,
   .attach-toggle,
   .switch-btn,
-  .sort-btn,
   .back-to-guide-btn,
   .auth-page .auth-form button):active {
   transform: translateY(0);
@@ -333,13 +336,10 @@ body>footer {
   flex-wrap: wrap;
   gap: 10px;
   align-items: center;
-  justify-content: center;
-  margin: 18px auto 16px;
-  padding: 12px 16px;
-  border-radius: 16px;
-  background: rgba(255, 252, 246, 0.86);
-  box-shadow: 0 14px 34px rgba(19, 16, 12, 0.12);
-  width: min(720px, 94vw);
+  justify-content: flex-start;
+  margin: 18px 0 16px 20px;
+  padding: 0;
+  width: auto;
   font-family: inherit;
 }
 
@@ -358,7 +358,7 @@ body>footer {
 }
 
 .record-filter .filter-options {
-  display: none;
+  display: grid;
   grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
   gap: 8px;
   padding: 10px;
@@ -373,36 +373,37 @@ body>footer {
   top: 100%;
   left: 0;
   z-index: 10;
-}
-
-.record-filter .filter-options.is-open {
-  display: grid;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 }
 
 .record-filter .filter-dropdown-trigger {
-  position: relative;
-  overflow: hidden;
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--control-border);
-  background: var(--control-bg);
-  font-size: 13px;
-  font-weight: 600;
-  color: #1a1a1c;
-  cursor: pointer;
-  box-shadow: var(--control-shadow);
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
-  font-family: inherit;
+  min-width: 92px;
+  justify-content: space-between;
+  white-space: nowrap;
 }
 
+.record-filter .filter-field:hover .filter-options,
+.record-filter .filter-field:focus-within .filter-options,
+.sort-dropdown:hover .select-menu,
+.sort-dropdown:focus-within .select-menu {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+  visibility: visible;
+}
 
-.record-filter .filter-dropdown-trigger:hover {
-  background: #fff8ee;
-  border-color: rgba(13, 13, 14, 0.32);
-  box-shadow: var(--control-shadow-hover);
+.record-filter .filter-dropdown-trigger,
+.sort-controls .dropdown-trigger {
+  font-size: 13px;
+  font-weight: 600;
+  min-height: 34px;
 }
 
 .record-filter .filter-dropdown-trigger:focus {
@@ -412,23 +413,11 @@ body>footer {
 .record-filter .filter-option {
   width: 100%;
   height: 24px;
-  padding: 0 6px;
+  padding: 0 8px;
   border-radius: 10px;
-  border: 1px solid var(--control-border);
-  background: var(--control-bg);
   font-size: 13px;
   color: #393638;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(19, 16, 12, 0.08);
-  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
   box-sizing: border-box;
-  font-family: inherit;
-}
-
-.record-filter .filter-option:hover {
-  background: #fff4c6;
-  border-color: rgba(13, 13, 14, 0.32);
-  box-shadow: 0 8px 18px rgba(19, 16, 12, 0.16);
 }
 
 .record-filter .filter-option.is-active {
@@ -438,12 +427,10 @@ body>footer {
   box-shadow: none;
 }
 
-.record-filter .filter-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.record-filter button {
+.btn-action,
+.btn-select,
+.record-filter button,
+.sort-controls button {
   position: relative;
   overflow: hidden;
   padding: 6px 12px;
@@ -455,19 +442,30 @@ body>footer {
   color: #1a1a1c;
   background: var(--control-bg);
   box-shadow: var(--control-shadow);
-  transition: background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
 }
 
-
-.record-filter button:hover {
+.btn-action:hover,
+.btn-select:hover,
+.record-filter button:hover,
+.sort-controls button:hover {
+  transform: translateY(-1px);
   background: #fff8ee;
   border-color: rgba(13, 13, 14, 0.32);
   box-shadow: var(--control-shadow-hover);
 }
 
-.record-filter button:focus {
+.btn-action:focus,
+.btn-select:focus,
+.record-filter button:focus,
+.sort-controls button:focus {
   outline: none;
+}
+
+.record-filter .filter-actions {
+  display: flex;
+  gap: 8px;
 }
 
 .record-filter button.secondary {
@@ -479,12 +477,7 @@ body>footer {
   background: #f5efe5;
 }
 
-.record-filter .filter-status {
-  flex-basis: 100%;
-  text-align: center;
-  font-size: 12px;
-  color: #666164;
-}
+
 
 /* 单条记录卡片 */
 .record {
@@ -950,66 +943,55 @@ body>footer {
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-
   font-size: 14px;
   color: #2a2728;
 }
 
-.sort-controls label {
-  font-weight: 600;
-  margin-right: 2px;
-}
-
-.sort-controls select {
-  padding: 6px 10px;
-  font-size: 14px;
-
-  border-radius: 999px;
-  border: 1px solid var(--control-border);
-  background: var(--control-bg);
-
-  cursor: pointer;
-  box-shadow: var(--control-shadow);
-  transition: box-shadow 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
-}
-
-.sort-controls select:hover {
-  border-color: #3d3d40;
-  transform: translateY(-1px);
-  box-shadow: var(--control-shadow-hover);
-}
-
-.sort-controls select:focus {
-  outline: none;
-  border-color: #1c1c1e;
-  box-shadow: 0 0 0 2px rgba(13, 13, 14, 0.18);
-}
-
-.sort-btn {
+.sort-dropdown {
   position: relative;
-  overflow: hidden;
-  padding: 6px 14px;
-  font-size: 14px;
-  font-weight: 600;
-
-  border-radius: 999px;
-  border: none;
-
-  background: linear-gradient(135deg, #232325, #3d3d40);
-  color: #f2f2f2;
-
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(13, 13, 14, 0.28);
-
-  transition:
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
 }
 
+.sort-controls .dropdown-trigger {
+  min-width: 140px;
+  justify-content: space-between;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
-.sort-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(13, 13, 14, 0.35);
+.dropdown-arrow {
+  line-height: 1;
+  font-size: 11px;
+}
+
+.select-menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  width: max-content;
+  min-width: 100%;
+  z-index: 12;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 12px;
+  border: 1px solid rgba(13, 13, 14, 0.16);
+  background: #fffcf6;
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+  opacity: 0;
+  transform: translateY(4px);
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
+.select-menu .sort-option {
+  justify-content: flex-start;
+}
+
+.sort-order-toggle {
+  min-width: 68px;
 }
 
 .page-header {
@@ -1046,10 +1028,12 @@ body>footer {
 .image-toggle:focus-visible,
 .attach-toggle:focus-visible,
 .switch-btn:focus-visible,
-.sort-btn:focus-visible,
+.sort-controls .dropdown-trigger:focus-visible,
+.sort-controls .sort-order-toggle:focus-visible,
 .back-to-guide-btn:focus-visible,
 .auth-page .auth-form button:focus-visible,
-.sort-controls select:focus-visible {
+.btn-action:focus-visible,
+.btn-select:focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px rgba(255, 252, 246, 0.95), 0 0 0 4px rgba(61, 61, 64, 0.5), var(--control-shadow-hover);
 }
