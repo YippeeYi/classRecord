@@ -395,9 +395,7 @@ body>footer {
   white-space: nowrap;
 }
 
-.record-filter .filter-field:focus-within .filter-options,
 .record-filter .filter-field.is-open .filter-options,
-.sort-dropdown:focus-within .select-menu,
 .sort-dropdown.is-open .select-menu {
   opacity: 1;
   transform: translateY(0);
