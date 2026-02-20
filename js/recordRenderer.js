@@ -422,6 +422,10 @@ async function ensureGlossary() {
 document.addEventListener("mousemove", e => {
     lastMouseX = e.clientX;
     lastMouseY = e.clientY;
+
+    if (activeTooltip && isHoveringTerm) {
+        updateTooltipHorizontalPosition();
+    }
 });
 
 /* ---------- mouseover：延迟显示 tooltip ---------- */
@@ -490,12 +494,10 @@ document.addEventListener("mouseover", e => {
             left = mouseXAtShow;
         }
 
-        left = clamp(left, padding, window.innerWidth - tooltipRect.width - padding);
         top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
-
         activeTooltip.style.position = "absolute";
-        activeTooltip.style.left = left + window.scrollX + "px";
         activeTooltip.style.top = top + window.scrollY + "px";
+        updateTooltipHorizontalPosition();
 
         // 渐入
         requestAnimationFrame(() => {
