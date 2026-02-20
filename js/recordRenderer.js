@@ -467,12 +467,19 @@ document.addEventListener("mouseover", e => {
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
 
-        let left = tagRect.left;
+        const mouseOnLeftHalf = lastMouseX <= window.innerWidth / 2;
+        const horizontalGap = 14;
+
+        let left = mouseOnLeftHalf
+            ? lastMouseX + horizontalGap
+            : lastMouseX - tooltipRect.width - horizontalGap;
         let top = tagRect.bottom + 10;
 
         // 回退：极端情况下（元素尺寸异常）仍基于鼠标
         if (!Number.isFinite(left) || !Number.isFinite(top)) {
-            left = lastMouseX + 14;
+            left = mouseOnLeftHalf
+                ? lastMouseX + horizontalGap
+                : lastMouseX - tooltipRect.width - horizontalGap;
             top = lastMouseY + 14;
         }
 
