@@ -418,6 +418,8 @@ document.addEventListener("mouseover", e => {
     if (!tag) return;
 
     const termId = tag.dataset.id;
+    const anchorX = e.clientX || lastMouseX;
+    const anchorY = e.clientY || lastMouseY;
     isHoveringTerm = true;
 
     if (tooltipTimer) clearTimeout(tooltipTimer);
@@ -463,21 +465,21 @@ document.addEventListener("mouseover", e => {
         const padding = 12;
 
         const preferredOffset = 8;
-        let left = lastMouseX + preferredOffset;
-        let top = lastMouseY + preferredOffset;
+        let left = anchorX + preferredOffset;
+        let top = anchorY + preferredOffset;
 
         const rightOverflow =
             left + tooltipRect.width > window.innerWidth - padding;
 
         // 太靠右时切换到鼠标左下角
         if (rightOverflow) {
-            left = lastMouseX - tooltipRect.width - preferredOffset;
-            top = lastMouseY + preferredOffset;
+            left = anchorX - tooltipRect.width - preferredOffset;
+            top = anchorY + preferredOffset;
         }
 
         // 优先保持在鼠标下方，放不下时切到鼠标上方
         if (top + tooltipRect.height > window.innerHeight - padding) {
-            top = lastMouseY - tooltipRect.height - padding;
+            top = anchorY - tooltipRect.height - padding;
         }
 
         // 最终边界夹取，避免极窄窗口时越界
