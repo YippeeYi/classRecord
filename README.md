@@ -55,7 +55,9 @@ python3 -m http.server 8000
 
 然后访问：
 
-- `http://localhost:8000/index.html`
+```bash
+http://localhost:8000/index.html`
+```
 
 ## 数据维护规范
 
