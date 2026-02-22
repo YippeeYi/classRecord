@@ -36,7 +36,7 @@
 
 ---
 
-## 3. 目录结构（详细）
+## 3. 目录结构
 
 ```text
 classRecord/
@@ -243,7 +243,7 @@ http://localhost:8000/index.html
 示例：
 
 ```text
-[[zhx|qq哥]] 说 {{boom|“嫌多就别做”}}，化学式 H^2^O 和 CO_2_。
+[[zhx|qq哥]] 说 {{boom|“嫌多就别做”}}，化学式 CO_2_ 和 F^-^。
 ```
 
 ---
