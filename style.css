@@ -865,19 +865,6 @@ body>footer {
   }
 }
 
-.people-table tbody tr:hover:not(:last-child),
-.glossary-table tbody tr:hover:not(:last-child) {
-  background: linear-gradient(90deg, #f8e7ba 0%, #ffe9f5 100%);
-  box-shadow:
-    inset 0 1px 0 0 rgba(79, 55, 24, 0.28),
-    inset 1px 0 0 0 rgba(79, 55, 24, 0.28),
-    inset -1px 0 0 0 rgba(79, 55, 24, 0.28),
-    inset 0 -2px 0 0 rgba(79, 55, 24, 0.28),
-    inset 0 -1px 0 0 rgba(13, 13, 14, 0.15),
-    0 10px 20px rgba(24, 18, 13, 0.16);
-  transform: translateY(-1px);
-}
-
 .people-table tbody tr:hover:last-child,
 .glossary-table tbody tr:hover:last-child {
   background: linear-gradient(90deg, #f8e7ba 0%, #ffe9f5 100%);
@@ -888,6 +875,35 @@ body>footer {
 .people-table tbody tr:hover td,
 .glossary-table tbody tr:hover td {
   border-color: rgba(79, 55, 24, 0.32);
+}
+
+.people-table tbody tr,
+.glossary-table tbody tr {
+  position: relative;
+}
+
+.people-table tbody tr:not(:last-child)::after,
+.glossary-table tbody tr:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* 贴在行底 */
+  height: 1px;
+  /* 内边框宽度 */
+  background-color: rgba(79, 55, 24, 0.28);
+  transform: translateY(-1px);
+  /* 升高1px */
+  pointer-events: none;
+  /* 不影响鼠标 */
+  transition: background-color 0.18s ease;
+  /* 悬停动画 */
+}
+
+.people-table tbody tr:hover:not(:last-child)::after,
+.glossary-table tbody tr:hover:not(:last-child)::after {
+  background-color: rgba(79, 55, 24, 0.32);
 }
 
 /* ===============================
