@@ -781,8 +781,10 @@ body>footer {
   width: 100%;
   max-width: 600px;
   margin: 20px 0 20px 20px;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-size: 16px;
+  border: 1px solid rgba(13, 13, 14, 0.2);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 14px 34px rgba(19, 16, 12, 0.12);
@@ -793,9 +795,22 @@ body>footer {
 .people-table td,
 .glossary-table th,
 .glossary-table td {
-  border: 1px solid rgba(13, 13, 14, 0.15);
+  border-right: 1px solid rgba(13, 13, 14, 0.15);
+  border-bottom: 1px solid rgba(13, 13, 14, 0.15);
   padding: 10px 14px;
   text-align: center;
+}
+
+.people-table th:last-child,
+.people-table td:last-child,
+.glossary-table th:last-child,
+.glossary-table td:last-child {
+  border-right: 0;
+}
+
+.people-table tbody tr:last-child td,
+.glossary-table tbody tr:last-child td {
+  border-bottom: 0;
 }
 
 .people-table th,
