@@ -868,8 +868,21 @@ body>footer {
 .people-table tbody tr:hover,
 .glossary-table tbody tr:hover {
   background: linear-gradient(90deg, #f8e7ba 0%, #ffe9f5 100%);
-  box-shadow: 0 10px 20px rgba(24, 18, 13, 0.16);
   transform: translateY(-1px);
+}
+
+.people-table tbody tr:hover:not(:last-child),
+.glossary-table tbody tr:hover:not(:last-child) {
+  box-shadow:
+    inset 0 -1px 0 1px rgba(79, 55, 24, 0.28),
+    0 10px 20px rgba(24, 18, 13, 0.16);
+}
+
+.people-table tbody tr:hover:last-child,
+.glossary-table tbody tr:hover:last-child {
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 55, 24, 0.28),
+    0 10px 20px rgba(24, 18, 13, 0.16);
 }
 
 .people-table tbody tr:hover td,
