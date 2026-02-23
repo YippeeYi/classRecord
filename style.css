@@ -868,7 +868,6 @@ body>footer {
 .people-table tbody tr:hover,
 .glossary-table tbody tr:hover {
   background: linear-gradient(90deg, #f8e7ba 0%, #ffe9f5 100%);
-  background-position: 0 -5px;
   box-shadow: 0 10px 20px rgba(24, 18, 13, 0.16);
   transform: translateY(-1px);
 }
