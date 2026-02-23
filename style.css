@@ -784,7 +784,7 @@ body>footer {
   width: 100%;
   max-width: 600px;
   margin: 20px 0 20px 20px;
-  border-collapse: separate;
+  border-collapse: collapse;
   border-spacing: 0;
   font-size: 16px;
   border: 1px solid rgba(13, 13, 14, 0.2);
