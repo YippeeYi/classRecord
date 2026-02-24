@@ -736,7 +736,7 @@ body>footer {
   box-shadow: inset 0 0 0 1px #222;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-  transition: color 0.18s ease, background-color 0.18s ease;
+  transition: color 0.32s ease, background-color 0.32s ease;
 }
 
 /* 黑幕状态时也隐藏内部标签样式，避免术语/人名露出 */
