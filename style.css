@@ -724,19 +724,17 @@ body>footer {
 
 .redacted {
   position: relative;
-  display: inline;
-  /* 保证行内显示，不占用额外空间 */
-  white-space: normal;
-  /* 允许文本换行 */
-  line-height: 1.6;
-  /* 确保行高一致 */
-  font-size: inherit;
-  /* 保证字体大小一致 */
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  vertical-align: baseline;
 }
 
 .redacted-content {
   position: relative;
   z-index: 1;
+  display: inline;
+  word-break: break-word;
 }
 
 .redacted-mask {
@@ -745,34 +743,18 @@ body>footer {
   right: 0;
   bottom: 0;
   left: 0;
-  background: linear-gradient(90deg, #000, #111);
   z-index: 2;
   pointer-events: none;
+  background: linear-gradient(90deg, #000, #111);
   border-radius: 3px;
   box-shadow: inset 0 0 0 1px #222;
-  /* 内部阴影增强效果 */
-  transition: opacity 0.18s ease, transform 0.18s ease;
+  opacity: 1;
+  transition: opacity 0.36s ease;
 }
 
-/* hover 揭开效果：透明度渐变 */
+/* hover 揭开效果（保留遮罩层淡出方式） */
 .redacted:hover .redacted-mask {
   opacity: 0;
-}
-
-/* hover 时黑幕框轻微强调 */
-.redacted:hover {
-  box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
-  transform: scale(1.05);
-  /* 增加轻微的放大效果 */
-}
-
-/* 适应多行文本黑幕效果 */
-.redacted-content,
-.redacted-mask {
-  display: inline-block;
-  /* 避免遮罩层撑开行高 */
-  word-break: break-word;
-  /* 确保多行文本适应 */
 }
 
 /* ===============================
