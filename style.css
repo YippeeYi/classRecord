@@ -189,7 +189,7 @@ body>footer {
 .auth-page .auth-form input {
   padding: 12px 14px;
   border-radius: 10px;
-  border: 1px solid rgba(13, 13, 14, 0.16);
+  border: 2px solid rgba(13, 13, 14, 0.16);
   font-size: 14px;
 }
 
@@ -255,7 +255,7 @@ body>footer {
   text-align: center;
   font-size: 12px;
   color: #777274;
-  border-top: 1px solid rgba(13, 13, 14, 0.15);
+  border-top: 2px solid rgba(13, 13, 14, 0.15);
 }
 
 /* ===============================
@@ -269,7 +269,7 @@ body>footer {
   padding: 10px 14px;
   display: flex;
   gap: 12px;
-  border-bottom: 1px solid rgba(13, 13, 14, 0.15);
+  border-bottom: 2px solid rgba(13, 13, 14, 0.15);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -317,7 +317,7 @@ body>footer {
   font-weight: 600;
   color: #1a1a1c;
   background: var(--control-bg);
-  border: 1px solid var(--control-border);
+  border: 2px solid var(--control-border);
   border-radius: 999px;
   cursor: pointer;
   box-shadow: var(--control-shadow);
@@ -371,7 +371,7 @@ body>footer {
   box-sizing: border-box;
   background: #fffcf6;
   border-radius: 12px;
-  border: 1px solid rgba(13, 13, 14, 0.16);
+  border: 2px solid rgba(13, 13, 14, 0.16);
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
   width: min(320px, 80vw);
   margin-top: 6px;
@@ -440,7 +440,7 @@ body>footer {
   overflow: hidden;
   padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid var(--control-border);
+  border: 2px solid var(--control-border);
   cursor: pointer;
   font-size: 13px;
   font-weight: 600;
@@ -518,7 +518,7 @@ body>footer {
 
 /* 重要记录 */
 .record.importance-important {
-  border-left: 6px solid #ff7ebd;
+  border-left: 7px solid #ff7ebd;
   background: linear-gradient(90deg, #fff2fa, rgba(255, 252, 246, 0.96));
 }
 
@@ -622,7 +622,7 @@ body>footer {
 .image-wrapper img {
   max-width: 100%;
   border-radius: 10px;
-  border: 1px solid rgba(13, 13, 14, 0.16);
+  border: 2px solid rgba(13, 13, 14, 0.16);
 }
 
 .attachments-wrapper {
@@ -630,7 +630,7 @@ body>footer {
   margin-top: 12px;
   padding: 10px 14px;
   background: #f5efe5;
-  border: 1px dashed #d6c7ad;
+  border: 2px dashed #d6c7ad;
   border-radius: 10px;
 }
 
@@ -661,7 +661,7 @@ body>footer {
   display: inline-block;
   cursor: pointer;
   color: #aa35a6;
-  border-bottom: 1px dashed transparent;
+  border-bottom: 2px dashed transparent;
   transition: all 0.15s ease;
 }
 
@@ -675,7 +675,7 @@ body>footer {
   display: inline-block;
   color: #9f6a00;
   cursor: help;
-  border-bottom: 1px dashed #e1c232;
+  border-bottom: 2px dashed #e1c232;
   transition: background-color 0.15s ease;
 }
 
@@ -695,7 +695,7 @@ body>footer {
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
   font-size: 14px;
   line-height: 1.7;
-  border: 1px solid rgba(13, 13, 14, 0.15);
+  border: 2px solid rgba(13, 13, 14, 0.15);
   z-index: 9999;
 
   opacity: 0;
@@ -787,7 +787,7 @@ body>footer {
   border-collapse: separate;
   border-spacing: 0;
   font-size: 16px;
-  border: 1px solid rgba(13, 13, 14, 0.2);
+  border: 2px solid rgba(13, 13, 14, 0.2);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 14px 34px rgba(19, 16, 12, 0.12);
@@ -798,8 +798,8 @@ body>footer {
 .people-table td,
 .glossary-table th,
 .glossary-table td {
-  border-right: 1px solid rgba(13, 13, 14, 0.15);
-  border-bottom: 1px solid rgba(13, 13, 14, 0.15);
+  border-right: 2px solid rgba(13, 13, 14, 0.15);
+  border-bottom: 2px solid rgba(13, 13, 14, 0.15);
   padding: 10px 14px;
   text-align: center;
 }
@@ -935,7 +935,7 @@ body>footer {
   font-weight: 600;
 
   border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
+  border: 2px solid rgba(0, 0, 0, 0.12);
 
   background: rgba(255, 252, 246, 0.9);
   color: #2a2728;
@@ -1007,7 +1007,7 @@ body>footer {
   gap: 6px;
   padding: 8px;
   border-radius: 12px;
-  border: 1px solid rgba(13, 13, 14, 0.16);
+  border: 2px solid rgba(13, 13, 14, 0.16);
   background: #fffcf6;
   box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
   opacity: 0;
@@ -1115,7 +1115,7 @@ body>footer {
   border-radius: 14px;
   padding: 12px;
   background: linear-gradient(160deg, #fffdf8, #f8f1e6);
-  border: 1px solid rgba(13, 13, 14, 0.15);
+  border: 2px solid rgba(13, 13, 14, 0.15);
 }
 
 .guide-stat-link {
@@ -1123,7 +1123,7 @@ body>footer {
   overflow: hidden;
   cursor: pointer;
   background: var(--control-bg);
-  border: 1px solid var(--control-border);
+  border: 2px solid var(--control-border);
   box-shadow: var(--control-shadow);
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
