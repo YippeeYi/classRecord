@@ -739,9 +739,9 @@ body>footer {
 
 .redacted-mask {
   position: absolute;
-  top: 0;
+  top: 0.08em;
   right: 0;
-  bottom: 0;
+  bottom: 0.08em;
   left: 0;
   z-index: 2;
   pointer-events: none;
