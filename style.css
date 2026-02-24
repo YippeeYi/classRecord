@@ -739,6 +739,15 @@ body>footer {
   transition: color 0.18s ease, background-color 0.18s ease;
 }
 
+/* 黑幕状态时也隐藏内部标签样式，避免术语/人名露出 */
+.redacted:not(:hover) .redacted-content * {
+  color: transparent !important;
+  background: transparent !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
 .redacted-mask {
   display: none;
 }
@@ -747,11 +756,7 @@ body>footer {
 .redacted:hover .redacted-content {
   color: inherit;
   background: transparent;
-}
-
-/* hover 时黑幕框轻微强调 */
-.redacted:hover {
-  box-shadow: 0 0 0 1px #333, 0 0 10px rgba(0, 0, 0, 0.6);
+  box-shadow: none;
 }
 
 /* 适应多行文本黑幕效果 */
