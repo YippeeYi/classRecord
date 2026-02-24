@@ -724,14 +724,9 @@ body>footer {
 
 .redacted {
   position: relative;
-  display: inline;
-  /* 保证行内显示，不占用额外空间 */
-  white-space: normal;
-  /* 允许文本换行 */
-  line-height: 1.6;
-  /* 确保行高一致 */
-  font-size: inherit;
-  /* 保证字体大小一致 */
+  display: inline-block;
+  max-width: 100%;
+  vertical-align: baseline;
 }
 
 .redacted-content {
@@ -769,10 +764,12 @@ body>footer {
 /* 适应多行文本黑幕效果 */
 .redacted-content,
 .redacted-mask {
-  display: inline-block;
-  /* 避免遮罩层撑开行高 */
+  display: block;
+  white-space: normal;
+  line-height: inherit;
+  font-size: inherit;
   word-break: break-word;
-  /* 确保多行文本适应 */
+  overflow-wrap: anywhere;
 }
 
 /* ===============================
