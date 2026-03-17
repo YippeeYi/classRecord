@@ -44,6 +44,32 @@ body {
   background: radial-gradient(circle at 20% -10%, #fff9ef 0%, #f8f1e6 48%, #f2eade 100%);
   padding: clamp(14px, 3vw, 28px);
   color: #0d0d0e;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  will-change: opacity, transform;
+}
+
+body.page-ready {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.page-leaving {
+  opacity: 0;
+  transform: translateY(6px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+    transform: none;
+    opacity: 1;
+  }
+
+  body.page-leaving {
+    opacity: 1;
+  }
 }
 
 h1 {

@@ -7,16 +7,17 @@
     <title>编日史 · 导览</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="favicon.ico">
-    <link rel="preload" href="fonts/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
+    <link rel="preload" href="fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
         type="font/ttf">
     <script src="js/authGate.js"></script>
+    <script src="js/navigation.js"></script>
 </head>
 
 <body class="guide-page">
     <div class="top-right-actions">
         <button id="refresh-cache-btn" class="top-action-btn btn-action">🧹 清空缓存</button>
         <button id="clear-access-btn" class="top-action-btn btn-action">🔒 移除密钥</button>
-        <button class="top-action-btn btn-action" onclick="window.open('docs/record-format.html', '_blank')">📄 记录格式说明</button>
+        <button class="top-action-btn btn-action" onclick="window.open('docs/record-format.html', '_blank', 'noopener')">📄 记录格式说明</button>
     </div>
 
     <main class="guide-main">

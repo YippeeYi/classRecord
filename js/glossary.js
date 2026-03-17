@@ -59,7 +59,12 @@ function renderGlossary(sortKey = "since", sortOrder = "asc") {
 function bindRowClick() {
   document.querySelectorAll(".glossary-table tbody tr").forEach(tr => {
     tr.onclick = () => {
-      location.href = `term.html?id=${tr.dataset.id}`;
+      const href = `term.html?id=${tr.dataset.id}`;
+      if (typeof window.navigateTo === 'function') {
+        window.navigateTo(href);
+      } else {
+        location.href = href;
+      }
     };
   });
 }

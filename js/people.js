@@ -88,7 +88,12 @@ function renderByRole(sortKey = "id", sortOrder = "asc") {
 function bindRowClick() {
     document.querySelectorAll(".people-table tbody tr").forEach(tr => {
         tr.onclick = () => {
-            location.href = `person.html?id=${tr.dataset.id}`;
+            const href = `person.html?id=${tr.dataset.id}`;
+            if (typeof window.navigateTo === 'function') {
+                window.navigateTo(href);
+            } else {
+                location.href = href;
+            }
         };
     });
 }
