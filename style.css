@@ -14,6 +14,9 @@
 :root {
   /* 色板与阴影变量：供按钮、卡片、面板复用 */
   --bg-main: #faf6ef;
+  --page-bg-base: radial-gradient(circle at 20% -10%, #fff9ef 0%, #f8f1e6 48%, #f2eade 100%);
+  --page-bg-image: none;
+  --page-bg-overlay: linear-gradient(180deg, rgba(250, 246, 239, 0.6), rgba(242, 234, 222, 0.78));
   --bg-card: rgba(255, 252, 246, 0.86);
   --text-main: #0d0d0e;
   --text-subtle: #555254;
@@ -39,11 +42,35 @@ h3 {
 }
 
 body {
+  position: relative;
+  min-height: 100vh;
   font-family: "Google Sans Flex", "Segoe UI", Arial, sans-serif;
   font-weight: 480;
-  background: radial-gradient(circle at 20% -10%, #fff9ef 0%, #f8f1e6 48%, #f2eade 100%);
   padding: clamp(14px, 3vw, 28px);
   color: #0d0d0e;
+  background: transparent;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+body::before {
+  z-index: -2;
+  background-image: var(--page-bg-image), var(--page-bg-base);
+  background-size: cover, cover;
+  background-position: center center, center center;
+  background-repeat: no-repeat, no-repeat;
+  background-attachment: fixed, fixed;
+}
+
+body::after {
+  z-index: -1;
+  background: var(--page-bg-overlay);
 }
 
 h1 {
@@ -164,7 +191,8 @@ body>footer {
   align-items: flex-start;
   justify-content: center;
   padding-top: clamp(120px, 20vh, 240px);
-  background: radial-gradient(circle at top, #fff9ef, #f1e9de);
+  --page-bg-base: radial-gradient(circle at top, #fff9ef, #f1e9de);
+  --page-bg-overlay: linear-gradient(180deg, rgba(255, 249, 239, 0.42), rgba(241, 233, 222, 0.68));
 }
 
 .auth-page .auth-card {
@@ -1015,12 +1043,108 @@ body>footer {
   gap: 8px;
 }
 
+.background-switcher {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.background-switcher[hidden],
+.background-switcher-panel[hidden] {
+  display: none;
+}
+
+.background-switcher-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(92px, 1fr));
+  gap: 8px;
+  width: min(240px, calc(100vw - 24px));
+  padding: 10px;
+  border-radius: 16px;
+  border: var(--panel-border);
+  background: rgba(255, 252, 246, 0.9);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--panel-shadow);
+}
+
+.background-option {
+  position: relative;
+  overflow: hidden;
+  min-height: 60px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 2px solid rgba(13, 13, 14, 0.14);
+  text-align: left;
+  color: #1a1a1c;
+  background-color: rgba(255, 252, 246, 0.88);
+  background-image: var(--option-preview, linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9));
+  background-size: cover;
+  background-position: center;
+  box-shadow: var(--control-shadow);
+}
+
+.background-option::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 252, 246, 0.72));
+}
+
+.background-option-label,
+.background-option-meta {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.background-option-label {
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.background-option-meta {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #555254;
+}
+
+.background-option.is-active {
+  border-color: rgba(13, 13, 14, 0.38);
+  box-shadow: var(--control-active-glow);
+}
+
+.auth-page .background-switcher {
+  position: fixed;
+  width: auto;
+  margin: 0;
+}
+
 @media (max-width: 900px) {
   .top-right-actions {
     position: static;
     justify-content: center;
     flex-wrap: wrap;
     margin-bottom: 8px;
+  }
+
+  .background-switcher {
+    position: static;
+    width: min(240px, 100%);
+    margin: 0 auto 10px;
+  }
+
+  .background-switcher-panel {
+    width: 100%;
+  }
+
+  .auth-page .background-switcher {
+    position: fixed;
+    width: auto;
+    margin: 0;
   }
 }
 
