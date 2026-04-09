@@ -72,13 +72,21 @@
             }
 
             card.addEventListener('click', () => {
-                location.href = target;
+                if (typeof window.navigateTo === 'function') {
+                    window.navigateTo(target);
+                } else {
+                    location.href = target;
+                }
             });
 
             card.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    location.href = target;
+                    if (typeof window.navigateTo === 'function') {
+                        window.navigateTo(target);
+                    } else {
+                        location.href = target;
+                    }
                 }
             });
         });

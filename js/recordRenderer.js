@@ -576,7 +576,12 @@ document.addEventListener("click", e => {
     const tooltip = e.target.closest(".term-tooltip");
     if (!tooltip || !activeTermId) return;
 
-    location.href = `term.html?id=${activeTermId}`;
+    const href = `term.html?id=${activeTermId}`;
+    if (typeof window.navigateTo === 'function') {
+        window.navigateTo(href);
+    } else {
+        location.href = href;
+    }
     removeTooltip(true);
 });
 
@@ -586,6 +591,11 @@ document.addEventListener("click", e => {
 document.addEventListener("click", e => {
     const tag = e.target.closest(".person-tag");
     if (tag) {
-        location.href = `person.html?id=${tag.dataset.id}`;
+        const href = `person.html?id=${tag.dataset.id}`;
+        if (typeof window.navigateTo === 'function') {
+            window.navigateTo(href);
+        } else {
+            location.href = href;
+        }
     }
 });

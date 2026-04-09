@@ -1,6 +1,6 @@
 /************************************************************
  * bootstrap.js
- * 预加载所有缓存数据（首次进入/清缓存时）
+ * 按页面优先加载关键缓存，再在后台预热其余缓存
  ************************************************************/
 
 const waitForAccess = () => {
@@ -19,8 +19,65 @@ const waitForAccess = () => {
     });
 };
 
+function detectCriticalLoaders() {
+    const loaders = [];
+
+    if (document.getElementById('record-list')) {
+        loaders.push(window.loadAllRecords);
+    }
+
+    if (document.getElementById('people-list')) {
+        loaders.push(window.loadAllPeople);
+        loaders.push(window.loadAllRecords);
+    }
+
+    if (document.getElementById('glossary-list')) {
+        loaders.push(window.loadAllGlossary);
+    }
+
+    if (document.getElementById('person-id')) {
+        loaders.push(window.loadAllPeople);
+        loaders.push(window.loadAllRecords);
+    }
+
+    if (document.getElementById('term-id')) {
+        loaders.push(window.loadAllGlossary);
+        loaders.push(window.loadAllPeople);
+        loaders.push(window.loadAllRecords);
+    }
+
+    return Array.from(new Set(loaders.filter(Boolean)));
+}
+
+function prewarmBackground(loaders) {
+    if (!Array.isArray(loaders) || loaders.length === 0) {
+        return;
+    }
+
+    const run = () => {
+        loaders.forEach((loader) => {
+            Promise.resolve(loader()).catch(() => {});
+        });
+    };
+
+    if ('requestIdleCallback' in window) {
+        window.requestIdleCallback(run, { timeout: 1000 });
+    } else {
+        window.setTimeout(run, 300);
+    }
+}
+
 window.cacheReadyPromise = (async () => {
     await waitForAccess();
-    const isGuidePage = document.body.classList.contains('guide-page');
-    return window.ensureAllCachesLoaded({ showOverlay: !isGuidePage });
+
+    const criticalLoaders = detectCriticalLoaders();
+    if (criticalLoaders.length === 0) {
+        return;
+    }
+
+    await Promise.all(criticalLoaders.map((loader) => loader()));
+
+    const allLoaders = [window.loadAllRecords, window.loadAllPeople, window.loadAllGlossary].filter(Boolean);
+    const backgroundLoaders = allLoaders.filter((loader) => !criticalLoaders.includes(loader));
+    prewarmBackground(backgroundLoaders);
 })();
