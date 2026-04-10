@@ -9,7 +9,7 @@ window.BACKGROUND_OPTIONS = [
         id: "city-night-comet",
         label: "城市夜空",
         meta: "流星 / 天台 / 夜景",
-        image: "images/backgrounds/wallhaven-8oy372.jpg",
-        preview: "url('images/backgrounds/wallhaven-8oy372.jpg')"
+        image: "images/backgrounds/your_name.png",
+        preview: "url('images/backgrounds/your_name.png')"
     }
 ];
