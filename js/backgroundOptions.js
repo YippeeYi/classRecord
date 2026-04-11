@@ -6,10 +6,17 @@ window.BACKGROUND_OPTIONS = [
         preview: "linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9)"
     },
     {
-        id: "city-night-comet",
-        label: "城市夜空",
-        meta: "流星 / 天台 / 夜景",
+        id: "your_name",
+        label: "你的名字",
+        meta: "",
         image: "images/backgrounds/your_name.png",
         preview: "url('images/backgrounds/your_name.png')"
+    },
+    {
+        id: "weather_with_you",
+        label: "天气之子",
+        meta: "",
+        image: "images/backgrounds/weather_with_you.png",
+        preview: "url('images/backgrounds/weather_with_you.png')"
     }
 ];
