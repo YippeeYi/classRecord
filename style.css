@@ -83,12 +83,6 @@
   --guide-panel-bg: color-mix(in srgb, var(--theme-surface) 82%, transparent);
   --guide-card-bg: linear-gradient(160deg, color-mix(in srgb, var(--theme-surface) 94%, white), color-mix(in srgb, var(--theme-surface-strong) 92%, #f3e8db));
   --progress-track-bg: color-mix(in srgb, var(--theme-surface-strong) 60%, rgba(148, 163, 184, 0.35));
-  --floating-text-stroke:
-    -0.6px -0.6px 0 rgba(255, 255, 255, 0.32),
-    0.6px -0.6px 0 rgba(255, 255, 255, 0.32),
-    -0.6px 0.6px 0 rgba(255, 255, 255, 0.32),
-    0.6px 0.6px 0 rgba(255, 255, 255, 0.32),
-    0 2px 10px rgba(var(--theme-rgb), 0.2);
 }
 
 h1,
@@ -106,25 +100,6 @@ body {
   padding: clamp(14px, 3vw, 28px);
   color: var(--text-main);
   background: transparent;
-}
-
-:is(body > h1,
-  body > h2,
-  .notice,
-  .footer,
-  .record-filter label,
-  .sort-controls,
-  .meta,
-  .content,
-  .person-info,
-  .info-row,
-  .guide-tip,
-  .guide-progress-text,
-  .guide-stat-label,
-  .guide-stat-value,
-  .loading-overlay-title,
-  .loading-overlay-subtitle) {
-  text-shadow: var(--floating-text-stroke);
 }
 
 body::before,
