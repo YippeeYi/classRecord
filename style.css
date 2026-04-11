@@ -83,11 +83,6 @@
   --guide-panel-bg: color-mix(in srgb, var(--theme-surface) 82%, transparent);
   --guide-card-bg: linear-gradient(160deg, color-mix(in srgb, var(--theme-surface) 94%, white), color-mix(in srgb, var(--theme-surface-strong) 92%, #f3e8db));
   --progress-track-bg: color-mix(in srgb, var(--theme-surface-strong) 60%, rgba(148, 163, 184, 0.35));
-  --floating-text-bg: linear-gradient(180deg, color-mix(in srgb, var(--theme-surface) 52%, transparent), color-mix(in srgb, var(--theme-surface-strong) 16%, transparent));
-  --floating-text-border: color-mix(in srgb, var(--theme-surface) 28%, transparent);
-  --floating-text-shadow: 0 1px 0 rgba(255, 255, 255, 0.32), 0 6px 18px rgba(var(--theme-rgb), 0.18);
-  --floating-text-padding-inline: 0.32em;
-  --floating-text-padding-block: 0.14em;
 }
 
 h1,
@@ -105,41 +100,6 @@ body {
   padding: clamp(14px, 3vw, 28px);
   color: var(--text-main);
   background: transparent;
-}
-
-:is(body > h1,
-  body > h2,
-  .notice,
-  .footer,
-  .record-filter label,
-  .sort-controls,
-  .meta,
-  .content,
-  .person-info,
-  .info-row,
-  .guide-tip,
-  .guide-progress-text,
-  .guide-stat-label,
-  .guide-stat-value,
-  .loading-overlay-title,
-  .loading-overlay-subtitle) {
-  text-shadow: var(--floating-text-shadow);
-}
-
-:is(body > h1,
-  body > h2,
-  .notice,
-  .footer,
-  .record-filter label,
-  .sort-controls,
-  .guide-tip,
-  .guide-progress-text) {
-  display: inline-block;
-  padding: var(--floating-text-padding-block) var(--floating-text-padding-inline);
-  border-radius: 0.55em;
-  background: var(--floating-text-bg);
-  box-shadow: inset 0 0 0 1px var(--floating-text-border);
-  backdrop-filter: blur(4px);
 }
 
 body::before,
