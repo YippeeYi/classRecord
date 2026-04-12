@@ -32,6 +32,13 @@ window.BACKGROUND_OPTIONS = [
         meta: "红日",
         image: "images/backgrounds/red-sun.png",
         preview: "url('images/backgrounds/red-sun.png')"
+    },
+    {
+        id: "green-forest",
+        label: "风景",
+        meta: "绿林",
+        image: "images/backgrounds/green-forest.png",
+        preview: "url('images/backgrounds/green-forest.png')"
     }
 
 ];
