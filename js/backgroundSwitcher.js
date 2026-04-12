@@ -77,7 +77,7 @@
     const toggleButton = document.createElement("button");
     toggleButton.type = "button";
     toggleButton.className = "btn-action background-switcher-toggle";
-    toggleButton.textContent = "🖌️";
+    toggleButton.textContent = "🎨";
     toggleButton.setAttribute("aria-expanded", "false");
     toggleButton.setAttribute("aria-controls", "background-switcher-panel");
 
