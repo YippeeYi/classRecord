@@ -29,7 +29,7 @@ window.BACKGROUND_OPTIONS = [
     {
         id: "red-sun",
         label: "风景",
-        meta: "",
+        meta: "红日",
         image: "images/backgrounds/red-sun.png",
         preview: "url('images/backgrounds/red-sun.png')"
     }
