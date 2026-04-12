@@ -6,17 +6,25 @@ window.BACKGROUND_OPTIONS = [
         preview: "linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9)"
     },
     {
-        id: "your_name",
-        label: "你的名字",
-        meta: "",
-        image: "images/backgrounds/your_name.png",
-        preview: "url('images/backgrounds/your_name.png')"
+        id: "your-name",
+        label: "电影",
+        meta: "你的名字",
+        image: "images/backgrounds/your-name.png",
+        preview: "url('images/backgrounds/your-name.png')"
     },
     {
-        id: "weather_with_you",
-        label: "天气之子",
-        meta: "",
-        image: "images/backgrounds/weather_with_you.png",
-        preview: "url('images/backgrounds/weather_with_you.png')"
+        id: "weather-with-you",
+        label: "电影",
+        meta: "天气之子",
+        image: "images/backgrounds/weather-with-you.png",
+        preview: "url('images/backgrounds/weather-with-you.png')"
+    },
+    {
+        id: "blue-sky-mountain",
+        label: "风景",
+        meta: `Photo by <a href="https://unsplash.com/@asoggetti?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Alessio Soggetti</a> on <a href="https://unsplash.com/photos/mountains-covered-with-fogs-gdE-5Oui1Y0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>`,
+        image: "images/backgrounds/blue-sky-mountain.jpg",
+        preview: "url('images/backgrounds/blue-sky-mountain.jpg')"
     }
+
 ];
