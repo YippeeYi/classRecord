@@ -25,6 +25,13 @@ window.BACKGROUND_OPTIONS = [
         meta: `Photo by <a href="https://unsplash.com/@asoggetti?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Alessio Soggetti</a> on <a href="https://unsplash.com/photos/mountains-covered-with-fogs-gdE-5Oui1Y0?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>`,
         image: "images/backgrounds/blue-sky-mountain.jpg",
         preview: "url('images/backgrounds/blue-sky-mountain.jpg')"
+    },
+    {
+        id: "red-sun",
+        label: "风景",
+        meta: "",
+        image: "images/backgrounds/red-sun.png",
+        preview: "url('images/backgrounds/red-sun.png')"
     }
 
 ];
