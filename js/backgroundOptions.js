@@ -39,6 +39,13 @@ window.BACKGROUND_OPTIONS = [
         meta: "绿林",
         image: "images/backgrounds/green-forest.png",
         preview: "url('images/backgrounds/green-forest.png')"
+    },
+    {
+        id: "dark-blue-sky",
+        label: "风景",
+        meta: `Photo by <a href="https://unsplash.com/@colinwatts?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Colin Watts</a> on <a href="https://unsplash.com/photos/star-trails-over-a-sea-of-clouds-at-night-bsrrDp5YwCM?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>`,
+        image: "images/backgrounds/dark-blue-sky.jpg",
+        preview: "url('images/backgrounds/dark-blue-sky.jpg')"
     }
 
 ];
