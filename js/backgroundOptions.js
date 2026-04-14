@@ -46,6 +46,20 @@ window.BACKGROUND_OPTIONS = [
         meta: `Photo by <a href="https://unsplash.com/@colinwatts?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Colin Watts</a> on <a href="https://unsplash.com/photos/star-trails-over-a-sea-of-clouds-at-night-bsrrDp5YwCM?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>`,
         image: "images/backgrounds/dark-blue-sky.jpg",
         preview: "url('images/backgrounds/dark-blue-sky.jpg')"
+    },
+    {
+        id: "dark-red-ship",
+        label: "风景",
+        meta: "深红船",
+        image: "images/backgrounds/dark-red-ship.png",
+        preview: "url('images/backgrounds/dark-red-ship.png')"
+    },
+    {
+        id: "pink-orange",
+        label: "风景",
+        meta: `Photo by <a href="https://unsplash.com/@wolfgang_hasselmann?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Wolfgang Hasselmann</a> on <a href="https://unsplash.com/photos/vibrant-alien-landscape-with-purple-grass-and-orange-sky-4oWJo3N86os?utm_source=unsplash&utm_medium=referral&utm_content=creditCopyText">Unsplash</a>`,
+        image: "images/backgrounds/pink-orange.jpg",
+        preview: "url('images/backgrounds/pink-orange.jpg')"
     }
 
 ];
