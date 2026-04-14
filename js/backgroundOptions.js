@@ -13,11 +13,11 @@ window.BACKGROUND_OPTIONS = [
         preview: "url('images/backgrounds/your-name.png')"
     },
     {
-        id: "weather-with-you",
+        id: "weathering-with-you",
         label: "电影",
         meta: "天气之子",
-        image: "images/backgrounds/weather-with-you.png",
-        preview: "url('images/backgrounds/weather-with-you.png')"
+        image: "images/backgrounds/weathering-with-you.png",
+        preview: "url('images/backgrounds/weathering-with-you.png')"
     },
     {
         id: "blue-sky-mountain",
