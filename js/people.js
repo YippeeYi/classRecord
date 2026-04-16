@@ -1,4 +1,4 @@
-/************************************************************
+﻿/************************************************************
  * people.js
  * 人物名单页面
  ************************************************************/
@@ -10,9 +10,6 @@ let records = [];
 let currentSortKey = "id";
 let currentSortOrder = "asc";
 
-/* ===============================
-   启动加载流程
-   =============================== */
 const cacheReady = window.cacheReadyPromise || Promise.resolve();
 
 cacheReady.then(() => Promise.all([
@@ -24,72 +21,74 @@ cacheReady.then(() => Promise.all([
     renderByRole(currentSortKey, currentSortOrder);
 });
 
-/* ===============================
-   角色显示名映射
-   =============================== */
 const roleNameMap = {
     student: "同学",
     teacher: "老师",
     other: "其他"
 };
 
-/* ===============================
-   按角色分组渲染
-   =============================== */
 function renderByRole(sortKey = "id", sortOrder = "asc") {
     container.innerHTML = "";
 
     const groups = { student: [], teacher: [], other: [] };
 
-    peopleList.forEach(p => {
-        if (groups[p.role]) groups[p.role].push(p);
-        else groups.other.push(p);
+    peopleList.forEach((person) => {
+        if (groups[person.role]) {
+            groups[person.role].push(person);
+        } else {
+            groups.other.push(person);
+        }
     });
 
-    Object.keys(groups).forEach(role => {
+    Object.keys(groups).forEach((role) => {
         const list = sortPeople(groups[role], sortKey, sortOrder);
-        if (!list.length) return;
+        if (!list.length) {
+            return;
+        }
 
         const section = document.createElement("section");
+        section.className = "list-section";
         section.innerHTML = `
-      <h2>${roleNameMap[role]}</h2>
-      <table class="people-table">
-        <thead>
-          <tr>
-            <th>序号</th>
-            <th>ID</th>
-            <th>别名</th>
-            <th>参与</th>
-            <th>记录</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${list.map((p, i) => `
-            <tr data-id="${p.id}">
-              <td>${i + 1}</td>
-              <td>${p.id}</td>
-              <td>${parseContent(p.alias) || "—"}</td>
-              <td>${countAsParticipant(p.id)}</td>
-              <td>${p.role === "student" ? countAsAuthor(p.id) : "—"}</td>
-            </tr>
-          `).join("")}
-        </tbody>
-      </table>
-    `;
+            <div class="list-section-heading">
+                <h2 class="list-section-title">${roleNameMap[role]}</h2>
+                <span class="list-section-count">${list.length}</span>
+            </div>
+            <div class="table-shell">
+                <table class="people-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>ID</th>
+                            <th>别名</th>
+                            <th>参与</th>
+                            <th>记录</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${list.map((person, index) => `
+                            <tr data-id="${person.id}">
+                                <td>${index + 1}</td>
+                                <td>${person.id}</td>
+                                <td>${parseContent(person.alias) || "-"}</td>
+                                <td>${countAsParticipant(person.id)}</td>
+                                <td>${person.role === "student" ? countAsAuthor(person.id) : "-"}</td>
+                            </tr>
+                        `).join("")}
+                    </tbody>
+                </table>
+            </div>
+        `;
         container.appendChild(section);
     });
 
     bindRowClick();
 }
 
-/* ===============================
-   行点击跳转
-   =============================== */
 function bindRowClick() {
-    document.querySelectorAll(".people-table tbody tr").forEach(tr => {
+    document.querySelectorAll(".people-table tbody tr").forEach((tr) => {
         tr.onclick = () => {
             const href = `person.html?id=${tr.dataset.id}`;
-            if (typeof window.navigateTo === 'function') {
+            if (typeof window.navigateTo === "function") {
                 window.navigateTo(href);
             } else {
                 location.href = href;
@@ -98,47 +97,36 @@ function bindRowClick() {
     });
 }
 
-/* ===============================
-   统计
-   =============================== */
 function countAsAuthor(id) {
-    return records.filter(r => r.author === id).length;
+    return records.filter((record) => record.author === id).length;
 }
 
 function countAsParticipant(id) {
     const reg = new RegExp(`\\[\\[${id}\\|.+?\\]\\]`);
-    return records.filter(r => r.content && reg.test(r.content)).length;
+    return records.filter((record) => record.content && reg.test(record.content)).length;
 }
 
-/* ===============================
-   排序
-   =============================== */
 function sortPeople(list, key, order) {
     return [...list].sort((a, b) => {
-        const get = p => ({
-            id: p[key] || "",
-            participation: countAsParticipant(p.id),
-            record: p.role === "student" ? countAsAuthor(p.id) : 0
+        const getValue = (person) => ({
+            id: person[key] || "",
+            participation: countAsParticipant(person.id),
+            record: person.role === "student" ? countAsAuthor(person.id) : 0
         }[key]);
 
-        let A = get(a);
-        let B = get(b);
+        const A = getValue(a);
+        const B = getValue(b);
 
-        // id 用字符串比较
         if (key === "id") {
             return order === "asc"
                 ? A.localeCompare(B)
                 : B.localeCompare(A);
         }
 
-        // 其它字段用数字比较
         return order === "asc" ? A - B : B - A;
     });
 }
 
-/* ===============================
-   绑定排序按钮
-   =============================== */
 const sortControls = document.querySelector(".sort-controls");
 const sortDropdown = sortControls.querySelector(".sort-dropdown");
 const keyTrigger = sortControls.querySelector(".dropdown-trigger");
@@ -146,24 +134,24 @@ const keyLabel = keyTrigger.querySelector(".dropdown-label");
 const orderToggle = sortControls.querySelector(".sort-order-toggle");
 
 const sortKeyText = {
-    id: "按 id",
+    id: "按 ID",
     participation: "按参与事件数",
     record: "按记录事件数"
 };
 
 function updateSortControls() {
     keyTrigger.dataset.value = currentSortKey;
-    keyLabel.textContent = sortKeyText[currentSortKey] || "按 id";
+    keyLabel.textContent = sortKeyText[currentSortKey] || "按 ID";
 
     orderToggle.dataset.value = currentSortOrder;
     orderToggle.textContent = currentSortOrder === "asc" ? "升序" : "降序";
 
-    sortControls.querySelectorAll(".sort-option").forEach(option => {
+    sortControls.querySelectorAll(".sort-option").forEach((option) => {
         option.classList.toggle("is-active", option.dataset.value === currentSortKey);
     });
 }
 
-sortControls.addEventListener("click", event => {
+sortControls.addEventListener("click", (event) => {
     const option = event.target.closest(".sort-option");
     if (option) {
         currentSortKey = option.dataset.value || "id";

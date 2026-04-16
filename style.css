@@ -1,6 +1,6 @@
-/* =====================================================================
-   一、基础层（字体 / 变量 / 页面级通用样式）
-   说明：本区仅放“全站级”定义，便于后续组件样式按模块向下覆盖。
+﻿/* =====================================================================
+   涓€銆佸熀纭€灞傦紙瀛椾綋 / 鍙橀噺 / 椤甸潰绾ч€氱敤鏍峰紡锛?
+   璇存槑锛氭湰鍖轰粎鏀锯€滃叏绔欑骇鈥濆畾涔夛紝渚夸簬鍚庣画缁勪欢鏍峰紡鎸夋ā鍧楀悜涓嬭鐩栥€?
    ===================================================================== */
 
 @font-face {
@@ -12,7 +12,7 @@
 }
 
 :root {
-  /* 色板与阴影变量：供按钮、卡片、面板复用 */
+  /* 鑹叉澘涓庨槾褰卞彉閲忥細渚涙寜閽€佸崱鐗囥€侀潰鏉垮鐢?*/
   --bg-main: #faf6ef;
   --theme-accent: #8a6f61;
   --theme-accent-strong: #4f4038;
@@ -20,7 +20,10 @@
   --theme-surface-strong: #f3e9db;
   --page-bg-base: radial-gradient(circle at 20% -10%, #fff9ef 0%, #f8f1e6 48%, #f2eade 100%);
   --page-bg-image: none;
-  --page-bg-overlay: linear-gradient(180deg, rgba(250, 246, 239, 0.6), rgba(242, 234, 222, 0.78));
+  --page-bg-size: cover;
+  --page-bg-position: center center;
+  --page-bg-repeat: no-repeat;
+  --page-bg-overlay: linear-gradient(180deg, rgba(250, 246, 239, 0.16), rgba(242, 234, 222, 0.34));
   --bg-card: rgba(255, 252, 246, 0.86);
   --text-main: #151316;
   --text-strong: #141416;
@@ -113,9 +116,9 @@ body::after {
 body::before {
   z-index: -2;
   background-image: var(--page-bg-image), var(--page-bg-base);
-  background-size: cover, cover;
-  background-position: center center, center center;
-  background-repeat: no-repeat, no-repeat;
+  background-size: var(--page-bg-size), cover;
+  background-position: var(--page-bg-position), center center;
+  background-repeat: var(--page-bg-repeat), no-repeat;
   background-attachment: fixed, fixed;
 }
 
@@ -141,13 +144,13 @@ body>#record-list,
 body>#people-list,
 body>#glossary-list,
 body>footer {
-  /* 页面主要内容统一宽度与水平居中 */
+  /* 椤甸潰涓昏鍐呭缁熶竴瀹藉害涓庢按骞冲眳涓?*/
   width: min(980px, 94vw);
   margin-left: auto;
   margin-right: auto;
 }
 
-/* 统一的浅色高光渐变（用于中性按钮/控件） */
+/* 缁熶竴鐨勬祬鑹查珮鍏夋笎鍙橈紙鐢ㄤ簬涓€ф寜閽?鎺т欢锛?*/
 :is(.top-action-btn,
   .btn-action,
   .btn-select,
@@ -162,7 +165,7 @@ body>footer {
   background-image: var(--control-gradient);
 }
 
-/* 统一的深色激活渐变（用于激活态/强调按钮） */
+/* 缁熶竴鐨勬繁鑹叉縺娲绘笎鍙橈紙鐢ㄤ簬婵€娲绘€?寮鸿皟鎸夐挳锛?*/
 :is(.top-nav button,
   .sort-option.is-active,
   .auth-page .auth-form button,
@@ -171,7 +174,7 @@ body>footer {
   background-image: var(--control-active-gradient);
 }
 
-/* 统一按压反馈，保持组件交互一致 */
+/* 缁熶竴鎸夊帇鍙嶉锛屼繚鎸佺粍浠朵氦浜掍竴鑷?*/
 :is(.top-nav button,
   .top-action-btn,
   .record-filter .filter-dropdown-trigger,
@@ -324,17 +327,17 @@ body>footer {
 }
 
 /* =====================================================================
-   二、信息提示层（说明文案 / 页脚）
+   浜屻€佷俊鎭彁绀哄眰锛堣鏄庢枃妗?/ 椤佃剼锛?
    ===================================================================== */
 
-/* 隐私安全提示 */
+/* 闅愮瀹夊叏鎻愮ず */
 .notice {
   font-size: 14px;
   color: var(--text-subtle);
   margin-bottom: 20px;
 }
 
-/* 信息收集说明 */
+/* 淇℃伅鏀堕泦璇存槑 */
 .footer {
   margin-top: 40px;
   padding: 14px 0;
@@ -345,10 +348,10 @@ body>footer {
 }
 
 /* =====================================================================
-   三、导航与全局操作层
+   涓夈€佸鑸笌鍏ㄥ眬鎿嶄綔灞?
    ===================================================================== */
 
-/* 顶部导航样式 */
+/* 椤堕儴瀵艰埅鏍峰紡 */
 .top-nav {
   background: var(--nav-bg);
   backdrop-filter: blur(10px);
@@ -361,7 +364,7 @@ body>footer {
   z-index: 100;
 }
 
-/* 导航按钮样式 */
+/* 瀵艰埅鎸夐挳鏍峰紡 */
 .top-nav button {
   position: relative;
   overflow: hidden;
@@ -387,13 +390,13 @@ body>footer {
   outline: none;
 }
 
-/* 主页面右上角功能按钮：样式在后续 .top-right-actions 与通用按钮中定义 */
+/* 涓婚〉闈㈠彸涓婅鍔熻兘鎸夐挳锛氭牱寮忓湪鍚庣画 .top-right-actions 涓庨€氱敤鎸夐挳涓畾涔?*/
 
 /* =====================================================================
-   四、记录页模块（筛选 / 卡片）
+   鍥涖€佽褰曢〉妯″潡锛堢瓫閫?/ 鍗＄墖锛?
    ===================================================================== */
 
-/* 记录筛选 */
+/* 璁板綍绛涢€?*/
 .record-filter {
   display: flex;
   flex-wrap: wrap;
@@ -552,10 +555,10 @@ body>footer {
 
 
 
-/* 单条记录卡片 */
+/* 鍗曟潯璁板綍鍗＄墖 */
 .record {
   background: var(--bg-card);
-  backdrop-filter: blur(6px);
+  backdrop-filter: blur(10px);
   border-radius: 14px;
   padding: 16px 18px;
   margin-bottom: 18px;
@@ -567,7 +570,7 @@ body>footer {
 
 .record:hover {
   box-shadow: 0 16px 36px rgba(var(--theme-rgb), 0.2);
-  /* 鼠标悬停时加深阴影 */
+  /* 榧犳爣鎮仠鏃跺姞娣遍槾褰?*/
 }
 
 @keyframes fadeInUp {
@@ -582,17 +585,17 @@ body>footer {
   }
 }
 
-/* 重要记录 */
+/* 閲嶈璁板綍 */
 .record.importance-important {
   border-left: 7px solid var(--important-border);
   background: var(--important-bg);
 }
 
 /* =====================================================================
-   五、记录内容层（元信息 / 正文）
+   浜斻€佽褰曞唴瀹瑰眰锛堝厓淇℃伅 / 姝ｆ枃锛?
    ===================================================================== */
 
-/* 顶部信息行 */
+/* 椤堕儴淇℃伅琛?*/
 .meta {
   margin-top: 4px;
   font-size: 14px;
@@ -602,7 +605,7 @@ body>footer {
   align-items: center;
 }
 
-/* 内容 */
+/* 鍐呭 */
 .content {
   margin-top: 8px;
   font-size: 18px;
@@ -611,10 +614,10 @@ body>footer {
 }
 
 /* =====================================================================
-   六、附件展示层（图片 / 附件列表）
+   鍏€侀檮浠跺睍绀哄眰锛堝浘鐗?/ 闄勪欢鍒楄〃锛?
    ===================================================================== */
 
-/* 图片附件按钮 */
+/* 鍥剧墖闄勪欢鎸夐挳 */
 .icon-group {
   position: absolute;
   right: 14px;
@@ -624,7 +627,7 @@ body>footer {
   gap: 8px;
   align-items: center;
 
-  /* 默认隐藏 */
+  /* 榛樿闅愯棌 */
   opacity: 0;
   transform: translateY(6px);
   pointer-events: none;
@@ -634,7 +637,7 @@ body>footer {
     transform 0.18s ease;
 }
 
-/* hover 整个 record 时显示 */
+/* hover 鏁翠釜 record 鏃舵樉绀?*/
 .record:hover .icon-group {
   opacity: 1;
   transform: translateY(0);
@@ -653,7 +656,7 @@ body>footer {
   height: 30px;
 
   font-size: 17px;
-  /* emoji 实际视觉更居中 */
+  /* emoji 瀹為檯瑙嗚鏇村眳涓?*/
   line-height: 1;
 
   border-radius: 999px;
@@ -681,7 +684,7 @@ body>footer {
   box-shadow: var(--control-shadow-hover);
 }
 
-/* 展开区域 */
+/* 灞曞紑鍖哄煙 */
 .image-wrapper {
   display: none;
   margin-top: 12px;
@@ -721,10 +724,10 @@ body>footer {
 }
 
 /* =====================================================================
-   七、文本标记层（人物 / 术语 / 黑幕）
+   涓冦€佹枃鏈爣璁板眰锛堜汉鐗?/ 鏈 / 榛戝箷锛?
    ===================================================================== */
 
-/* 人名悬停&单击 */
+/* 浜哄悕鎮仠&鍗曞嚮 */
 .person-tag {
   display: inline-block;
   cursor: pointer;
@@ -738,7 +741,7 @@ body>footer {
   border-bottom-color: var(--link-accent-hover);
 }
 
-/* 术语 */
+/* 鏈 */
 .term-tag {
   display: inline-block;
   color: var(--term-accent);
@@ -788,7 +791,7 @@ body>footer {
   user-select: none;
 }
 
-/* 黑幕 */
+/* 榛戝箷 */
 
 .redacted {
   position: relative;
@@ -807,7 +810,7 @@ body>footer {
   transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-/* 黑幕状态时也隐藏内部标签样式，避免术语/人名露出 */
+/* 榛戝箷鐘舵€佹椂涔熼殣钘忓唴閮ㄦ爣绛炬牱寮忥紝閬垮厤鏈/浜哄悕闇插嚭 */
 .redacted:not(:hover) .redacted-content * {
   color: transparent !important;
   background: transparent !important;
@@ -820,14 +823,14 @@ body>footer {
   display: none;
 }
 
-/* hover 揭开效果：透明度渐变 */
+/* hover 鎻紑鏁堟灉锛氶€忔槑搴︽笎鍙?*/
 .redacted:hover .redacted-content {
   color: inherit;
   background-color: rgba(0, 0, 0, 0);
   box-shadow: inset 0 0 0 1px transparent;
 }
 
-/* 适应多行文本黑幕效果 */
+/* 閫傚簲澶氳鏂囨湰榛戝箷鏁堟灉 */
 .redacted-content,
 .redacted-mask {
   display: inline;
@@ -835,22 +838,62 @@ body>footer {
 }
 
 /* =====================================================================
-   八、索引表格层（人物 / 术语）
+   鍏€佺储寮曡〃鏍煎眰锛堜汉鐗?/ 鏈锛?
    ===================================================================== */
+
+.list-section {
+  margin-top: 22px;
+}
+
+.list-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 0 4px;
+}
+
+.list-section-title {
+  margin: 0;
+  font-size: clamp(21px, 2.6vw, 30px);
+}
+
+.list-section-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  min-height: 32px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 18%, transparent);
+  background: color-mix(in srgb, var(--theme-surface) 88%, white);
+  box-shadow: var(--control-shadow);
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.table-shell {
+  overflow-x: auto;
+  border-radius: 18px;
+}
 
 .people-table,
 .glossary-table {
   width: 100%;
-  max-width: 600px;
-  margin: 20px 0 20px 20px;
+  max-width: none;
+  margin: 0;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 16px;
   border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 24%, transparent);
-  border-radius: 12px;
+  border-radius: 18px;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
   animation: fadeInUp 0.4s ease both;
+  background: rgba(255, 252, 246, 0.76);
+  backdrop-filter: blur(14px);
 }
 
 .people-table th,
@@ -878,6 +921,9 @@ body>footer {
 .people-table th,
 .glossary-table th {
   background: var(--table-header-bg);
+  color: var(--text-strong);
+  font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
 .people-table tbody tr,
@@ -939,21 +985,27 @@ body>footer {
 }
 
 /* =====================================================================
-   九、详情页信息层（人物 / 术语详情）
+   涔濄€佽鎯呴〉淇℃伅灞傦紙浜虹墿 / 鏈璇︽儏锛?
    ===================================================================== */
 
-/* 个人简介 */
+/* 涓汉绠€浠?*/
 .person-info {
   margin-top: 16px;
+  padding: 18px 20px;
+  border-radius: 18px;
+  border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 14%, transparent);
+  background: rgba(255, 252, 246, 0.76);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-soft);
 }
 
 .info-row {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
   line-height: 1.6;
   display: flex;
-  /* 使用 flex 横向排列 label + value */
+  /* 浣跨敤 flex 妯悜鎺掑垪 label + value */
   align-items: flex-start;
-  /* 顶部对齐 */
+  /* 椤堕儴瀵归綈 */
 }
 
 .info-label {
@@ -961,21 +1013,25 @@ body>footer {
   font-size: 1.15em;
   margin-right: 6px;
   flex-shrink: 0;
-  /* 不缩小，保持固定宽度 */
+  /* 涓嶇缉灏忥紝淇濇寔鍥哄畾瀹藉害 */
   width: 60px;
-  /* 可以根据需要调整宽度 */
+  /* 鍙互鏍规嵁闇€瑕佽皟鏁村搴?*/
 }
 
 .info-value {
   font-size: 1em;
   flex: 1;
-  /* 占剩余空间 */
+  /* 鍗犲墿浣欑┖闂?*/
   white-space: pre-wrap;
-  /* 支持换行 */
+  /* 鏀寔鎹㈣ */
+}
+
+.info-row:last-child {
+  margin-bottom: 0;
 }
 
 /* =====================================================================
-   十、切换控件层（人物页 tab）
+   鍗併€佸垏鎹㈡帶浠跺眰锛堜汉鐗╅〉 tab锛?
    ===================================================================== */
 
 .switch-group {
@@ -983,6 +1039,13 @@ body>footer {
   margin-bottom: 18px;
   display: flex;
   gap: 10px;
+}
+
+.record-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 18px;
 }
 
 .switch-btn {
@@ -1026,11 +1089,11 @@ body>footer {
 }
 
 /* =====================================================================
-   十一、排序控件层（人物 / 术语页）
+   鍗佷竴銆佹帓搴忔帶浠跺眰锛堜汉鐗?/ 鏈椤碉級
    ===================================================================== */
 
 .sort-controls {
-  margin: 18px 0 16px 20px;
+  margin: 18px 0 16px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1091,9 +1154,11 @@ body>footer {
   top: 12px;
   right: 12px;
   z-index: 20;
+  display: flex;
+  gap: 8px;
 }
 
-/* 全局右上角操作区：紧跟 page-header 定义，避免分散到页面专属模块末尾 */
+/* 鍏ㄥ眬鍙充笂瑙掓搷浣滃尯锛氱揣璺?page-header 瀹氫箟锛岄伩鍏嶅垎鏁ｅ埌椤甸潰涓撳睘妯″潡鏈熬 */
 .top-right-actions {
   position: fixed;
   top: 12px;
@@ -1119,10 +1184,12 @@ body>footer {
 }
 
 .background-switcher-panel {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(92px, 1fr));
-  gap: 8px;
-  width: min(240px, calc(100vw - 24px));
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(320px, calc(100vw - 24px));
+  max-height: min(72vh, 700px);
+  overflow-y: auto;
   padding: 10px;
   border-radius: 16px;
   border: var(--panel-border);
@@ -1131,11 +1198,31 @@ body>footer {
   box-shadow: var(--panel-shadow);
 }
 
+.background-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.background-category-title {
+  margin: 0;
+  padding: 0 2px;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  color: var(--text-soft);
+}
+
+.background-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 8px;
+}
+
 .background-option {
   position: relative;
   overflow: hidden;
-  min-height: 60px;
-  padding: 8px 10px;
+  min-height: 82px;
+  padding: 10px 12px;
   border-radius: 12px;
   border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 16%, transparent);
   text-align: left;
@@ -1151,7 +1238,7 @@ body>footer {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(var(--theme-rgb), 0.22) 45%, rgba(255, 252, 246, 0.72));
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(var(--theme-rgb), 0.14) 42%, rgba(255, 252, 246, 0.6));
 }
 
 .background-option-label,
@@ -1169,7 +1256,7 @@ body>footer {
 .background-option-meta {
   margin-top: 4px;
   font-size: 11px;
-  color: var(--text-subtle);
+  color: color-mix(in srgb, var(--text-subtle) 92%, white);
 }
 
 .background-option.is-active {
@@ -1201,6 +1288,10 @@ body>footer {
     width: 100%;
   }
 
+  .background-category-grid {
+    grid-template-columns: 1fr;
+  }
+
   .auth-page .background-switcher {
     position: fixed;
     width: auto;
@@ -1208,7 +1299,35 @@ body>footer {
   }
 }
 
-/* 可访问性：统一可聚焦控件 focus-visible 表现 */
+@media (max-width: 720px) {
+  .list-section-heading {
+    align-items: flex-start;
+  }
+
+  .people-table th,
+  .people-table td,
+  .glossary-table th,
+  .glossary-table td {
+    padding: 9px 10px;
+    font-size: 14px;
+  }
+
+  .person-info {
+    padding: 16px;
+  }
+
+  .info-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .info-label {
+    width: auto;
+    margin-right: 0;
+  }
+}
+
+/* 鍙闂€э細缁熶竴鍙仛鐒︽帶浠?focus-visible 琛ㄧ幇 */
 .top-nav button:focus-visible,
 .top-action-btn:focus-visible,
 .record-filter button:focus-visible,
@@ -1228,8 +1347,8 @@ body>footer {
 }
 
 /* =====================================================================
-   十二、导览页模块（guide 页面）
-   说明：导览页布局与响应式规则集中在文件末尾，避免与通用页样式交叉。
+   鍗佷簩銆佸瑙堥〉妯″潡锛坓uide 椤甸潰锛?
+   璇存槑锛氬瑙堥〉甯冨眬涓庡搷搴斿紡瑙勫垯闆嗕腑鍦ㄦ枃浠舵湯灏撅紝閬垮厤涓庨€氱敤椤垫牱寮忎氦鍙夈€?
    ===================================================================== */
 .guide-page {
   min-height: 100vh;
@@ -1397,3 +1516,4 @@ body>footer {
     gap: 14px;
   }
 }
+

@@ -1,4 +1,4 @@
-(function () {
+﻿(function () {
     const storageKey = "classRecordBackgroundId";
     const paletteStorageKey = "classRecordBackgroundPaletteCache.v1";
     const options = Array.isArray(window.BACKGROUND_OPTIONS) ? window.BACKGROUND_OPTIONS : [];
@@ -9,6 +9,9 @@
 
     const root = document.documentElement;
     const fallbackId = options[0].id;
+    const preloadLinkCache = new Set();
+    const imageWarmCache = new Map();
+    const categoryOrder = ["\u57fa\u7840", "\u5f71\u50cf", "\u98ce\u666f", "\u5176\u4ed6"];
     const storage = {
         get() {
             try {
@@ -55,20 +58,97 @@
 
     const normalizeOption = (option) => ({
         id: option.id,
+        category: option.category || "\u5176\u4ed6",
         label: option.label || option.id,
         meta: option.meta || "Custom background",
         image: option.image || "",
+        fit: option.fit || (option.image ? "contain" : "cover"),
+        position: option.position || "center center",
         preview: option.preview || (option.image ? `url("${option.image}")` : "linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9)")
     });
 
     const normalizedOptions = options.map(normalizeOption);
     const normalizedById = new Map(normalizedOptions.map((option) => [option.id, option]));
     let activeThemeToken = 0;
+    let hasWarmedGallery = false;
 
     let currentId = storage.get();
     if (!normalizedById.has(currentId)) {
         currentId = fallbackId;
     }
+
+    const ensureResourceHint = (imageSrc) => {
+        if (!imageSrc || preloadLinkCache.has(imageSrc)) {
+            return;
+        }
+
+        const link = document.createElement("link");
+        link.rel = "preload";
+        link.as = "image";
+        link.href = imageSrc;
+        document.head.appendChild(link);
+        preloadLinkCache.add(imageSrc);
+    };
+
+    const warmImage = (imageSrc, priority = "low") => {
+        if (!imageSrc) {
+            return Promise.resolve();
+        }
+
+        ensureResourceHint(imageSrc);
+
+        if (imageWarmCache.has(imageSrc)) {
+            return imageWarmCache.get(imageSrc);
+        }
+
+        const image = new Image();
+        image.decoding = "async";
+        image.loading = priority === "high" ? "eager" : "lazy";
+        image.fetchPriority = priority;
+
+        const preloadPromise = new Promise((resolve, reject) => {
+            image.onload = () => resolve(image);
+            image.onerror = reject;
+        }).catch(() => null);
+
+        image.src = imageSrc;
+        imageWarmCache.set(imageSrc, preloadPromise);
+        return preloadPromise;
+    };
+
+    const warmVisibleBackgrounds = (activeOption) => {
+        const activeIndex = normalizedOptions.findIndex((option) => option.id === activeOption.id);
+        const nearby = normalizedOptions
+            .slice(Math.max(0, activeIndex - 1), activeIndex + 3)
+            .filter((option) => option.image);
+
+        nearby.forEach((option, index) => {
+            warmImage(option.image, index === 0 ? "high" : "low");
+        });
+    };
+
+    const warmAllBackgrounds = () => {
+        if (hasWarmedGallery) {
+            return;
+        }
+        hasWarmedGallery = true;
+
+        const run = () => {
+            normalizedOptions
+                .filter((option) => option.image)
+                .forEach((option, index) => {
+                    window.setTimeout(() => {
+                        warmImage(option.image, index < 2 ? "high" : "low");
+                    }, index * 140);
+                });
+        };
+
+        if ("requestIdleCallback" in window) {
+            window.requestIdleCallback(run, { timeout: 1200 });
+        } else {
+            window.setTimeout(run, 280);
+        }
+    };
 
     const switcher = document.createElement("section");
     switcher.className = "background-switcher";
@@ -77,7 +157,9 @@
     const toggleButton = document.createElement("button");
     toggleButton.type = "button";
     toggleButton.className = "btn-action background-switcher-toggle";
-    toggleButton.textContent = "🎨";
+    toggleButton.textContent = "\ud83c\udfa8";
+    toggleButton.setAttribute("aria-label", "\u9009\u62e9\u80cc\u666f");
+    toggleButton.setAttribute("title", "\u9009\u62e9\u80cc\u666f");
     toggleButton.setAttribute("aria-expanded", "false");
     toggleButton.setAttribute("aria-controls", "background-switcher-panel");
 
@@ -232,22 +314,22 @@
         const surface = hslToRgb({
             h: hue,
             s: clamp(saturation * 0.3, 0.08, 0.26),
-            l: 0.95
+            l: 0.96
         });
         const surfaceStrong = hslToRgb({
             h: hue,
             s: clamp(saturation * 0.38, 0.1, 0.32),
-            l: 0.9
+            l: 0.91
         });
         const overlayTop = hslToRgb({
             h: hue,
-            s: clamp(saturation * 0.45, 0.12, 0.32),
-            l: 0.965
+            s: clamp(saturation * 0.32, 0.1, 0.22),
+            l: 0.985
         });
         const overlayBottom = hslToRgb({
             h: hue,
-            s: clamp(saturation * 0.36, 0.1, 0.28),
-            l: 0.88
+            s: clamp(saturation * 0.28, 0.08, 0.2),
+            l: 0.94
         });
 
         const controlText = luminance(surfaceStrong) > 0.72 ? "#1a1a1c" : "#f8f7f4";
@@ -259,23 +341,23 @@
             surface: toHex(surface),
             surfaceStrong: toHex(surfaceStrong),
             rgb: toRgbString(accent),
-            pageBase: `radial-gradient(circle at 20% -10%, rgba(${toRgbString(overlayTop)}, 0.98) 0%, rgba(${toRgbString(surface)}, 0.96) 42%, rgba(${toRgbString(overlayBottom)}, 0.98) 100%)`,
-            pageOverlay: `linear-gradient(180deg, rgba(${toRgbString(overlayTop)}, 0.22), rgba(${toRgbString(overlayBottom)}, 0.62))`,
-            controlBg: `rgba(${toRgbString(surface)}, 0.9)`,
-            controlHoverBg: `rgba(${toRgbString(surfaceStrong)}, 0.96)`,
-            controlBorder: `rgba(${toRgbString(accentStrong)}, 0.26)`,
-            panelBorder: `2px solid rgba(${toRgbString(accentStrong)}, 0.2)`,
-            panelBg: `rgba(${toRgbString(surface)}, 0.9)`,
-            navBg: `rgba(${toRgbString(surface)}, 0.76)`,
-            navBorder: `rgba(${toRgbString(accentStrong)}, 0.14)`,
-            controlGradient: `linear-gradient(130deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 35%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 0.98), rgba(${toRgbString(surfaceStrong)}, 0.98) 56%, rgba(${toRgbString(overlayBottom)}, 0.96))`,
-            controlGradientHover: `linear-gradient(130deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 38%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 1), rgba(${toRgbString(surfaceStrong)}, 1) 48%, rgba(${toRgbString(overlayBottom)}, 0.98))`,
+            pageBase: `radial-gradient(circle at 20% -10%, rgba(${toRgbString(overlayTop)}, 0.98) 0%, rgba(${toRgbString(surface)}, 0.94) 42%, rgba(${toRgbString(overlayBottom)}, 0.96) 100%)`,
+            pageOverlay: `linear-gradient(180deg, rgba(${toRgbString(overlayTop)}, 0.12), rgba(${toRgbString(overlayBottom)}, 0.3))`,
+            controlBg: `rgba(${toRgbString(surface)}, 0.88)`,
+            controlHoverBg: `rgba(${toRgbString(surfaceStrong)}, 0.94)`,
+            controlBorder: `rgba(${toRgbString(accentStrong)}, 0.2)`,
+            panelBorder: `2px solid rgba(${toRgbString(accentStrong)}, 0.16)`,
+            panelBg: `rgba(${toRgbString(surface)}, 0.84)`,
+            navBg: `rgba(${toRgbString(surface)}, 0.72)`,
+            navBorder: `rgba(${toRgbString(accentStrong)}, 0.1)`,
+            controlGradient: `linear-gradient(130deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 35%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 0.96), rgba(${toRgbString(surfaceStrong)}, 0.94) 56%, rgba(${toRgbString(overlayBottom)}, 0.92))`,
+            controlGradientHover: `linear-gradient(130deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 38%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 0.98), rgba(${toRgbString(surfaceStrong)}, 0.98) 48%, rgba(${toRgbString(overlayBottom)}, 0.94))`,
             controlActiveGradient: `linear-gradient(125deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 42%), linear-gradient(135deg, rgba(${toRgbString(accentStrong)}, 1), rgba(${toRgbString(accent)}, 1) 58%, rgba(${toRgbString(accent)}, 0.88))`,
-            controlActiveGlow: `0 0 0 1px rgba(${toRgbString(accentStrong)}, 0.2), 0 12px 26px rgba(${toRgbString(accentStrong)}, 0.3)`,
-            controlShadow: `0 8px 18px rgba(${toRgbString(accentStrong)}, 0.14)`,
-            controlShadowHover: `0 12px 24px rgba(${toRgbString(accentStrong)}, 0.22)`,
-            controlShadowPressed: `0 4px 10px rgba(${toRgbString(accentStrong)}, 0.2)`,
-            focusRing: `0 0 0 2px rgba(${toRgbString(surface)}, 0.95), 0 0 0 4px rgba(${toRgbString(accent)}, 0.46), 0 12px 24px rgba(${toRgbString(accentStrong)}, 0.22)`,
+            controlActiveGlow: `0 0 0 1px rgba(${toRgbString(accentStrong)}, 0.2), 0 12px 26px rgba(${toRgbString(accentStrong)}, 0.26)`,
+            controlShadow: `0 8px 18px rgba(${toRgbString(accentStrong)}, 0.12)`,
+            controlShadowHover: `0 12px 24px rgba(${toRgbString(accentStrong)}, 0.18)`,
+            controlShadowPressed: `0 4px 10px rgba(${toRgbString(accentStrong)}, 0.16)`,
+            focusRing: `0 0 0 2px rgba(${toRgbString(surface)}, 0.95), 0 0 0 4px rgba(${toRgbString(accent)}, 0.38), 0 12px 24px rgba(${toRgbString(accentStrong)}, 0.18)`,
             controlText,
             controlActiveText
         };
@@ -293,17 +375,20 @@
             return cached;
         }
 
-        const image = new Image();
-        image.decoding = "async";
-        image.crossOrigin = "anonymous";
+        const warmedImage = await warmImage(imageSrc, "high");
+        const image = warmedImage || new Image();
+        if (!warmedImage) {
+            image.decoding = "async";
+            image.crossOrigin = "anonymous";
 
-        const loadPromise = new Promise((resolve, reject) => {
-            image.onload = resolve;
-            image.onerror = reject;
-        });
+            const loadPromise = new Promise((resolve, reject) => {
+                image.onload = resolve;
+                image.onerror = reject;
+            });
 
-        image.src = imageSrc;
-        await loadPromise;
+            image.src = imageSrc;
+            await loadPromise;
+        }
 
         const canvas = document.createElement("canvas");
         const context = canvas.getContext("2d", { willReadFrequently: true });
@@ -419,6 +504,9 @@
     const applyBackground = (id) => {
         const option = normalizedById.get(id) || normalizedOptions[0];
         root.style.setProperty("--page-bg-image", option.image ? `url("${option.image}")` : "none");
+        root.style.setProperty("--page-bg-size", option.image ? option.fit : "cover");
+        root.style.setProperty("--page-bg-position", option.position || "center center");
+        root.style.setProperty("--page-bg-repeat", "no-repeat");
         root.dataset.backgroundId = option.id;
         currentId = option.id;
         storage.set(option.id);
@@ -430,31 +518,64 @@
             button.setAttribute("aria-pressed", active ? "true" : "false");
         });
 
+        warmVisibleBackgrounds(option);
         syncThemeForOption(option, activeThemeToken);
     };
 
     const setPanelOpen = (open) => {
         panel.hidden = !open;
         toggleButton.setAttribute("aria-expanded", open ? "true" : "false");
+        if (open) {
+            warmAllBackgrounds();
+        }
     };
 
-    normalizedOptions.forEach((option) => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "btn-action background-option";
-        button.style.setProperty("--option-preview", option.preview);
-        button.setAttribute("aria-pressed", "false");
-        button.innerHTML = `
-            <span class="background-option-label">${option.label}</span>
-            <span class="background-option-meta">${option.meta}</span>
-        `;
-        button.addEventListener("click", () => {
-            applyBackground(option.id);
-            setPanelOpen(false);
+    const categoryMap = normalizedOptions.reduce((groups, option) => {
+        const bucket = groups.get(option.category) || [];
+        bucket.push(option);
+        groups.set(option.category, bucket);
+        return groups;
+    }, new Map());
+
+    categoryOrder
+        .filter((category) => categoryMap.has(category))
+        .concat([...categoryMap.keys()].filter((category) => !categoryOrder.includes(category)))
+        .forEach((category) => {
+            const section = document.createElement("section");
+            section.className = "background-category";
+
+            const title = document.createElement("h3");
+            title.className = "background-category-title";
+            title.textContent = category;
+            section.appendChild(title);
+
+            const grid = document.createElement("div");
+            grid.className = "background-category-grid";
+
+            categoryMap.get(category).forEach((option) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "btn-action background-option";
+                button.style.setProperty("--option-preview", option.preview);
+                button.setAttribute("aria-pressed", "false");
+                button.innerHTML = `
+                    <span class="background-option-label">${option.label}</span>
+                    <span class="background-option-meta">${option.meta}</span>
+                `;
+                button.addEventListener("click", () => {
+                    applyBackground(option.id);
+                    setPanelOpen(false);
+                });
+                button.addEventListener("mouseenter", () => {
+                    warmImage(option.image, "high");
+                });
+                optionButtons.set(option.id, button);
+                grid.appendChild(button);
+            });
+
+            section.appendChild(grid);
+            panel.appendChild(section);
         });
-        optionButtons.set(option.id, button);
-        panel.appendChild(button);
-    });
 
     toggleButton.addEventListener("click", () => {
         setPanelOpen(panel.hidden);
@@ -466,9 +587,53 @@
         }
     });
 
+    const ensureFullscreenControl = () => {
+        if (!document.fullscreenEnabled) {
+            return;
+        }
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "btn-action fullscreen-toggle";
+
+        const updateLabel = () => {
+            const isFullscreen = Boolean(document.fullscreenElement);
+            button.textContent = isFullscreen ? "\u2199" : "\u2922";
+            button.setAttribute("aria-label", isFullscreen ? "\u9000\u51fa\u5168\u5c4f" : "\u8fdb\u5165\u5168\u5c4f");
+            button.setAttribute("title", isFullscreen ? "\u9000\u51fa\u5168\u5c4f" : "\u8fdb\u5165\u5168\u5c4f");
+        };
+
+        button.addEventListener("click", async () => {
+            try {
+                if (document.fullscreenElement) {
+                    await document.exitFullscreen();
+                } else {
+                    await document.documentElement.requestFullscreen();
+                }
+            } catch (error) {
+                // Ignore browser-specific fullscreen failures.
+            }
+        });
+
+        document.addEventListener("fullscreenchange", updateLabel);
+        updateLabel();
+
+        const host = document.querySelector(".page-header") || document.querySelector(".top-right-actions");
+        if (host) {
+            host.appendChild(button);
+        } else {
+            const floatingHost = document.createElement("div");
+            floatingHost.className = "page-header page-header--floating";
+            floatingHost.appendChild(button);
+            document.body.appendChild(floatingHost);
+        }
+    };
+
     switcher.appendChild(toggleButton);
     switcher.appendChild(panel);
     document.body.insertAdjacentElement("afterbegin", switcher);
 
+    ensureFullscreenControl();
     applyBackground(currentId);
+    warmVisibleBackgrounds(normalizedById.get(currentId) || normalizedOptions[0]);
 })();
