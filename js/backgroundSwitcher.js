@@ -62,7 +62,7 @@
         label: option.label || option.id,
         meta: option.meta || "Custom background",
         image: option.image || "",
-        fit: option.fit || (option.image ? "contain" : "cover"),
+        fit: option.fit || "cover",
         position: option.position || "center center",
         preview: option.preview || (option.image ? `url("${option.image}")` : "linear-gradient(145deg, #fffdf8, #f3ece1 56%, #ece5d9)")
     });
@@ -342,13 +342,13 @@
             surfaceStrong: toHex(surfaceStrong),
             rgb: toRgbString(accent),
             pageBase: `radial-gradient(circle at 20% -10%, rgba(${toRgbString(overlayTop)}, 0.98) 0%, rgba(${toRgbString(surface)}, 0.94) 42%, rgba(${toRgbString(overlayBottom)}, 0.96) 100%)`,
-            pageOverlay: `linear-gradient(180deg, rgba(${toRgbString(overlayTop)}, 0.12), rgba(${toRgbString(overlayBottom)}, 0.3))`,
-            controlBg: `rgba(${toRgbString(surface)}, 0.88)`,
-            controlHoverBg: `rgba(${toRgbString(surfaceStrong)}, 0.94)`,
+            pageOverlay: `none`,
+            controlBg: `rgba(${toRgbString(surface)}, 0.42)`,
+            controlHoverBg: `rgba(${toRgbString(surfaceStrong)}, 0.56)`,
             controlBorder: `rgba(${toRgbString(accentStrong)}, 0.2)`,
             panelBorder: `2px solid rgba(${toRgbString(accentStrong)}, 0.16)`,
-            panelBg: `rgba(${toRgbString(surface)}, 0.84)`,
-            navBg: `rgba(${toRgbString(surface)}, 0.72)`,
+            panelBg: `rgba(${toRgbString(surface)}, 0.4)`,
+            navBg: `rgba(${toRgbString(surface)}, 0.4)`,
             navBorder: `rgba(${toRgbString(accentStrong)}, 0.1)`,
             controlGradient: `linear-gradient(130deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0) 35%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 0.96), rgba(${toRgbString(surfaceStrong)}, 0.94) 56%, rgba(${toRgbString(overlayBottom)}, 0.92))`,
             controlGradientHover: `linear-gradient(130deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0) 38%), linear-gradient(145deg, rgba(${toRgbString(surface)}, 0.98), rgba(${toRgbString(surfaceStrong)}, 0.98) 48%, rgba(${toRgbString(overlayBottom)}, 0.94))`,
@@ -559,6 +559,7 @@
                 button.style.setProperty("--option-preview", option.preview);
                 button.setAttribute("aria-pressed", "false");
                 button.innerHTML = `
+                    <span class="background-option-thumb" aria-hidden="true"></span>
                     <span class="background-option-label">${option.label}</span>
                     <span class="background-option-meta">${option.meta}</span>
                 `;

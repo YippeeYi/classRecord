@@ -23,8 +23,8 @@
   --page-bg-size: cover;
   --page-bg-position: center center;
   --page-bg-repeat: no-repeat;
-  --page-bg-overlay: linear-gradient(180deg, rgba(250, 246, 239, 0.16), rgba(242, 234, 222, 0.34));
-  --bg-card: rgba(255, 252, 246, 0.86);
+  --page-bg-overlay: none;
+  --bg-card: rgba(255, 252, 246, 0.48);
   --text-main: #151316;
   --text-strong: #141416;
   --text-subtle: #555254;
@@ -34,15 +34,15 @@
   --theme-rgb: 61, 61, 64;
   --accent-dark: #1c1c1e;
   --shadow-soft: 0 14px 34px rgba(19, 16, 12, 0.12);
-  --control-bg: rgba(255, 252, 246, 0.9);
-  --control-hover-bg: #fff8ee;
+  --control-bg: rgba(255, 252, 246, 0.42);
+  --control-hover-bg: rgba(255, 248, 238, 0.56);
   --control-border: rgba(13, 13, 14, 0.17);
   --control-shadow: 0 8px 18px rgba(19, 16, 12, 0.14);
   --control-shadow-hover: 0 12px 24px rgba(19, 16, 12, 0.22);
   --control-shadow-pressed: 0 4px 10px rgba(19, 16, 12, 0.2);
   --control-active-glow: 0 0 0 1px rgba(13, 13, 14, 0.16), 0 12px 26px rgba(13, 13, 14, 0.24);
   --panel-border: 2px solid rgba(13, 13, 14, 0.16);
-  --panel-bg: rgba(255, 252, 246, 0.9);
+  --panel-bg: rgba(255, 252, 246, 0.4);
   --panel-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
   --nav-bg: rgba(255, 252, 246, 0.78);
   --nav-border: rgba(13, 13, 14, 0.15);
@@ -82,7 +82,7 @@
   --table-row-hover-edge: color-mix(in srgb, var(--theme-accent-strong) 28%, rgba(79, 55, 24, 0.28));
   --table-row-hover-border: color-mix(in srgb, var(--theme-accent-strong) 34%, rgba(79, 55, 24, 0.32));
   --important-border: color-mix(in srgb, var(--theme-accent) 62%, #f095c2);
-  --important-bg: linear-gradient(90deg, color-mix(in srgb, var(--theme-surface) 76%, #fff2fa), rgba(255, 252, 246, 0.96));
+  --important-bg: linear-gradient(90deg, color-mix(in srgb, var(--theme-surface) 44%, transparent), rgba(255, 252, 246, 0.4));
   --guide-panel-bg: color-mix(in srgb, var(--theme-surface) 82%, transparent);
   --guide-card-bg: linear-gradient(160deg, color-mix(in srgb, var(--theme-surface) 94%, white), color-mix(in srgb, var(--theme-surface-strong) 92%, #f3e8db));
   --progress-track-bg: color-mix(in srgb, var(--theme-surface-strong) 60%, rgba(148, 163, 184, 0.35));
@@ -242,7 +242,7 @@ body>footer {
   justify-content: center;
   padding-top: clamp(120px, 20vh, 240px);
   --page-bg-base: radial-gradient(circle at top, color-mix(in srgb, var(--theme-surface) 96%, white), color-mix(in srgb, var(--theme-surface-strong) 94%, white));
-  --page-bg-overlay: linear-gradient(180deg, rgba(var(--theme-rgb), 0.08), rgba(var(--theme-rgb), 0.22));
+  --page-bg-overlay: none;
 }
 
 .auth-page .auth-card {
@@ -287,12 +287,14 @@ body>footer {
   padding: 10px 12px;
   border: none;
   border-radius: 999px;
-  background-color: var(--accent-dark);
+  background-color: rgba(28, 28, 30, 0.34);
   background-image: var(--control-active-gradient);
   color: var(--control-active-text);
   font-weight: 600;
   cursor: pointer;
   box-shadow: var(--control-shadow-hover);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 .auth-page .auth-hint {
@@ -370,7 +372,7 @@ body>footer {
   overflow: hidden;
   padding: 7px 14px;
   border: none;
-  background-color: var(--accent-dark);
+  background-color: rgba(28, 28, 30, 0.34);
   background-image: var(--control-active-gradient);
   color: var(--control-active-text);
   font-weight: 600;
@@ -378,6 +380,8 @@ body>footer {
   border-radius: 999px;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
   box-shadow: var(--control-shadow);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 
@@ -511,6 +515,8 @@ body>footer {
   background: var(--control-bg);
   background-image: var(--control-gradient);
   box-shadow: var(--control-shadow);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
   transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
   font-family: inherit;
 }
@@ -841,59 +847,22 @@ body>footer {
    鍏€佺储寮曡〃鏍煎眰锛堜汉鐗?/ 鏈锛?
    ===================================================================== */
 
-.list-section {
-  margin-top: 22px;
-}
-
-.list-section-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  margin: 0 0 12px;
-  padding: 0 4px;
-}
-
-.list-section-title {
-  margin: 0;
-  font-size: clamp(21px, 2.6vw, 30px);
-}
-
-.list-section-count {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 40px;
-  min-height: 32px;
-  padding: 0 12px;
-  border-radius: 999px;
-  border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 18%, transparent);
-  background: color-mix(in srgb, var(--theme-surface) 88%, white);
-  box-shadow: var(--control-shadow);
-  font-weight: 700;
-  color: var(--text-strong);
-}
-
-.table-shell {
-  overflow-x: auto;
-  border-radius: 18px;
-}
-
 .people-table,
 .glossary-table {
   width: 100%;
-  max-width: none;
-  margin: 0;
+  max-width: 600px;
+  margin: 20px 0 20px 20px;
   border-collapse: separate;
   border-spacing: 0;
   font-size: 16px;
   border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 24%, transparent);
-  border-radius: 18px;
+  border-radius: 12px;
   overflow: hidden;
   box-shadow: var(--shadow-soft);
   animation: fadeInUp 0.4s ease both;
-  background: rgba(255, 252, 246, 0.76);
-  backdrop-filter: blur(14px);
+  background: rgba(255, 252, 246, 0.44);
+  backdrop-filter: blur(16px) saturate(145%);
+  -webkit-backdrop-filter: blur(16px) saturate(145%);
 }
 
 .people-table th,
@@ -991,16 +960,10 @@ body>footer {
 /* 涓汉绠€浠?*/
 .person-info {
   margin-top: 16px;
-  padding: 18px 20px;
-  border-radius: 18px;
-  border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 14%, transparent);
-  background: rgba(255, 252, 246, 0.76);
-  backdrop-filter: blur(12px);
-  box-shadow: var(--shadow-soft);
 }
 
 .info-row {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   line-height: 1.6;
   display: flex;
   /* 浣跨敤 flex 妯悜鎺掑垪 label + value */
@@ -1026,10 +989,6 @@ body>footer {
   /* 鏀寔鎹㈣ */
 }
 
-.info-row:last-child {
-  margin-bottom: 0;
-}
-
 /* =====================================================================
    鍗併€佸垏鎹㈡帶浠跺眰锛堜汉鐗╅〉 tab锛?
    ===================================================================== */
@@ -1039,13 +998,6 @@ body>footer {
   margin-bottom: 18px;
   display: flex;
   gap: 10px;
-}
-
-.record-switch {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
 }
 
 .switch-btn {
@@ -1093,7 +1045,7 @@ body>footer {
    ===================================================================== */
 
 .sort-controls {
-  margin: 18px 0 16px;
+  margin: 18px 0 16px 20px;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -1227,18 +1179,30 @@ body>footer {
   border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 16%, transparent);
   text-align: left;
   color: var(--control-text);
-  background-color: var(--control-bg);
-  background-image: var(--option-preview, var(--control-gradient));
-  background-size: cover;
-  background-position: center;
+  background-color: rgba(255, 252, 246, 0.32);
+  background-image: none;
   box-shadow: var(--control-shadow);
+  backdrop-filter: blur(16px) saturate(150%);
+  -webkit-backdrop-filter: blur(16px) saturate(150%);
 }
 
 .background-option::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(var(--theme-rgb), 0.14) 42%, rgba(255, 252, 246, 0.6));
+  content: none;
+}
+
+.background-option-thumb {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 74px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  background-image: var(--option-preview, var(--control-gradient));
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34);
 }
 
 .background-option-label,
@@ -1280,7 +1244,7 @@ body>footer {
 
   .background-switcher {
     position: static;
-    width: min(240px, 100%);
+    width: min(320px, 100%);
     margin: 0 auto 10px;
   }
 
@@ -1300,30 +1264,12 @@ body>footer {
 }
 
 @media (max-width: 720px) {
-  .list-section-heading {
-    align-items: flex-start;
-  }
-
   .people-table th,
   .people-table td,
   .glossary-table th,
   .glossary-table td {
     padding: 9px 10px;
     font-size: 14px;
-  }
-
-  .person-info {
-    padding: 16px;
-  }
-
-  .info-row {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .info-label {
-    width: auto;
-    margin-right: 0;
   }
 }
 
