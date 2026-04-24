@@ -10,6 +10,8 @@
     const pity4Node = document.getElementById('gacha-pity-4');
     const pity5Node = document.getElementById('gacha-pity-5');
     const emptyState = document.getElementById('gacha-empty-state');
+    const cinematic = document.getElementById('wish-cinematic');
+    const cinematicText = document.getElementById('wish-cinematic-text');
 
     const rarityLabel = (rarity) => `${rarity} Star`;
     const rarityClass = (rarity) => `rarity-${rarity}`;
@@ -77,10 +79,13 @@
 
     function renderResults(results) {
         resultStage.classList.remove('is-active');
+        resultStage.classList.toggle('is-ten-pull', results.length >= 10);
+        const highestRarity = results.reduce((highest, item) => Math.max(highest, item.rarity), 3);
+        resultStage.dataset.highestRarity = String(highestRarity);
         resultGrid.innerHTML = results.map((item, index) => {
             const imageStyle = item.image ? `style="background-image:url('${encodeURI(item.image)}')"` : '';
             return `
-                <article class="wish-card ${rarityClass(item.rarity)}" style="animation-delay:${index * 90}ms">
+                <article class="wish-card ${rarityClass(item.rarity)}${index === 0 && results.length >= 10 ? ' is-featured' : ''}" style="animation-delay:${index * 90}ms">
                     <div class="wish-card-art" ${imageStyle}></div>
                     <div class="wish-card-overlay"></div>
                     <div class="wish-card-meta">
@@ -92,6 +97,33 @@
             `;
         }).join('');
         requestAnimationFrame(() => resultStage.classList.add('is-active'));
+    }
+
+    function playCinematic(results) {
+        if (!cinematic) {
+            renderResults(results);
+            return;
+        }
+
+        const highestRarity = results.reduce((highest, item) => Math.max(highest, item.rarity), 3);
+        cinematic.className = `wish-cinematic is-active ${rarityClass(highestRarity)}`;
+        cinematic.setAttribute('aria-hidden', 'false');
+        cinematicText.textContent = highestRarity >= 5
+            ? '金色流星划破夜空'
+            : highestRarity >= 4
+                ? '紫色流星即将坠落'
+                : '蓝色流星轻轻掠过';
+
+        window.setTimeout(() => {
+            cinematic.classList.add('is-impact');
+        }, 720);
+
+        window.setTimeout(() => {
+            cinematic.classList.remove('is-impact');
+            cinematic.classList.remove('is-active');
+            cinematic.setAttribute('aria-hidden', 'true');
+            renderResults(results);
+        }, 1500);
     }
 
     function renderHistory() {
@@ -147,14 +179,17 @@
 
         setButtonsDisabled(true);
         resultStage.classList.remove('is-active');
+        resultStage.classList.remove('is-ten-pull');
         window.setTimeout(() => {
             const results = draw(count);
-            renderResults(results);
+            playCinematic(results);
             renderHistory();
             renderCollection();
             updatePityText();
-            setButtonsDisabled(false);
-        }, 260);
+            window.setTimeout(() => {
+                setButtonsDisabled(false);
+            }, 1500);
+        }, 180);
     }
 
     document.querySelectorAll('[data-gacha-count]').forEach((button) => {

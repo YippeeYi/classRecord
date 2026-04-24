@@ -157,7 +157,7 @@
     const toggleButton = document.createElement("button");
     toggleButton.type = "button";
     toggleButton.className = "btn-action background-switcher-toggle";
-    toggleButton.textContent = "\ud83c\udfa8";
+    toggleButton.textContent = "\u2190";
     toggleButton.setAttribute("aria-label", "\u9009\u62e9\u80cc\u666f");
     toggleButton.setAttribute("title", "\u9009\u62e9\u80cc\u666f");
     toggleButton.setAttribute("aria-expanded", "false");
@@ -167,6 +167,7 @@
     panel.className = "background-switcher-panel";
     panel.id = "background-switcher-panel";
     panel.hidden = true;
+    panel.setAttribute("aria-hidden", "true");
 
     const optionButtons = new Map();
 
@@ -522,12 +523,30 @@
         syncThemeForOption(option, activeThemeToken);
     };
 
+    let panelTransitionTimer = null;
     const setPanelOpen = (open) => {
-        panel.hidden = !open;
+        window.clearTimeout(panelTransitionTimer);
         toggleButton.setAttribute("aria-expanded", open ? "true" : "false");
+        switcher.classList.toggle("is-open", open);
+
         if (open) {
+            panel.hidden = false;
+            panel.setAttribute("aria-hidden", "false");
+            panel.classList.remove("is-closing");
+            requestAnimationFrame(() => {
+                panel.classList.add("is-open");
+            });
             warmAllBackgrounds();
+            return;
         }
+
+        panel.classList.remove("is-open");
+        panel.classList.add("is-closing");
+        panel.setAttribute("aria-hidden", "true");
+        panelTransitionTimer = window.setTimeout(() => {
+            panel.hidden = true;
+            panel.classList.remove("is-closing");
+        }, 260);
     };
 
     const categoryMap = normalizedOptions.reduce((groups, option) => {

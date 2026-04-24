@@ -6,6 +6,19 @@
 (() => {
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const TRANSITION_MS = REDUCED_MOTION ? 0 : 180;
+    const FULLSCREEN_STORAGE_KEY = 'classRecord:keepFullscreen';
+
+    const syncFullscreenPreference = () => {
+        try {
+            if (document.fullscreenElement) {
+                sessionStorage.setItem(FULLSCREEN_STORAGE_KEY, '1');
+            } else {
+                sessionStorage.removeItem(FULLSCREEN_STORAGE_KEY);
+            }
+        } catch (error) {
+            // Ignore storage failures.
+        }
+    };
 
     const markEntering = () => {
         document.body.classList.add('page-ready');
@@ -16,6 +29,18 @@
     } else {
         markEntering();
     }
+
+    document.addEventListener('fullscreenchange', syncFullscreenPreference);
+
+    window.addEventListener('load', () => {
+        try {
+            if (sessionStorage.getItem(FULLSCREEN_STORAGE_KEY) === '1' && !document.fullscreenElement && document.fullscreenEnabled) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            }
+        } catch (error) {
+            // Ignore fullscreen restore failures.
+        }
+    }, { once: true });
 
     const prefetchCache = new Set();
 
@@ -71,10 +96,12 @@
 
         const url = new URL(href, window.location.href);
         if (url.origin !== window.location.origin) {
+            syncFullscreenPreference();
             window.location.href = url.href;
             return;
         }
 
+        syncFullscreenPreference();
         document.body.classList.remove('page-ready');
         document.body.classList.add('page-leaving');
 

@@ -50,11 +50,29 @@
         return [...new Set(tokens.filter(Boolean))];
     }
 
+    function stripOptionMarkup(text) {
+        return window.stripRecordMarkup(text || '')
+            .replace(/\^(.+?)\^/g, '$1')
+            .replace(/_(.+?)_/g, '$1')
+            .replace(/\n/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+    }
+
+    function buildStemText(record) {
+        return String(record.content || '')
+            .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, '$2')
+            .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, '$2')
+            .replace(/\(\((.+?)\)\)/g, '$1');
+    }
+
     function buildQuestion(record, answerPool) {
-        const text = window.stripRecordMarkup(record.content || '').replace(/\s+/g, ' ').trim();
+        const text = buildStemText(record).trim();
         if (!text) return null;
 
-        const tokens = extractLabeledTokens(record.content || '').filter((label) => text.includes(label));
+        const tokens = extractLabeledTokens(record.content || '')
+            .map((label) => stripOptionMarkup(label))
+            .filter((label) => label && text.includes(label));
         if (!tokens.length) return null;
 
         const answer = pickRandom(tokens);
@@ -92,7 +110,7 @@
         feedback.textContent = '';
         feedback.className = 'quiz-feedback';
         nextButton.disabled = false;
-        questionText.textContent = currentQuestion.maskedText;
+        questionText.innerHTML = formatContent(currentQuestion.maskedText);
         questionMeta.textContent = `Record ${currentQuestion.id} · ${currentQuestion.date} · Reward ${QUESTION_REWARD} Q`;
 
         optionsWrap.innerHTML = currentQuestion.options.map((option, index) => `
@@ -137,7 +155,9 @@
     (window.cacheReadyPromise || Promise.resolve())
         .then(() => window.loadAllRecords())
         .then((records) => {
-            const answerPool = [...new Set(records.flatMap((record) => extractLabeledTokens(record.content || '')))];
+            const answerPool = [...new Set(
+                records.flatMap((record) => extractLabeledTokens(record.content || '').map((label) => stripOptionMarkup(label)))
+            )].filter(Boolean);
             questionBank = records.map((record) => buildQuestion(record, answerPool)).filter(Boolean);
             renderQuestion();
         });

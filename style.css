@@ -595,6 +595,22 @@ body>footer {
 .record.importance-important {
   border-left: 7px solid var(--important-border);
   background: var(--important-bg);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--important-border) 42%, transparent),
+    0 18px 44px rgba(var(--theme-rgb), 0.18),
+    0 0 28px color-mix(in srgb, var(--important-border) 24%, transparent);
+}
+
+.record.importance-important::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 14px;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, transparent 0%, color-mix(in srgb, var(--important-border) 18%, white) 18%, transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%);
+  opacity: 0.85;
 }
 
 /* =====================================================================
@@ -1148,6 +1164,19 @@ body>footer {
   background: var(--panel-bg);
   backdrop-filter: blur(12px);
   box-shadow: var(--panel-shadow);
+  opacity: 0;
+  transform: translateX(-28px);
+  transition: opacity 0.24s ease, transform 0.24s ease;
+}
+
+.background-switcher-panel.is-open {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.background-switcher-panel.is-closing {
+  opacity: 0;
+  transform: translateX(-42px);
 }
 
 .background-category {
@@ -1301,38 +1330,31 @@ body>footer {
   margin: 0;
   padding: clamp(14px, 3vw, 28px);
   overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-
-@media (max-width: 900px) {
-  .guide-page {
-    overflow-y: auto;
-  }
+  overflow-y: auto;
 }
 
 .guide-main {
-  min-height: calc(100vh - 40px);
+  min-height: calc(100vh - 28px);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
   text-align: center;
-  padding-top: clamp(36px, 6.8vh, 84px);
-  padding-bottom: clamp(20px, 5vh, 56px);
-  gap: clamp(14px, 2.8vh, 24px);
+  padding-top: clamp(18px, 3.6vh, 38px);
+  padding-bottom: clamp(12px, 2.4vh, 24px);
+  gap: clamp(10px, 1.8vh, 16px);
 }
 
 .guide-logo {
-  width: min(540px, 80vw);
+  width: min(360px, 62vw);
   height: auto;
 }
 
 .guide-highlights {
-  margin-top: -8px;
+  margin-top: 0;
   width: min(980px, 92vw);
   text-align: left;
-  padding: 14px;
+  padding: 12px;
   border-radius: 18px;
   background: var(--guide-panel-bg);
   backdrop-filter: blur(4px);
@@ -1352,7 +1374,7 @@ body>footer {
 
 .guide-stat-card {
   border-radius: 14px;
-  padding: 12px;
+  padding: 10px 12px;
   background: var(--guide-card-bg);
   border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 16%, transparent);
 }
@@ -1389,7 +1411,7 @@ body>footer {
 
 .guide-stat-value {
   margin: 6px 0 0;
-  font-size: clamp(20px, 2.8vw, 28px);
+  font-size: clamp(18px, 2.2vw, 24px);
   line-height: 1.1;
   font-weight: 700;
   color: var(--control-text);
@@ -1439,8 +1461,8 @@ body>footer {
 }
 
 .wallet-banner {
-  width: min(540px, 90vw);
-  padding: 16px 20px;
+  width: min(420px, 88vw);
+  padding: 12px 16px;
   border-radius: 18px;
   background:
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 30%),
@@ -1464,7 +1486,7 @@ body>footer {
 
 .wallet-banner-value {
   margin-top: 6px;
-  font-size: clamp(26px, 4vw, 36px);
+  font-size: clamp(22px, 3vw, 30px);
   font-weight: 760;
 }
 
@@ -1482,7 +1504,7 @@ body>footer {
 }
 
 .guide-feature-card {
-  padding: 20px;
+  padding: 16px 18px;
   border-radius: 18px;
   text-align: left;
 }
@@ -1500,14 +1522,14 @@ body>footer {
 }
 
 .guide-feature-card h2 {
-  margin-top: 10px;
-  font-size: clamp(24px, 3vw, 30px);
+  margin-top: 8px;
+  font-size: clamp(20px, 2.3vw, 24px);
 }
 
 .guide-feature-card p:last-child {
-  margin-top: 8px;
+  margin-top: 6px;
   color: var(--text-subtle);
-  line-height: 1.7;
+  line-height: 1.55;
 }
 
 .feature-page {
@@ -1700,6 +1722,12 @@ body>footer {
   color: rgba(255, 248, 230, 0.92);
 }
 
+.record.is-locked .meta,
+.record.is-locked .meta span,
+.record.is-locked .person-tag {
+  color: #fff;
+}
+
 .record-lock-panel {
   display: grid;
   gap: 10px;
@@ -1738,6 +1766,21 @@ body>footer {
   pointer-events: none;
 }
 
+.record.is-locked:hover .icon-group,
+.record.is-locked .icon-group.is-hidden {
+  opacity: 0 !important;
+  transform: translateY(6px);
+  pointer-events: none !important;
+}
+
+.record.is-locked.importance-important {
+  border-left-width: 8px;
+  box-shadow:
+    0 0 0 1px rgba(255, 226, 142, 0.28),
+    0 20px 46px rgba(15, 23, 42, 0.36),
+    0 0 38px rgba(255, 210, 104, 0.22);
+}
+
 .gacha-page {
   --page-bg-base:
     radial-gradient(circle at 20% 20%, rgba(255, 237, 196, 0.64), rgba(255, 237, 196, 0) 18%),
@@ -1768,7 +1811,7 @@ body>footer {
 .wish-stage {
   position: relative;
   overflow: hidden;
-  min-height: 360px;
+  min-height: 420px;
 }
 
 .wish-stage-bg {
@@ -1782,12 +1825,17 @@ body>footer {
 .wish-grid {
   position: relative;
   z-index: 1;
-  min-height: 360px;
+  min-height: 420px;
   padding: 28px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 18px;
   align-items: end;
+}
+
+.wish-stage.is-ten-pull .wish-grid {
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: stretch;
 }
 
 .wish-card {
@@ -1799,6 +1847,11 @@ body>footer {
   opacity: 0;
   animation: wishReveal 0.62s cubic-bezier(.2,.8,.2,1) forwards;
   box-shadow: 0 18px 36px rgba(17, 24, 39, 0.16);
+}
+
+.wish-card.is-featured {
+  min-height: 340px;
+  transform-origin: center bottom;
 }
 
 .wish-stage.is-active .wish-card {
@@ -1861,6 +1914,109 @@ body>footer {
   font-size: 12px;
   letter-spacing: 0.14em;
   text-transform: uppercase;
+}
+
+.wish-cinematic {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  overflow: hidden;
+  transition: opacity 0.18s ease;
+}
+
+.wish-cinematic.is-active {
+  opacity: 1;
+}
+
+.wish-cinematic-sky,
+.wish-cinematic-trail,
+.wish-cinematic-impact {
+  position: absolute;
+  inset: 0;
+}
+
+.wish-cinematic-sky {
+  background:
+    radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0) 24%),
+    linear-gradient(180deg, rgba(9, 19, 43, 0.98), rgba(28, 53, 102, 0.92) 48%, rgba(240, 247, 255, 0.2));
+}
+
+.wish-cinematic-trail::before {
+  content: "";
+  position: absolute;
+  top: 14%;
+  left: -18%;
+  width: 48%;
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
+  box-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
+  transform: rotate(-18deg) translateX(0);
+  animation: meteorFlight 1.2s cubic-bezier(.14,.78,.18,1) forwards;
+}
+
+.wish-cinematic.rarity-4 .wish-cinematic-trail::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(196, 149, 255, 0.98), rgba(255, 255, 255, 0));
+  box-shadow: 0 0 20px rgba(174, 116, 255, 0.95);
+}
+
+.wish-cinematic.rarity-5 .wish-cinematic-trail::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 218, 132, 1), rgba(255, 255, 255, 0));
+  box-shadow: 0 0 24px rgba(255, 211, 97, 0.98);
+}
+
+.wish-cinematic-impact {
+  opacity: 0;
+  background: radial-gradient(circle at 50% 58%, rgba(255, 255, 255, 0.94), rgba(255, 255, 255, 0) 20%);
+}
+
+.wish-cinematic.is-impact .wish-cinematic-impact {
+  opacity: 1;
+  animation: wishImpact 0.54s ease forwards;
+}
+
+.wish-cinematic-text {
+  position: absolute;
+  left: 50%;
+  bottom: 34px;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(15, 23, 42, 0.38);
+  backdrop-filter: blur(10px);
+  letter-spacing: 0.12em;
+}
+
+@keyframes meteorFlight {
+  0% {
+    opacity: 0;
+    transform: rotate(-18deg) translate(-10vw, -6vh) scaleX(0.75);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(-18deg) translate(112vw, 58vh) scaleX(1.2);
+  }
+}
+
+@keyframes wishImpact {
+  0% {
+    opacity: 0.2;
+    transform: scale(0.3);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.2);
+  }
 }
 
 .rarity-5 {
@@ -1995,8 +2151,8 @@ body>footer {
 @media (max-width: 900px) {
   .guide-main {
     min-height: 0;
-    padding-top: 16px;
-    gap: 14px;
+    padding-top: 12px;
+    gap: 10px;
   }
 
   .feature-shell {
@@ -2017,6 +2173,10 @@ body>footer {
 
   .wish-grid {
     grid-template-columns: 1fr;
+  }
+
+  .wish-stage.is-ten-pull .wish-grid {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
