@@ -1,6 +1,6 @@
 (() => {
-    const SINGLE_COST = 160;
-    const TEN_COST = 1600;
+    const SINGLE_COST = 0;
+    const TEN_COST = 0;
     const poolState = { items: [] };
 
     const resultStage = document.getElementById('gacha-result-stage');
