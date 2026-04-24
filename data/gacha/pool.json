@@ -1,0 +1,82 @@
+[
+    {
+        "id": "placeholder-5-1",
+        "name": "鎏金星轨",
+        "title": "5 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 5,
+        "image": ""
+    },
+    {
+        "id": "placeholder-5-2",
+        "name": "月海巡礼",
+        "title": "5 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 5,
+        "image": ""
+    },
+    {
+        "id": "placeholder-4-1",
+        "name": "暮色书签",
+        "title": "4 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 4,
+        "image": ""
+    },
+    {
+        "id": "placeholder-4-2",
+        "name": "弦月留声",
+        "title": "4 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 4,
+        "image": ""
+    },
+    {
+        "id": "placeholder-4-3",
+        "name": "晴窗纸页",
+        "title": "4 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 4,
+        "image": ""
+    },
+    {
+        "id": "placeholder-3-1",
+        "name": "旧梦便签",
+        "title": "3 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 3,
+        "image": ""
+    },
+    {
+        "id": "placeholder-3-2",
+        "name": "晨光胶片",
+        "title": "3 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 3,
+        "image": ""
+    },
+    {
+        "id": "placeholder-3-3",
+        "name": "风过信笺",
+        "title": "3 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 3,
+        "image": ""
+    },
+    {
+        "id": "placeholder-3-4",
+        "name": "夜航碎片",
+        "title": "3 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 3,
+        "image": ""
+    },
+    {
+        "id": "placeholder-3-5",
+        "name": "纸页流砂",
+        "title": "3 星展示位",
+        "series": "请替换为你的正式卡面",
+        "rarity": 3,
+        "image": ""
+    }
+]

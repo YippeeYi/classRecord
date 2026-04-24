@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编日史 · 答题赚 Q币</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preload" href="fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
+        type="font/ttf">
+    <script src="js/authGate.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+
+<body class="feature-page quiz-page">
+    <div class="page-header">
+        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">↩</button>
+    </div>
+
+    <main class="feature-shell">
+        <section class="feature-hero">
+            <p class="feature-eyebrow">Question Archive</p>
+            <h1>编日史答题</h1>
+            <p class="feature-summary">系统会从编日史条目中提取纯文字内容，并随机挖空形成四选一题目。每答对一题，获得 100 Q币。</p>
+            <div class="feature-balance-row">
+                <div class="balance-chip">
+                    <span>当前 Q币</span>
+                    <strong><span data-qcoin-balance>0</span></strong>
+                </div>
+                <div class="balance-chip">
+                    <span>累计答对</span>
+                    <strong><span data-qcoin-quiz-correct>0</span></strong>
+                </div>
+            </div>
+        </section>
+
+        <section class="quiz-card">
+            <div class="quiz-card-head">
+                <p id="quiz-question-meta" class="quiz-question-meta"></p>
+                <button id="quiz-next-btn" class="btn-action" type="button">换一题</button>
+            </div>
+            <h2 id="quiz-question-text" class="quiz-question-text">正在生成题目…</h2>
+            <div id="quiz-options" class="quiz-options"></div>
+            <p id="quiz-feedback" class="quiz-feedback"></p>
+        </section>
+    </main>
+
+    <script src="js/cacheLoader.js"></script>
+    <script src="js/recordStore.js"></script>
+    <script src="js/peopleStore.js"></script>
+    <script src="js/glossaryStore.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/gameSystem.js"></script>
+    <script src="js/backgroundOptions.js"></script>
+    <script src="js/backgroundSwitcher.js"></script>
+    <script src="js/recordRendererV2.js"></script>
+    <script src="js/recordRendererV2b.js"></script>
+    <script src="js/quizApp.js"></script>
+</body>
+
+</html>

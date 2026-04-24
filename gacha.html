@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编日史 · 抽卡</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preload" href="fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
+        type="font/ttf">
+    <script src="js/authGate.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+
+<body class="feature-page gacha-page">
+    <div class="page-header">
+        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">↩</button>
+    </div>
+
+    <main class="feature-shell">
+        <section class="feature-hero">
+            <p class="feature-eyebrow">Wish Screen</p>
+            <h1>星辉抽卡</h1>
+            <p class="feature-summary">以原神式抽卡节奏为灵感，提供 160 Q币 单抽和 1600 Q币 十连，支持 3 星、4 星、5 星卡面展示、保底与仓库。</p>
+            <div class="feature-balance-row">
+                <div class="balance-chip">
+                    <span>当前 Q币</span>
+                    <strong><span data-qcoin-balance>0</span></strong>
+                </div>
+                <div class="balance-chip">
+                    <span id="gacha-pity-4">10 抽内保底 4 星</span>
+                    <strong id="gacha-pity-5">90 抽内保底 5 星</strong>
+                </div>
+            </div>
+            <div class="gacha-actions">
+                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="1">160 Q币 单抽</button>
+                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="10">1600 Q币 十连</button>
+            </div>
+        </section>
+
+        <section id="gacha-empty-state" class="asset-hint-panel">
+            <h2>等待你的卡面图</h2>
+            <p>卡池数据已经接好。你把图片和卡池信息补到 <code>data/gacha/pool.json</code> 后，这里就会自动变成正式抽卡池。</p>
+        </section>
+
+        <section id="gacha-result-stage" class="wish-stage">
+            <div class="wish-stage-bg"></div>
+            <div id="gacha-result-grid" class="wish-grid"></div>
+        </section>
+
+        <section class="gacha-columns">
+            <article class="gacha-panel">
+                <h2>最近获得</h2>
+                <ul id="gacha-history" class="gacha-history"></ul>
+            </article>
+            <article class="gacha-panel">
+                <h2>收藏仓库</h2>
+                <div id="gacha-collection" class="collection-grid"></div>
+            </article>
+        </section>
+    </main>
+
+    <script src="js/gameSystem.js"></script>
+    <script src="js/backgroundOptions.js"></script>
+    <script src="js/backgroundSwitcher.js"></script>
+    <script src="js/gachaApp.js"></script>
+</body>
+
+</html>

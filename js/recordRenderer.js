@@ -35,6 +35,19 @@ function parseContent(text) {
         .replace(/_(.+?)_/g, (_, t) => `<sub>${t}</sub>`);
 }
 
+function stripRecordMarkup(text) {
+    if (!text) return "";
+
+    return text
+        .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, "$2")
+        .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, "$2")
+        .replace(/\(\((.+?)\)\)/g, "$1")
+        .replace(/\^(.+?)\^/g, "$1")
+        .replace(/_(.+?)_/g, "$1");
+}
+
+window.stripRecordMarkup = stripRecordMarkup;
+
 /* ===============================
    段落格式化
    =============================== */
@@ -123,6 +136,89 @@ function renderRecordList(records, container) {
 /* ===============================
    筛选控件（年/月/日）
    =============================== */
+const baseRenderRecordList = renderRecordList;
+
+renderRecordList = function (records, container) {
+    records.forEach(record => {
+        if (!record.id) {
+            console.warn(
+                "鍙戠幇鏈垵濮嬪寲锛堟湭甯?id锛夌殑璁板綍锛?,
+                record
+            );
+        }
+    });
+
+    container.innerHTML = "";
+
+    function buildRecordBody(record, isLocked) {
+        return `
+            <div class="meta">
+                <span>
+                    #${record.id} |
+                    馃搮 ${record.date} |
+                    ${record.time ? "馃搶 " + record.time + " |" : ""}
+                    鉁?${parseContent(`[[${record.author}|${record.author}]]`)}
+                </span>
+                <span class="icon-group${isLocked ? " is-hidden" : ""}">
+                    ${record.image ? `<span class="image-toggle">馃摲</span>` : ""}
+                    ${record.attachments?.length ? `<span class="attach-toggle">馃搸</span>` : ""}
+                </span>
+            </div>
+
+            <div class="content ${isLocked ? "content-locked" : ""}">
+                ${isLocked ? `
+                    <div class="record-lock-panel">
+                        <div class="record-lock-icon">LOCKED</div>
+                        <p class="record-lock-title">重要条目已上锁</p>
+                        <p class="record-lock-copy">解锁后可查看正文、图片和附件内容。</p>
+                        <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
+                    </div>
+                ` : formatContent(record.content)}
+            </div>
+
+            ${!isLocked && record.image ? `
+                <div class="image-wrapper" style="display:none">
+                    <img src="${record.image}">
+                </div>
+            ` : ""}
+
+            ${!isLocked && record.attachments?.length ? `
+                <div class="attachments-wrapper" style="display:none">
+                    <ul>
+                        ${record.attachments.map(a =>
+            `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`
+        ).join("")}
+                    </ul>
+                </div>
+            ` : ""}
+        `;
+    }
+
+    records.forEach(record => {
+        const importance = record.importance || "normal";
+        const div = document.createElement("div");
+
+        const renderIntoDiv = () => {
+            const isLocked = Boolean(window.GameState?.isRecordLocked?.(record));
+            div.className = `record importance-${importance}${isLocked ? " is-locked" : ""}`;
+            div.innerHTML = buildRecordBody(record, isLocked);
+            bindToggle(div);
+
+            const unlockButton = div.querySelector(".record-unlock-btn");
+            if (unlockButton) {
+                unlockButton.addEventListener("click", () => {
+                    if (window.GameState?.unlockRecord?.(record.id, 500)) {
+                        renderIntoDiv();
+                    }
+                });
+            }
+        };
+
+        renderIntoDiv();
+        container.appendChild(div);
+    });
+};
+
 function filterRecordsByDate(records, { year, month, day }) {
     const hasYear = Boolean(year);
     const hasMonth = Boolean(month);

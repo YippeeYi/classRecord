@@ -52,6 +52,8 @@
             prefetchPage('record.html');
             prefetchPage('people.html');
             prefetchPage('glossary.html');
+            prefetchPage('quiz.html');
+            prefetchPage('gacha.html');
             warmCoreData();
         };
 

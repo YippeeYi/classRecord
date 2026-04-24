@@ -21,6 +21,11 @@
     </div>
 
     <main class="guide-main">
+        <section class="wallet-banner">
+            <p class="wallet-banner-label">Q币账户</p>
+            <p class="wallet-banner-value"><span data-qcoin-balance>0</span> Q币</p>
+            <p class="wallet-banner-note">答题得币，解锁重要条目，或去抽卡。</p>
+        </section>
         <img class="guide-logo" src="logo-guide.png" alt="编日史 logo">
 
         <div id="guide-progress" class="guide-progress" hidden>
@@ -56,12 +61,26 @@
             <p id="guide-tip" class="guide-tip">💡 小提示：人物页支持多维排序，适合快速找人。</p>
         </section>
 
+        <section class="guide-feature-grid">
+            <article class="guide-feature-card guide-stat-link" data-target="quiz.html" role="link" tabindex="0">
+                <p class="guide-feature-kicker">Q币来源</p>
+                <h2>编日史答题</h2>
+                <p>四选一答题，答对一题获得 100 Q币。</p>
+            </article>
+            <article class="guide-feature-card guide-stat-link" data-target="gacha.html" role="link" tabindex="0">
+                <p class="guide-feature-kicker">Q币去向</p>
+                <h2>星辉抽卡</h2>
+                <p>160 Q币 单抽，1600 Q币 十连，支持 3/4/5 星展示与收藏。</p>
+            </article>
+        </section>
+
     </main>
 
     <script src="js/cacheLoader.js"></script>
     <script src="js/recordStore.js"></script>
     <script src="js/peopleStore.js"></script>
     <script src="js/glossaryStore.js"></script>
+    <script src="js/gameSystem.js"></script>
     <script src="js/backgroundOptions.js"></script>
     <script src="js/backgroundSwitcher.js"></script>
     <script src="js/guide.js"></script>

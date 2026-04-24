@@ -46,6 +46,10 @@ function detectCriticalLoaders() {
         loaders.push(window.loadAllRecords);
     }
 
+    if (document.getElementById('quiz-question-text')) {
+        loaders.push(window.loadAllRecords);
+    }
+
     return Array.from(new Set(loaders.filter(Boolean)));
 }
 

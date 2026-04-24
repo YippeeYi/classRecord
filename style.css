@@ -1438,10 +1438,547 @@ body>footer {
   font-size: 14px;
 }
 
+.wallet-banner {
+  width: min(540px, 90vw);
+  padding: 16px 20px;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 30%),
+    linear-gradient(135deg, rgba(16, 28, 60, 0.92), rgba(41, 64, 112, 0.88));
+  color: #f7f6ff;
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.24);
+}
+
+.wallet-banner-label,
+.wallet-banner-note,
+.wallet-banner-value {
+  margin: 0;
+}
+
+.wallet-banner-label {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.74);
+}
+
+.wallet-banner-value {
+  margin-top: 6px;
+  font-size: clamp(26px, 4vw, 36px);
+  font-weight: 760;
+}
+
+.wallet-banner-note {
+  margin-top: 6px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.guide-feature-grid {
+  width: min(980px, 92vw);
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.guide-feature-card {
+  padding: 20px;
+  border-radius: 18px;
+  text-align: left;
+}
+
+.guide-feature-card h2,
+.guide-feature-card p {
+  margin: 0;
+}
+
+.guide-feature-kicker {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-soft);
+}
+
+.guide-feature-card h2 {
+  margin-top: 10px;
+  font-size: clamp(24px, 3vw, 30px);
+}
+
+.guide-feature-card p:last-child {
+  margin-top: 8px;
+  color: var(--text-subtle);
+  line-height: 1.7;
+}
+
+.feature-page {
+  --page-bg-base:
+    radial-gradient(circle at 15% 20%, rgba(255, 253, 234, 0.95), rgba(255, 253, 234, 0) 20%),
+    radial-gradient(circle at 80% 15%, rgba(215, 233, 255, 0.7), rgba(215, 233, 255, 0) 24%),
+    linear-gradient(180deg, #f4f1eb 0%, #eef2f8 48%, #f8f2e8 100%);
+}
+
+.feature-shell {
+  width: min(1120px, 95vw);
+  margin: 54px auto 0;
+  display: grid;
+  gap: 22px;
+}
+
+.feature-hero {
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(255, 253, 248, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.54);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px rgba(31, 41, 55, 0.14);
+}
+
+.feature-eyebrow {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #6a6a82;
+}
+
+.feature-summary {
+  max-width: 760px;
+  font-size: 16px;
+  line-height: 1.75;
+  color: var(--text-subtle);
+}
+
+.feature-balance-row {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.balance-chip {
+  min-width: 180px;
+  padding: 14px 18px;
+  border-radius: 18px;
+  background: linear-gradient(135deg, rgba(16, 28, 60, 0.92), rgba(58, 83, 138, 0.84));
+  color: #f7f7ff;
+  box-shadow: 0 16px 28px rgba(30, 41, 59, 0.18);
+}
+
+.balance-chip span,
+.balance-chip strong {
+  display: block;
+}
+
+.balance-chip span {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.balance-chip strong {
+  margin-top: 4px;
+  font-size: 28px;
+}
+
+.quiz-card,
+.gacha-panel,
+.asset-hint-panel,
+.wish-stage {
+  border-radius: 28px;
+  background: rgba(255, 253, 248, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(31, 41, 55, 0.14);
+}
+
+.quiz-card {
+  padding: 28px;
+}
+
+.quiz-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.quiz-question-meta,
+.quiz-feedback,
+.asset-hint-panel p,
+.gacha-panel-empty {
+  margin: 0;
+}
+
+.quiz-question-meta {
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.quiz-question-text {
+  margin: 20px 0 0;
+  font-size: clamp(24px, 3vw, 34px);
+  line-height: 1.6;
+}
+
+.quiz-options {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.quiz-option {
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 20px;
+  border: 1px solid rgba(79, 70, 229, 0.12);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(244, 245, 255, 0.74));
+  text-align: left;
+  font: inherit;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+}
+
+.quiz-option:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 30px rgba(79, 70, 229, 0.12);
+}
+
+.quiz-option:disabled {
+  cursor: default;
+}
+
+.quiz-option-label {
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #182547, #3a4f86);
+  color: #fff;
+  font-weight: 700;
+}
+
+.quiz-option.is-correct {
+  border-color: rgba(16, 185, 129, 0.45);
+  background: linear-gradient(135deg, rgba(226, 255, 244, 0.94), rgba(237, 255, 249, 0.82));
+}
+
+.quiz-option.is-wrong {
+  border-color: rgba(239, 68, 68, 0.42);
+  background: linear-gradient(135deg, rgba(255, 238, 238, 0.94), rgba(255, 246, 246, 0.82));
+}
+
+.quiz-feedback {
+  margin-top: 18px;
+  min-height: 24px;
+  font-size: 15px;
+}
+
+.quiz-feedback.is-success {
+  color: #0f8c5f;
+}
+
+.quiz-feedback.is-error {
+  color: #b42318;
+}
+
+.record.is-locked {
+  border: 1px solid rgba(214, 184, 95, 0.36);
+  background:
+    linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(48, 58, 82, 0.82)),
+    rgba(255, 252, 246, 0.34);
+  color: #f5f2e8;
+}
+
+.record.is-locked .meta,
+.record.is-locked .content {
+  color: rgba(255, 248, 230, 0.92);
+}
+
+.record-lock-panel {
+  display: grid;
+  gap: 10px;
+  padding: 20px;
+  border-radius: 16px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.record-lock-icon {
+  width: fit-content;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(244, 196, 48, 0.12);
+  color: #ffe28e;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+}
+
+.record-lock-title,
+.record-lock-copy {
+  margin: 0;
+}
+
+.record-lock-title {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.record-lock-copy {
+  color: rgba(255, 248, 230, 0.74);
+}
+
+.icon-group.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.gacha-page {
+  --page-bg-base:
+    radial-gradient(circle at 20% 20%, rgba(255, 237, 196, 0.64), rgba(255, 237, 196, 0) 18%),
+    radial-gradient(circle at 78% 12%, rgba(207, 221, 255, 0.88), rgba(207, 221, 255, 0) 28%),
+    linear-gradient(180deg, #f7f4ef 0%, #dfe7f8 42%, #f9f0e1 100%);
+}
+
+.gacha-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.gacha-draw-btn {
+  padding: 10px 18px;
+  font-size: 14px;
+}
+
+.asset-hint-panel {
+  padding: 22px 26px;
+}
+
+.asset-hint-panel h2 {
+  margin: 0 0 10px;
+}
+
+.wish-stage {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+}
+
+.wish-stage-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.85), rgba(255, 255, 255, 0) 38%),
+    linear-gradient(180deg, rgba(38, 59, 101, 0.16), rgba(255, 255, 255, 0));
+}
+
+.wish-grid {
+  position: relative;
+  z-index: 1;
+  min-height: 360px;
+  padding: 28px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
+  align-items: end;
+}
+
+.wish-card {
+  position: relative;
+  min-height: 290px;
+  border-radius: 24px;
+  overflow: hidden;
+  transform: translateY(18px) scale(0.98);
+  opacity: 0;
+  animation: wishReveal 0.62s cubic-bezier(.2,.8,.2,1) forwards;
+  box-shadow: 0 18px 36px rgba(17, 24, 39, 0.16);
+}
+
+.wish-stage.is-active .wish-card {
+  animation-play-state: running;
+}
+
+@keyframes wishReveal {
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.wish-card-art,
+.collection-art {
+  height: 100%;
+  min-height: 220px;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.66), rgba(255, 255, 255, 0) 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(14, 23, 43, 0.18));
+  background-size: cover;
+  background-position: center;
+}
+
+.wish-card-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(15, 23, 42, 0.56));
+}
+
+.wish-card-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  padding: 18px;
+  color: #fff;
+}
+
+.wish-card-meta h3,
+.wish-card-meta p,
+.wish-card-rarity,
+.collection-card h3,
+.collection-card p {
+  margin: 0;
+}
+
+.wish-card-meta h3 {
+  margin-top: 6px;
+  font-size: 24px;
+}
+
+.wish-card-meta p {
+  margin-top: 6px;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.wish-card-rarity {
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.rarity-5 {
+  background: linear-gradient(160deg, #fff3d0, #f3a95b 46%, #5d3b8d 100%);
+}
+
+.rarity-4 {
+  background: linear-gradient(160deg, #f5ebff, #9a78e5 48%, #43579f 100%);
+}
+
+.rarity-3 {
+  background: linear-gradient(160deg, #eff7ff, #78a8e5 50%, #2f517a 100%);
+}
+
+.gacha-columns {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr);
+  gap: 20px;
+}
+
+.gacha-panel {
+  padding: 24px;
+}
+
+.gacha-panel h2 {
+  margin: 0 0 16px;
+}
+
+.gacha-history {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.gacha-history li {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  color: #fff;
+}
+
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+.collection-card {
+  overflow: hidden;
+  border-radius: 20px;
+  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.16);
+}
+
+.collection-card h3,
+.collection-card p {
+  padding-left: 16px;
+  padding-right: 16px;
+  color: #fff;
+}
+
+.collection-card h3 {
+  padding-top: 16px;
+  font-size: 20px;
+}
+
+.collection-card p {
+  padding-top: 6px;
+  padding-bottom: 18px;
+  color: rgba(255, 255, 255, 0.84);
+}
+
+.game-toast-stack {
+  position: fixed;
+  right: 14px;
+  bottom: 14px;
+  z-index: 999;
+  display: grid;
+  gap: 8px;
+}
+
+.game-toast {
+  min-width: 220px;
+  max-width: 340px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(17, 24, 39, 0.92);
+  color: #fff;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.26);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.game-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.game-toast.is-success {
+  background: rgba(15, 118, 110, 0.94);
+}
+
+.game-toast.is-error {
+  background: rgba(180, 35, 24, 0.94);
+}
+
 
 @media (max-width: 920px) {
   .guide-stats-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .guide-feature-grid {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -1460,6 +1997,26 @@ body>footer {
     min-height: 0;
     padding-top: 16px;
     gap: 14px;
+  }
+
+  .feature-shell {
+    margin-top: 44px;
+  }
+
+  .quiz-options,
+  .gacha-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .quiz-card-head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .wish-grid {
+    grid-template-columns: 1fr;
   }
 }
 
