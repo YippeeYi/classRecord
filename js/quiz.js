@@ -69,7 +69,7 @@
         }
 
         const answer = pickRandom(tokens);
-        const maskedText = text.replace(answer, '____________');
+        const maskedText = text.replace(answer, '________________________');
         if (maskedText === text) {
             return null;
         }

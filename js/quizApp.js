@@ -76,7 +76,7 @@
         if (!tokens.length) return null;
 
         const answer = pickRandom(tokens);
-        const maskedText = text.replace(answer, '____________');
+        const maskedText = text.replace(answer, '________________________');
         if (maskedText === text) return null;
 
         const distractors = shuffle(answerPool.filter((item) => item !== answer && !maskedText.includes(item))).slice(0, 3);
