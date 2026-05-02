@@ -2118,6 +2118,300 @@ body>footer {
   background: linear-gradient(160deg, #eff7ff, #78a8e5 50%, #2f517a 100%);
 }
 
+body.is-wish-revealing {
+  overflow: hidden;
+}
+
+.wish-reveal-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  overflow: hidden;
+  color: #fff;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.34), transparent 12%),
+    linear-gradient(180deg, #091229 0%, #102f62 48%, #e6efff 100%);
+}
+
+.wish-reveal-screen[hidden] {
+  display: none;
+}
+
+.wish-reveal-sky,
+.wish-reveal-stars,
+.wish-reveal-meteor,
+.wish-reveal-flash {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wish-reveal-sky {
+  background:
+    radial-gradient(circle at 50% 8%, rgba(255, 255, 255, 0.95), transparent 16%),
+    radial-gradient(circle at 30% 32%, rgba(122, 184, 255, 0.26), transparent 25%),
+    radial-gradient(circle at 76% 40%, rgba(255, 210, 123, 0.18), transparent 22%);
+}
+
+.wish-reveal-stars {
+  opacity: 0.9;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.95) 0 1px, transparent 1.5px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.68) 0 1px, transparent 1.4px);
+  background-position: 12px 18px, 74px 55px;
+  background-size: 110px 96px, 160px 132px;
+  animation: wishStarDrift 18s linear infinite;
+}
+
+.wish-reveal-meteor::before {
+  content: "";
+  position: absolute;
+  top: 18%;
+  left: -34vw;
+  width: 48vw;
+  height: 8px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(190, 226, 255, 0.96), #fff, transparent);
+  box-shadow:
+    0 0 22px rgba(155, 206, 255, 0.95),
+    0 0 54px rgba(83, 151, 255, 0.48);
+  transform: rotate(-19deg);
+}
+
+.wish-reveal-meteor.rarity-4::before {
+  background: linear-gradient(90deg, transparent, rgba(199, 155, 255, 0.96), #fff, transparent);
+  box-shadow:
+    0 0 24px rgba(178, 115, 255, 0.96),
+    0 0 62px rgba(122, 78, 225, 0.58);
+}
+
+.wish-reveal-meteor.rarity-5::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 218, 120, 0.98), #fff7d3, transparent);
+  box-shadow:
+    0 0 26px rgba(255, 211, 92, 1),
+    0 0 72px rgba(255, 166, 56, 0.64);
+}
+
+.wish-reveal-screen.is-opening .wish-reveal-meteor::before {
+  animation: wishMeteorFull 1.12s cubic-bezier(.14,.78,.18,1) forwards;
+}
+
+.wish-reveal-flash {
+  opacity: 0;
+  background: radial-gradient(circle at 58% 58%, rgba(255, 255, 255, 0.96), transparent 24%);
+}
+
+.wish-reveal-screen.is-opening .wish-reveal-flash {
+  animation: wishFullFlash 1.12s ease forwards;
+}
+
+.wish-reveal-topbar {
+  position: relative;
+  z-index: 5;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px;
+}
+
+.wish-ghost-btn {
+  min-width: 76px;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.42);
+  border-radius: 999px;
+  color: #fff;
+  background: rgba(8, 18, 40, 0.34);
+  backdrop-filter: blur(12px);
+  cursor: pointer;
+}
+
+.wish-ghost-btn:hover,
+.wish-ghost-btn:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.wish-reveal-card-wrap {
+  position: absolute;
+  inset: 84px 24px 74px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
+.wish-reveal-card-wrap[hidden] {
+  display: none;
+}
+
+.wish-reveal-card-shell {
+  position: relative;
+  width: min(360px, 76vw);
+  padding: 10px;
+  border-radius: 24px;
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.34),
+    0 0 72px rgba(255, 255, 255, 0.22);
+  animation: wishCardArrive 0.56s cubic-bezier(.18,.86,.22,1) both;
+}
+
+.wish-reveal-card-shell.rarity-4 {
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.34),
+    0 0 86px rgba(175, 116, 255, 0.55);
+}
+
+.wish-reveal-card-shell.rarity-5 {
+  box-shadow:
+    0 30px 90px rgba(0, 0, 0, 0.34),
+    0 0 104px rgba(255, 197, 84, 0.7);
+}
+
+.wish-reveal-card-shell .wish-card {
+  width: 100%;
+  min-height: 480px;
+  opacity: 1;
+  animation: none;
+  transform: none;
+}
+
+.wish-reveal-card-info {
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  top: 18px;
+  z-index: 4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: rgba(255, 255, 255, 0.92);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.34);
+}
+
+.wish-reveal-card-info strong {
+  font-size: 14px;
+}
+
+.wish-reveal-summary {
+  position: absolute;
+  inset: 72px clamp(18px, 5vw, 72px) 64px;
+  z-index: 4;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 20px;
+  pointer-events: none;
+}
+
+.wish-reveal-summary[hidden] {
+  display: none;
+}
+
+.wish-summary-head {
+  text-align: center;
+  text-shadow: 0 3px 16px rgba(0, 0, 0, 0.24);
+}
+
+.wish-summary-head h2 {
+  margin: 4px 0 0;
+  font-size: clamp(28px, 4vw, 54px);
+  letter-spacing: 0;
+}
+
+.wish-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: clamp(10px, 1.5vw, 18px);
+  align-items: stretch;
+}
+
+.wish-summary-grid .wish-card {
+  min-height: 0;
+  opacity: 0;
+  transform: translateY(20px) scale(0.96);
+  animation: wishReveal 0.5s cubic-bezier(.18,.86,.22,1) forwards;
+}
+
+.wish-next-hit {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.wish-reveal-hint {
+  position: absolute;
+  left: 50%;
+  bottom: 22px;
+  z-index: 6;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 10px 18px;
+  border-radius: 999px;
+  color: rgba(255, 255, 255, 0.92);
+  background: rgba(8, 18, 40, 0.34);
+  backdrop-filter: blur(12px);
+  text-align: center;
+  white-space: nowrap;
+}
+
+@keyframes wishStarDrift {
+  from {
+    background-position: 12px 18px, 74px 55px;
+  }
+
+  to {
+    background-position: 122px 114px, 234px 187px;
+  }
+}
+
+@keyframes wishMeteorFull {
+  0% {
+    opacity: 0;
+    transform: rotate(-19deg) translate(-18vw, -8vh) scaleX(0.72);
+  }
+
+  12% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 1;
+    transform: rotate(-19deg) translate(126vw, 64vh) scaleX(1.22);
+  }
+}
+
+@keyframes wishFullFlash {
+  0%,
+  72% {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+
+  84% {
+    opacity: 0.92;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.1);
+  }
+}
+
+@keyframes wishCardArrive {
+  0% {
+    opacity: 0;
+    transform: translateY(26px) scale(0.92) rotateX(10deg);
+    filter: brightness(1.4) blur(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+    filter: none;
+  }
+}
+
 .gacha-columns {
   display: grid;
   grid-template-columns: 320px minmax(0, 1fr);
@@ -2273,6 +2567,43 @@ body>footer {
   .wish-card,
   .wish-card.is-featured {
     min-height: 220px;
+  }
+
+  .wish-reveal-topbar {
+    padding: 12px;
+  }
+
+  .wish-reveal-card-wrap {
+    inset: 70px 14px 74px;
+  }
+
+  .wish-reveal-card-shell {
+    width: min(320px, 86vw);
+  }
+
+  .wish-reveal-card-shell .wish-card {
+    min-height: 430px;
+  }
+
+  .wish-reveal-summary {
+    inset: 68px 12px 66px;
+    gap: 12px;
+  }
+
+  .wish-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: auto;
+    padding-right: 2px;
+  }
+
+  .wish-summary-grid .wish-card {
+    min-height: 212px;
+  }
+
+  .wish-reveal-hint {
+    bottom: 14px;
+    max-width: calc(100vw - 28px);
+    white-space: normal;
   }
 }
 

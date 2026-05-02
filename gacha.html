@@ -22,7 +22,7 @@
         <section class="feature-hero">
             <p class="feature-eyebrow">Wish Screen</p>
             <h1>星辉抽卡</h1>
-            <p class="feature-summary">以原神式抽卡节奏为灵感，提供单抽和十连，支持 3 星、4 星、5 星卡面展示、保底与仓库。</p>
+            <p class="feature-summary">单抽或十连后会进入独立祈愿展示页。十连会逐张揭示，也可以跳过并直接查看全部卡片。</p>
             <div class="feature-balance-row">
                 <div class="balance-chip">
                     <span>当前 Q币</span>
@@ -46,12 +46,6 @@
 
         <section id="gacha-result-stage" class="wish-stage">
             <div class="wish-stage-bg"></div>
-            <div id="wish-cinematic" class="wish-cinematic" aria-hidden="true">
-                <div class="wish-cinematic-sky"></div>
-                <div class="wish-cinematic-trail"></div>
-                <div class="wish-cinematic-impact"></div>
-                <p id="wish-cinematic-text" class="wish-cinematic-text">星轨正在划过夜空...</p>
-            </div>
             <div id="gacha-result-grid" class="wish-grid"></div>
         </section>
 
@@ -66,6 +60,30 @@
             </article>
         </section>
     </main>
+
+    <section id="wish-reveal-screen" class="wish-reveal-screen" aria-live="polite" hidden>
+        <div class="wish-reveal-sky"></div>
+        <div class="wish-reveal-stars"></div>
+        <div id="wish-reveal-meteor" class="wish-reveal-meteor"></div>
+        <div class="wish-reveal-flash"></div>
+
+        <div class="wish-reveal-topbar">
+            <button id="wish-reveal-close" class="wish-ghost-btn" type="button" hidden>返回</button>
+            <button id="wish-reveal-skip" class="wish-ghost-btn" type="button">跳过</button>
+        </div>
+
+        <div id="wish-reveal-card-wrap" class="wish-reveal-card-wrap"></div>
+        <div id="wish-reveal-summary" class="wish-reveal-summary" hidden>
+            <div class="wish-summary-head">
+                <p class="feature-eyebrow">Wish Result</p>
+                <h2>祈愿结果</h2>
+            </div>
+            <div id="wish-reveal-summary-grid" class="wish-summary-grid"></div>
+        </div>
+
+        <button id="wish-reveal-next" class="wish-next-hit" type="button" aria-label="继续展示下一张卡"></button>
+        <p id="wish-reveal-hint" class="wish-reveal-hint">星轨正在划过夜空...</p>
+    </section>
 
     <script src="js/gameSystem.js"></script>
     <script src="js/backgroundOptions.js"></script>
