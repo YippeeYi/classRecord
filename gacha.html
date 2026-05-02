@@ -15,14 +15,14 @@
 
 <body class="feature-page gacha-page">
     <div class="page-header">
-        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">↩</button>
+        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">←</button>
     </div>
 
     <main class="feature-shell">
         <section class="feature-hero">
             <p class="feature-eyebrow">Wish Screen</p>
             <h1>星辉抽卡</h1>
-            <p class="feature-summary">以原神式抽卡节奏为灵感，提供 160 Q币 单抽和 1600 Q币 十连，支持 3 星、4 星、5 星卡面展示、保底与仓库。</p>
+            <p class="feature-summary">以原神式抽卡节奏为灵感，提供单抽和十连，支持 3 星、4 星、5 星卡面展示、保底与仓库。</p>
             <div class="feature-balance-row">
                 <div class="balance-chip">
                     <span>当前 Q币</span>
@@ -34,14 +34,14 @@
                 </div>
             </div>
             <div class="gacha-actions">
-                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="1">160 Q币 单抽</button>
-                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="10">1600 Q币 十连</button>
+                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="1">单抽</button>
+                <button class="btn-action gacha-draw-btn" type="button" data-gacha-count="10">十连</button>
             </div>
         </section>
 
         <section id="gacha-empty-state" class="asset-hint-panel">
             <h2>等待你的卡面图</h2>
-            <p>卡池数据已经接好。你把图片和卡池信息补到 <code>data/gacha/pool.json</code> 后，这里就会自动变成正式抽卡池。</p>
+            <p>卡池数据已经接好。把图片和卡池信息补到 <code>data/gacha/pool.json</code> 后，这里就会自动变成正式抽卡池。</p>
         </section>
 
         <section id="gacha-result-stage" class="wish-stage">
@@ -50,7 +50,7 @@
                 <div class="wish-cinematic-sky"></div>
                 <div class="wish-cinematic-trail"></div>
                 <div class="wish-cinematic-impact"></div>
-                <p id="wish-cinematic-text" class="wish-cinematic-text">星轨正在划过夜空…</p>
+                <p id="wish-cinematic-text" class="wish-cinematic-text">星轨正在划过夜空...</p>
             </div>
             <div id="gacha-result-grid" class="wish-grid"></div>
         </section>

@@ -4,35 +4,24 @@
  * - 统一解析记录文本
  * - 统一排序
  * - 统一渲染记录列表
- * - 主页面 & 个人页面共用
+ * - 主页面 & 详情页面共用
  ************************************************************/
 
-/* ===============================
-   内容解析
-   =============================== */
 function parseContent(text) {
     if (!text) return "";
 
     return text
-        // 术语标记 {{termId|显示文本}}
-        .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g,
-            (_, id, label) =>
-                `<span class="term-tag" data-id="${id}">${label}</span>`
+        .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, (_, id, label) =>
+            `<span class="term-tag" data-id="${id}">${label}</span>`
         )
-        // 人物标记 [[id|显示名]]
-        .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g,
-            (_, id, label) =>
-                `<span class="person-tag" data-id="${id}" title="${id}">${label}</span>`
+        .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, (_, id, label) =>
+            `<span class="person-tag" data-id="${id}" title="${id}">${label}</span>`
         )
-        // 黑幕 ((显示内容))
-        .replace(/\(\((.+?)\)\)/g,
-            (_, c) =>
-                `<span class="redacted"><span class="redacted-mask"></span><span class="redacted-content">${c}</span></span>`
+        .replace(/\(\((.+?)\)\)/g, (_, content) =>
+            `<span class="redacted"><span class="redacted-mask"></span><span class="redacted-content">${content}</span></span>`
         )
-        // 上标 ^内容^
-        .replace(/\^(.+?)\^/g, (_, t) => `<sup>${t}</sup>`)
-        // 下标 _内容_
-        .replace(/_(.+?)_/g, (_, t) => `<sub>${t}</sub>`);
+        .replace(/\^(.+?)\^/g, (_, value) => `<sup>${value}</sup>`)
+        .replace(/_(.+?)_/g, (_, value) => `<sub>${value}</sub>`);
 }
 
 function stripRecordMarkup(text) {
@@ -48,153 +37,73 @@ function stripRecordMarkup(text) {
 
 window.stripRecordMarkup = stripRecordMarkup;
 
-/* ===============================
-   段落格式化
-   =============================== */
 function formatContent(text) {
     return text
         .split("\n\n")
-        .map(p => parseContent(p).replace(/\n/g, "<br>"))
+        .map((paragraph) => parseContent(paragraph).replace(/\n/g, "<br>"))
         .join("");
 }
 
-/* ===============================
-   排序规则
-   =============================== */
 function sortRecords(records) {
-    records.sort((a, b) => {
-        return b.id.localeCompare(a.id);
-    });
+    records.sort((a, b) => b.id.localeCompare(a.id));
 }
 
-/* ===============================
-   渲染记录列表
-   =============================== */
+function buildRecordBody(record, isLocked) {
+    const timeText = record.time ? `📌 ${record.time} |` : "";
+
+    return `
+        <div class="meta">
+            <span>
+                #${record.id} |
+                📅 ${record.date} |
+                ${timeText}
+                ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
+            </span>
+            <span class="icon-group${isLocked ? " is-hidden" : ""}">
+                ${record.image ? `<span class="image-toggle">📷</span>` : ""}
+                ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
+            </span>
+        </div>
+
+        <div class="content ${isLocked ? "content-locked" : ""}">
+            ${isLocked ? `
+                <div class="record-lock-panel">
+                    <div class="record-lock-icon">LOCKED</div>
+                    <p class="record-lock-title">重要条目已上锁</p>
+                    <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
+                    <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
+                </div>
+            ` : formatContent(record.content)}
+        </div>
+
+        ${!isLocked && record.image ? `
+            <div class="image-wrapper" style="display:none">
+                <img src="${record.image}" alt="${record.id}">
+            </div>
+        ` : ""}
+
+        ${!isLocked && record.attachments?.length ? `
+            <div class="attachments-wrapper" style="display:none">
+                <ul>
+                    ${record.attachments.map((attachment) =>
+                        `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`
+                    ).join("")}
+                </ul>
+            </div>
+        ` : ""}
+    `;
+}
+
 function renderRecordList(records, container) {
-    // 检查是否已初始化
-    records.forEach(record => {
+    records.forEach((record) => {
         if (!record.id) {
-            console.warn(
-                "发现未初始化（未带 id）的记录：",
-                record
-            );
+            console.warn("发现未初始化（未带 id）的记录：", record);
         }
     });
 
     container.innerHTML = "";
 
-    records.forEach(record => {
-        let timeText = "";
-        if (record.time) timeText = "📌 " + record.time + " |";
-
-        const importance = record.importance || "normal";
-
-        const div = document.createElement("div");
-
-        div.className = `record importance-${importance}`;
-
-        div.innerHTML = `
-            <div class="meta">
-                <span>
-                    #${record.id} |
-                    📅 ${record.date} |
-                    ${timeText}
-                    ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
-                </span>
-                <span class="icon-group">
-                    ${record.image ? `<span class="image-toggle">📷</span>` : ""}
-                    ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
-                </span>
-            </div>
-
-            <div class="content">
-                ${formatContent(record.content)}
-            </div>
-
-            ${record.image ? `
-                <div class="image-wrapper" style="display:none">
-                    <img src="${record.image}">
-                </div>
-            ` : ""}
-
-            ${record.attachments?.length ? `
-                <div class="attachments-wrapper" style="display:none">
-                    <ul>
-                        ${record.attachments.map(a =>
-            `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`
-        ).join("")}
-                    </ul>
-                </div>
-            ` : ""}
-        `;
-
-        bindToggle(div);
-        container.appendChild(div);
-    });
-}
-
-/* ===============================
-   筛选控件（年/月/日）
-   =============================== */
-const baseRenderRecordList = renderRecordList;
-
-renderRecordList = function (records, container) {
-    records.forEach(record => {
-        if (!record.id) {
-            console.warn(
-                "鍙戠幇鏈垵濮嬪寲锛堟湭甯?id锛夌殑璁板綍锛?,
-                record
-            );
-        }
-    });
-
-    container.innerHTML = "";
-
-    function buildRecordBody(record, isLocked) {
-        return `
-            <div class="meta">
-                <span>
-                    #${record.id} |
-                    馃搮 ${record.date} |
-                    ${record.time ? "馃搶 " + record.time + " |" : ""}
-                    鉁?${parseContent(`[[${record.author}|${record.author}]]`)}
-                </span>
-                <span class="icon-group${isLocked ? " is-hidden" : ""}">
-                    ${record.image ? `<span class="image-toggle">馃摲</span>` : ""}
-                    ${record.attachments?.length ? `<span class="attach-toggle">馃搸</span>` : ""}
-                </span>
-            </div>
-
-            <div class="content ${isLocked ? "content-locked" : ""}">
-                ${isLocked ? `
-                    <div class="record-lock-panel">
-                        <div class="record-lock-icon">LOCKED</div>
-                        <p class="record-lock-title">重要条目已上锁</p>
-                        <p class="record-lock-copy">解锁后可查看正文、图片和附件内容。</p>
-                        <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
-                    </div>
-                ` : formatContent(record.content)}
-            </div>
-
-            ${!isLocked && record.image ? `
-                <div class="image-wrapper" style="display:none">
-                    <img src="${record.image}">
-                </div>
-            ` : ""}
-
-            ${!isLocked && record.attachments?.length ? `
-                <div class="attachments-wrapper" style="display:none">
-                    <ul>
-                        ${record.attachments.map(a =>
-            `<li><a href="${a.file}" target="_blank">${a.name}</a></li>`
-        ).join("")}
-                    </ul>
-                </div>
-            ` : ""}
-        `;
-    }
-
-    records.forEach(record => {
+    records.forEach((record) => {
         const importance = record.importance || "normal";
         const div = document.createElement("div");
 
@@ -204,20 +113,17 @@ renderRecordList = function (records, container) {
             div.innerHTML = buildRecordBody(record, isLocked);
             bindToggle(div);
 
-            const unlockButton = div.querySelector(".record-unlock-btn");
-            if (unlockButton) {
-                unlockButton.addEventListener("click", () => {
-                    if (window.GameState?.unlockRecord?.(record.id, 500)) {
-                        renderIntoDiv();
-                    }
-                });
-            }
+            div.querySelector(".record-unlock-btn")?.addEventListener("click", () => {
+                if (window.GameState?.unlockRecord?.(record.id, 500)) {
+                    renderIntoDiv();
+                }
+            });
         };
 
         renderIntoDiv();
         container.appendChild(div);
     });
-};
+}
 
 function filterRecordsByDate(records, { year, month, day }) {
     const hasYear = Boolean(year);
@@ -228,21 +134,21 @@ function filterRecordsByDate(records, { year, month, day }) {
         return records.slice();
     }
 
-    return records.filter(record => {
+    return records.filter((record) => {
         if (!record.date) return false;
-        const [rYear, rMonth, rDay] = record.date.split("-");
-        if (hasYear && rYear !== year) return false;
-        if (hasMonth && rMonth !== month) return false;
-        if (hasDay && rDay !== day) return false;
+        const [recordYear, recordMonth, recordDay] = record.date.split("-");
+        if (hasYear && recordYear !== year) return false;
+        if (hasMonth && recordMonth !== month) return false;
+        if (hasDay && recordDay !== day) return false;
         return true;
     });
 }
 
 function parseDateParts(records) {
     return records
-        .map(record => record.date)
+        .map((record) => record.date)
         .filter(Boolean)
-        .map(date => {
+        .map((date) => {
             const [year, month, day] = date.split("-");
             return { year, month, day };
         });
@@ -255,43 +161,26 @@ function uniqueSorted(values) {
 function buildOptions(records, criteria) {
     const dates = parseDateParts(records);
 
-    const yearOptions = uniqueSorted(
-        dates
-            .filter(date => (!criteria.month || date.month === criteria.month)
-                && (!criteria.day || date.day === criteria.day))
-            .map(date => date.year)
-    );
-
-    const monthOptions = uniqueSorted(
-        dates
-            .filter(date => (!criteria.year || date.year === criteria.year)
-                && (!criteria.day || date.day === criteria.day))
-            .map(date => date.month)
-    );
-
-    const dayOptions = uniqueSorted(
-        dates
-            .filter(date => (!criteria.year || date.year === criteria.year)
-                && (!criteria.month || date.month === criteria.month))
-            .map(date => date.day)
-    );
-
-    return { yearOptions, monthOptions, dayOptions };
+    return {
+        yearOptions: uniqueSorted(dates
+            .filter((date) => (!criteria.month || date.month === criteria.month) && (!criteria.day || date.day === criteria.day))
+            .map((date) => date.year)),
+        monthOptions: uniqueSorted(dates
+            .filter((date) => (!criteria.year || date.year === criteria.year) && (!criteria.day || date.day === criteria.day))
+            .map((date) => date.month)),
+        dayOptions: uniqueSorted(dates
+            .filter((date) => (!criteria.year || date.year === criteria.year) && (!criteria.month || date.month === criteria.month))
+            .map((date) => date.day))
+    };
 }
 
-function renderRecordFilter({
-    container,
-    onFilterChange,
-    getRecords,
-    initial = {}
-}) {
+function renderRecordFilter({ container, onFilterChange, getRecords, initial = {} }) {
     if (!container) return;
 
     container.innerHTML = "";
 
     const wrapper = document.createElement("div");
     wrapper.className = "record-filter";
-
     wrapper.innerHTML = `
         <div class="filter-field">
             <label for="filter-year">年</label>
@@ -321,7 +210,6 @@ function renderRecordFilter({
             <button type="button" class="btn-action clear">清空</button>
         </div>
     `;
-
     container.appendChild(wrapper);
 
     const yearOptions = wrapper.querySelector("#filter-year-options");
@@ -337,21 +225,21 @@ function renderRecordFilter({
         day: initial.day || ""
     };
 
-    const updateTriggerLabels = criteria => {
+    const updateTriggerLabels = (criteria) => {
         const labels = {
             year: criteria.year ? `${criteria.year}年` : "选择年",
             month: criteria.month ? `${criteria.month}月` : "选择月",
             day: criteria.day ? `${criteria.day}日` : "选择日"
         };
-        dropdownTriggers.forEach(trigger => {
+        dropdownTriggers.forEach((trigger) => {
             const target = trigger.dataset.target;
             if (!target) return;
             if (target.includes("year")) {
-                trigger.childNodes[0].textContent = labels.year + " ";
+                trigger.childNodes[0].textContent = `${labels.year} `;
             } else if (target.includes("month")) {
-                trigger.childNodes[0].textContent = labels.month + " ";
+                trigger.childNodes[0].textContent = `${labels.month} `;
             } else if (target.includes("day")) {
-                trigger.childNodes[0].textContent = labels.day + " ";
+                trigger.childNodes[0].textContent = `${labels.day} `;
             }
         });
     };
@@ -359,16 +247,14 @@ function renderRecordFilter({
     const renderSelectOptions = () => {
         const records = typeof getRecords === "function" ? getRecords() : [];
         const options = buildOptions(records, currentCriteria);
+
         const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
             const selected = selectedValue || "";
-            const buttons = [
+            containerEl.innerHTML = [
                 `<button type="button" class="btn-action filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
-                ...optionValues.map(value => {
-                    const isActive = value === selected;
-                    return `<button type="button" class="btn-action filter-option${isActive ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`;
-                })
-            ];
-            containerEl.innerHTML = buttons.join("");
+                ...optionValues.map((value) =>
+                    `<button type="button" class="btn-action filter-option${value === selected ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`)
+            ].join("");
         };
 
         fillOptions(yearOptions, options.yearOptions, currentCriteria.year, "year");
@@ -376,20 +262,14 @@ function renderRecordFilter({
         fillOptions(dayOptions, options.dayOptions, currentCriteria.day, "day");
     };
 
-    const applyCriteria = criteria => {
+    const applyCriteria = (criteria) => {
         currentCriteria = { ...criteria };
         renderSelectOptions();
         updateTriggerLabels(currentCriteria);
-        if (typeof onFilterChange === "function") {
-            onFilterChange(currentCriteria);
-        }
+        onFilterChange?.(currentCriteria);
     };
 
-    const clearFilter = () => {
-        applyCriteria({ year: "", month: "", day: "" });
-    };
-
-    const handleOptionClick = event => {
+    const handleOptionClick = (event) => {
         const target = event.target.closest(".filter-option");
         if (!target) return;
         const field = target.dataset.field;
@@ -398,16 +278,12 @@ function renderRecordFilter({
         if (fieldElement) {
             closeField(fieldElement, false);
         }
-        applyCriteria({
-            ...currentCriteria,
-            [field]: target.dataset.value || ""
-        });
+        applyCriteria({ ...currentCriteria, [field]: target.dataset.value || "" });
     };
 
-    const DROPDOWN_CLOSE_DELAY = 140;
     const closeTimers = new WeakMap();
 
-    const openField = field => {
+    const openField = (field) => {
         const timer = closeTimers.get(field);
         if (timer) {
             clearTimeout(timer);
@@ -428,15 +304,13 @@ function renderRecordFilter({
             return;
         }
 
-        const closeTimer = setTimeout(() => {
+        closeTimers.set(field, setTimeout(() => {
             field.classList.remove("is-open");
             closeTimers.delete(field);
-        }, DROPDOWN_CLOSE_DELAY);
-
-        closeTimers.set(field, closeTimer);
+        }, 140));
     };
 
-    filterFields.forEach(field => {
+    filterFields.forEach((field) => {
         field.addEventListener("mouseenter", () => openField(field));
         field.addEventListener("mouseleave", () => closeField(field, true));
     });
@@ -444,54 +318,48 @@ function renderRecordFilter({
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
-    clearButton.addEventListener("click", clearFilter);
+    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "" }));
 
     renderSelectOptions();
     updateTriggerLabels(currentCriteria);
 }
 
-/* ===============================
-   图片 / 附件切换
-   =============================== */
 function bindToggle(recordDiv) {
-    const imgBtn = recordDiv.querySelector(".image-toggle");
-    const imgWrap = recordDiv.querySelector(".image-wrapper");
+    const imageButton = recordDiv.querySelector(".image-toggle");
+    const imageWrap = recordDiv.querySelector(".image-wrapper");
 
-    if (imgBtn && imgWrap) {
-        imgBtn.onclick = () => {
-            const open = imgWrap.style.display === "block";
-            imgWrap.style.display = open ? "none" : "block";
-            imgBtn.textContent = open ? "📷" : "❌";
+    if (imageButton && imageWrap) {
+        imageButton.onclick = () => {
+            const open = imageWrap.style.display === "block";
+            imageWrap.style.display = open ? "none" : "block";
+            imageButton.textContent = open ? "📷" : "❌";
         };
     }
 
-    const attBtn = recordDiv.querySelector(".attach-toggle");
-    const attWrap = recordDiv.querySelector(".attachments-wrapper");
+    const attachmentButton = recordDiv.querySelector(".attach-toggle");
+    const attachmentWrap = recordDiv.querySelector(".attachments-wrapper");
 
-    if (attBtn && attWrap) {
-        attBtn.onclick = () => {
-            const open = attWrap.style.display === "block";
-            attWrap.style.display = open ? "none" : "block";
-            attBtn.textContent = open ? "📎" : "❌";
+    if (attachmentButton && attachmentWrap) {
+        attachmentButton.onclick = () => {
+            const open = attachmentWrap.style.display === "block";
+            attachmentWrap.style.display = open ? "none" : "block";
+            attachmentButton.textContent = open ? "📎" : "❌";
         };
     }
 }
 
-/* ===============================
-   术语 Tooltip
-   =============================== */
 let glossaryCache = null;
 let activeTooltip = null;
 let activeTermId = null;
 let tooltipTimer = null;
-let tooltipRemoveTimer = null; // 移除 tooltip 的定时器
+let tooltipRemoveTimer = null;
 let lastMouseX = 0;
 let lastMouseY = 0;
 let isHoveringTooltip = false;
 let isHoveringTerm = false;
 
 const TOOLTIP_DELAY = 200;
-const TOOLTIP_REMOVE_DELAY = 300; // 延迟时间，在鼠标移开后延迟移除 tooltip
+const TOOLTIP_REMOVE_DELAY = 300;
 
 function clamp(value, min, max) {
     return Math.max(min, Math.min(value, max));
@@ -508,91 +376,72 @@ function updateTooltipHorizontalPosition() {
         window.innerWidth - tooltipRect.width - padding
     );
 
-    activeTooltip.style.left = left + window.scrollX + "px";
+    activeTooltip.style.left = `${left + window.scrollX}px`;
 }
 
-// 加载 glossary
 async function ensureGlossary() {
     if (!glossaryCache) {
         const list = await loadAllGlossary();
         glossaryCache = {};
-        list.forEach(t => glossaryCache[t.id] = t);
+        list.forEach((term) => {
+            glossaryCache[term.id] = term;
+        });
     }
 }
 
-/* ---------- 记录鼠标位置 ---------- */
-document.addEventListener("mousemove", e => {
-    lastMouseX = e.clientX;
-    lastMouseY = e.clientY;
+document.addEventListener("mousemove", (event) => {
+    lastMouseX = event.clientX;
+    lastMouseY = event.clientY;
 });
 
-/* ---------- mouseover：延迟显示 tooltip ---------- */
-document.addEventListener("mouseover", e => {
-    const tag = e.target.closest(".term-tag");
+document.addEventListener("mouseover", (event) => {
+    const tag = event.target.closest(".term-tag");
     if (!tag) return;
 
     const termId = tag.dataset.id;
     isHoveringTerm = true;
-
-    if (tooltipTimer) clearTimeout(tooltipTimer);
+    clearTimeout(tooltipTimer);
 
     tooltipTimer = setTimeout(async () => {
         await ensureGlossary();
-
         const term = glossaryCache[termId];
         if (!term) return;
-
-        // 已存在同一个 tooltip 不重复创建
         if (activeTooltip && activeTermId === termId) return;
 
         removeTooltip(true);
-
         activeTermId = termId;
         activeTooltip = document.createElement("div");
         activeTooltip.className = "term-tooltip hidden";
         activeTooltip.innerHTML = `
-            <div class="term-tooltip-content">
-                ${formatContent(term.definition)}
-            </div>
-            <div class="term-tooltip-hint">
-                点击查看完整术语页面
-            </div>
+            <div class="term-tooltip-content">${formatContent(term.definition)}</div>
+            <div class="term-tooltip-hint">点击查看完整术语页面</div>
         `;
-
         document.body.appendChild(activeTooltip);
+
         activeTooltip.addEventListener("mouseenter", () => {
             isHoveringTooltip = true;
-            if (tooltipRemoveTimer) {
-                clearTimeout(tooltipRemoveTimer);
-                tooltipRemoveTimer = null;
-            }
+            clearTimeout(tooltipRemoveTimer);
         });
         activeTooltip.addEventListener("mouseleave", () => {
             isHoveringTooltip = false;
             scheduleTooltipRemoval();
         });
 
-        // 计算位置：上下固定到术语文字上/下方，左右跟随鼠标
         const tooltipRect = activeTooltip.getBoundingClientRect();
         const tagRect = tag.getBoundingClientRect();
         const padding = 12;
         const verticalGap = 10;
-
         let top = tagRect.bottom + verticalGap;
+
         if (top + tooltipRect.height > window.innerHeight - padding) {
             top = tagRect.top - tooltipRect.height - verticalGap;
         }
 
-        if (!Number.isFinite(top)) {
-            top = lastMouseY + verticalGap;
-        }
-
-        top = clamp(top, padding, window.innerHeight - tooltipRect.height - padding);
+        top = clamp(Number.isFinite(top) ? top : lastMouseY + verticalGap, padding, window.innerHeight - tooltipRect.height - padding);
         activeTooltip.style.position = "absolute";
-        activeTooltip.style.top = top + window.scrollY + "px";
+        activeTooltip.style.top = `${top + window.scrollY}px`;
         updateTooltipHorizontalPosition();
 
-        // 渐入
         requestAnimationFrame(() => {
             activeTooltip.classList.remove("hidden");
             activeTooltip.classList.add("show");
@@ -600,26 +449,17 @@ document.addEventListener("mouseover", e => {
     }, TOOLTIP_DELAY);
 });
 
-/* ---------- mouseout：延迟移除 tooltip ---------- */
-document.addEventListener("mouseout", e => {
-    if (e.target.closest(".term-tag")) {
+document.addEventListener("mouseout", (event) => {
+    if (event.target.closest(".term-tag")) {
         isHoveringTerm = false;
     }
-    // 取消尚未触发的延迟显示
-    if (tooltipTimer) {
-        clearTimeout(tooltipTimer);
-        tooltipTimer = null;
-    }
 
+    clearTimeout(tooltipTimer);
+    tooltipTimer = null;
     if (!activeTooltip) return;
 
-    const to = e.relatedTarget;
-
-    // 只要进入 term-tag 或 tooltip，都不清除
-    if (
-        to &&
-        (to.closest(".term-tag") || to.closest(".term-tooltip"))
-    ) {
+    const to = event.relatedTarget;
+    if (to && (to.closest(".term-tag") || to.closest(".term-tooltip"))) {
         return;
     }
 
@@ -627,68 +467,54 @@ document.addEventListener("mouseout", e => {
 });
 
 function scheduleTooltipRemoval() {
-    if (tooltipRemoveTimer) {
-        clearTimeout(tooltipRemoveTimer);
-    }
+    clearTimeout(tooltipRemoveTimer);
 
     tooltipRemoveTimer = setTimeout(() => {
-        const el = document.elementFromPoint(lastMouseX, lastMouseY);
-        const hovering =
-            isHoveringTerm ||
+        const element = document.elementFromPoint(lastMouseX, lastMouseY);
+        const hovering = isHoveringTerm ||
             isHoveringTooltip ||
-            (el &&
-                (el.closest(".term-tag") ||
-                    el.closest(".term-tooltip")));
+            (element && (element.closest(".term-tag") || element.closest(".term-tooltip")));
 
-        if (hovering) {
-            return;
+        if (!hovering) {
+            removeTooltip();
         }
-
-        removeTooltip();
     }, TOOLTIP_REMOVE_DELAY);
 }
 
-/* ---------- 移除 tooltip ---------- */
 function removeTooltip(immediate = false) {
     if (!activeTooltip) return;
 
     activeTooltip.classList.remove("show");
-
-    const el = activeTooltip;
+    const element = activeTooltip;
     activeTooltip = null;
     activeTermId = null;
     isHoveringTooltip = false;
     isHoveringTerm = false;
 
     if (immediate) {
-        el.remove();
+        element.remove();
     } else {
-        setTimeout(() => el.remove(), 150);
+        setTimeout(() => element.remove(), 150);
     }
 }
 
-/* ---------- 点击 tooltip：跳转 ---------- */
-document.addEventListener("click", e => {
-    const tooltip = e.target.closest(".term-tooltip");
-    if (!tooltip || !activeTermId) return;
-
-    const href = `term.html?id=${activeTermId}`;
-    if (typeof window.navigateTo === 'function') {
-        window.navigateTo(href);
-    } else {
-        location.href = href;
+document.addEventListener("click", (event) => {
+    const tooltip = event.target.closest(".term-tooltip");
+    if (tooltip && activeTermId) {
+        const href = `term.html?id=${activeTermId}`;
+        if (typeof window.navigateTo === "function") {
+            window.navigateTo(href);
+        } else {
+            location.href = href;
+        }
+        removeTooltip(true);
+        return;
     }
-    removeTooltip(true);
-});
 
-/* ===============================
-   人物点击跳转
-   =============================== */
-document.addEventListener("click", e => {
-    const tag = e.target.closest(".person-tag");
+    const tag = event.target.closest(".person-tag");
     if (tag) {
         const href = `person.html?id=${tag.dataset.id}`;
-        if (typeof window.navigateTo === 'function') {
+        if (typeof window.navigateTo === "function") {
             window.navigateTo(href);
         } else {
             location.href = href;

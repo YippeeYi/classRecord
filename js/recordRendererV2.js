@@ -29,43 +29,51 @@ function sortRecords(records) {
     records.sort((a, b) => b.id.localeCompare(a.id));
 }
 
-function renderRecordList(records, container) {
-    container.innerHTML = "";
+function buildRecordBody(record, isLocked) {
+    const timeText = record.time ? `📌 ${record.time} |` : "";
 
-    function buildRecordBody(record, isLocked) {
-        return `
-            <div class="meta">
-                <span>
-                    #${record.id} |
-                    DATE ${record.date} |
-                    ${record.time ? `TIME ${record.time} |` : ""}
-                    BY ${parseContent(`[[${record.author}|${record.author}]]`)}
-                </span>
-                <span class="icon-group${isLocked ? " is-hidden" : ""}">
-                    ${record.image ? `<span class="image-toggle">IMG</span>` : ""}
-                    ${record.attachments?.length ? `<span class="attach-toggle">ATT</span>` : ""}
-                </span>
-            </div>
-            <div class="content ${isLocked ? "content-locked" : ""}">
-                ${isLocked ? `
-                    <div class="record-lock-panel">
-                        <div class="record-lock-icon">LOCKED</div>
-                        <p class="record-lock-title">Important entry</p>
-                        <p class="record-lock-copy">Spend 500 Q coins to reveal text, image and attachments.</p>
-                        <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">Unlock for 500 Q</button>
-                    </div>
-                ` : formatContent(record.content)}
-            </div>
-            ${!isLocked && record.image ? `<div class="image-wrapper" style="display:none"><img src="${record.image}" alt="${record.id}"></div>` : ""}
-            ${!isLocked && record.attachments?.length ? `
-                <div class="attachments-wrapper" style="display:none">
-                    <ul>
-                        ${record.attachments.map((attachment) => `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`).join("")}
-                    </ul>
+    return `
+        <div class="meta">
+            <span>
+                #${record.id} |
+                📅 ${record.date} |
+                ${timeText}
+                ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
+            </span>
+            <span class="icon-group${isLocked ? " is-hidden" : ""}">
+                ${record.image ? `<span class="image-toggle">📷</span>` : ""}
+                ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
+            </span>
+        </div>
+        <div class="content ${isLocked ? "content-locked" : ""}">
+            ${isLocked ? `
+                <div class="record-lock-panel">
+                    <div class="record-lock-icon">LOCKED</div>
+                    <p class="record-lock-title">重要条目已上锁</p>
+                    <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
+                    <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
                 </div>
-            ` : ""}
-        `;
-    }
+            ` : formatContent(record.content)}
+        </div>
+        ${!isLocked && record.image ? `<div class="image-wrapper" style="display:none"><img src="${record.image}" alt="${record.id}"></div>` : ""}
+        ${!isLocked && record.attachments?.length ? `
+            <div class="attachments-wrapper" style="display:none">
+                <ul>
+                    ${record.attachments.map((attachment) => `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`).join("")}
+                </ul>
+            </div>
+        ` : ""}
+    `;
+}
+
+function renderRecordList(records, container) {
+    records.forEach((record) => {
+        if (!record.id) {
+            console.warn("发现未初始化（未带 id）的记录：", record);
+        }
+    });
+
+    container.innerHTML = "";
 
     records.forEach((record) => {
         const importance = record.importance || "normal";
@@ -96,10 +104,10 @@ function filterRecordsByDate(records, { year, month, day }) {
 
     return records.filter((record) => {
         if (!record.date) return false;
-        const [rYear, rMonth, rDay] = record.date.split("-");
-        if (hasYear && rYear !== year) return false;
-        if (hasMonth && rMonth !== month) return false;
-        if (hasDay && rDay !== day) return false;
+        const [recordYear, recordMonth, recordDay] = record.date.split("-");
+        if (hasYear && recordYear !== year) return false;
+        if (hasMonth && recordMonth !== month) return false;
+        if (hasDay && recordDay !== day) return false;
         return true;
     });
 }
@@ -132,22 +140,22 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     wrapper.className = "record-filter";
     wrapper.innerHTML = `
         <div class="filter-field">
-            <label for="filter-year">Year</label>
-            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-year-options">Select year <span class="dropdown-arrow" aria-hidden="true">▼</span></button>
-            <div id="filter-year-options" class="filter-options" role="group" aria-label="Filter by year"></div>
+            <label for="filter-year">年</label>
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-year-options">选择年 <span class="dropdown-arrow" aria-hidden="true">▾</span></button>
+            <div id="filter-year-options" class="filter-options" role="group" aria-label="按年筛选"></div>
         </div>
         <div class="filter-field">
-            <label for="filter-month">Month</label>
-            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-month-options">Select month <span class="dropdown-arrow" aria-hidden="true">▼</span></button>
-            <div id="filter-month-options" class="filter-options" role="group" aria-label="Filter by month"></div>
+            <label for="filter-month">月</label>
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-month-options">选择月 <span class="dropdown-arrow" aria-hidden="true">▾</span></button>
+            <div id="filter-month-options" class="filter-options" role="group" aria-label="按月筛选"></div>
         </div>
         <div class="filter-field">
-            <label for="filter-day">Day</label>
-            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-day-options">Select day <span class="dropdown-arrow" aria-hidden="true">▼</span></button>
-            <div id="filter-day-options" class="filter-options" role="group" aria-label="Filter by day"></div>
+            <label for="filter-day">日</label>
+            <button type="button" class="btn-select filter-dropdown-trigger" data-target="filter-day-options">选择日 <span class="dropdown-arrow" aria-hidden="true">▾</span></button>
+            <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
-            <button type="button" class="btn-action clear">Clear</button>
+            <button type="button" class="btn-action clear">清空</button>
         </div>
     `;
     container.appendChild(wrapper);
@@ -158,14 +166,13 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
     const filterFields = wrapper.querySelectorAll(".filter-field");
     const clearButton = wrapper.querySelector(".clear");
-
     let currentCriteria = { year: initial.year || "", month: initial.month || "", day: initial.day || "" };
 
     const updateTriggerLabels = (criteria) => {
         const labels = {
-            year: criteria.year || "Select year",
-            month: criteria.month || "Select month",
-            day: criteria.day || "Select day"
+            year: criteria.year ? `${criteria.year}年` : "选择年",
+            month: criteria.month ? `${criteria.month}月` : "选择月",
+            day: criteria.day ? `${criteria.day}日` : "选择日"
         };
         dropdownTriggers.forEach((trigger) => {
             const target = trigger.dataset.target || "";
@@ -178,11 +185,11 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const renderSelectOptions = () => {
         const recordsValue = typeof getRecords === "function" ? getRecords() : [];
         const options = buildOptions(recordsValue, currentCriteria);
-
         const fillOptions = (containerEl, optionValues, selectedValue, fieldKey) => {
+            const selected = selectedValue || "";
             containerEl.innerHTML = [
-                `<button type="button" class="btn-action filter-option${selectedValue === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">All</button>`,
-                ...optionValues.map((value) => `<button type="button" class="btn-action filter-option${value === selectedValue ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`)
+                `<button type="button" class="btn-action filter-option${selected === "" ? " is-active" : ""}" data-value="" data-field="${fieldKey}">全部</button>`,
+                ...optionValues.map((value) => `<button type="button" class="btn-action filter-option${value === selected ? " is-active" : ""}" data-value="${value}" data-field="${fieldKey}">${value}</button>`)
             ].join("");
         };
 
@@ -198,16 +205,11 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
         onFilterChange?.(currentCriteria);
     };
 
-    const handleOptionClick = (event) => {
-        const target = event.target.closest(".filter-option");
-        if (!target) return;
-        applyCriteria({ ...currentCriteria, [target.dataset.field]: target.dataset.value || "" });
-    };
-
     const closeTimers = new WeakMap();
     const openField = (field) => {
         const timer = closeTimers.get(field);
         if (timer) clearTimeout(timer);
+        closeTimers.delete(field);
         field.classList.add("is-open");
     };
     const closeField = (field, withDelay = true) => {
@@ -215,9 +217,23 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
         if (timer) clearTimeout(timer);
         if (!withDelay) {
             field.classList.remove("is-open");
+            closeTimers.delete(field);
             return;
         }
-        closeTimers.set(field, setTimeout(() => field.classList.remove("is-open"), 140));
+        closeTimers.set(field, setTimeout(() => {
+            field.classList.remove("is-open");
+            closeTimers.delete(field);
+        }, 140));
+    };
+
+    const handleOptionClick = (event) => {
+        const target = event.target.closest(".filter-option");
+        if (!target) return;
+        const field = target.dataset.field;
+        if (!field) return;
+        const fieldElement = target.closest(".filter-field");
+        if (fieldElement) closeField(fieldElement, false);
+        applyCriteria({ ...currentCriteria, [field]: target.dataset.value || "" });
     };
 
     filterFields.forEach((field) => {

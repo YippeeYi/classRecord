@@ -5,7 +5,7 @@ function bindToggle(recordDiv) {
         imageButton.onclick = () => {
             const open = imageWrap.style.display === "block";
             imageWrap.style.display = open ? "none" : "block";
-            imageButton.textContent = open ? "IMG" : "CLOSE";
+            imageButton.textContent = open ? "📷" : "❌";
         };
     }
 
@@ -15,7 +15,7 @@ function bindToggle(recordDiv) {
         attachmentButton.onclick = () => {
             const open = attachmentWrap.style.display === "block";
             attachmentWrap.style.display = open ? "none" : "block";
-            attachmentButton.textContent = open ? "ATT" : "CLOSE";
+            attachmentButton.textContent = open ? "📎" : "❌";
         };
     }
 }
@@ -78,7 +78,7 @@ document.addEventListener("mouseover", (event) => {
         activeTooltip.className = "term-tooltip hidden";
         activeTooltip.innerHTML = `
             <div class="term-tooltip-content">${formatContent(term.definition)}</div>
-            <div class="term-tooltip-hint">Click to open the full term page</div>
+            <div class="term-tooltip-hint">点击查看完整术语页面</div>
         `;
         document.body.appendChild(activeTooltip);
         activeTooltip.addEventListener("mouseenter", () => {

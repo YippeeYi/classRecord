@@ -3,26 +3,26 @@
     const TEN_COST = 1;
     const poolState = { items: [] };
 
-    const resultStage = document.getElementById('gacha-result-stage');
-    const resultGrid = document.getElementById('gacha-result-grid');
-    const historyList = document.getElementById('gacha-history');
-    const collectionGrid = document.getElementById('gacha-collection');
-    const pity4Node = document.getElementById('gacha-pity-4');
-    const pity5Node = document.getElementById('gacha-pity-5');
-    const emptyState = document.getElementById('gacha-empty-state');
-    const cinematic = document.getElementById('wish-cinematic');
-    const cinematicText = document.getElementById('wish-cinematic-text');
+    const resultStage = document.getElementById("gacha-result-stage");
+    const resultGrid = document.getElementById("gacha-result-grid");
+    const historyList = document.getElementById("gacha-history");
+    const collectionGrid = document.getElementById("gacha-collection");
+    const pity4Node = document.getElementById("gacha-pity-4");
+    const pity5Node = document.getElementById("gacha-pity-5");
+    const emptyState = document.getElementById("gacha-empty-state");
+    const cinematic = document.getElementById("wish-cinematic");
+    const cinematicText = document.getElementById("wish-cinematic-text");
 
     const rarityLabel = (rarity) => `${rarity} Star`;
     const rarityClass = (rarity) => `rarity-${rarity}`;
 
     function escapeHtml(text) {
         return String(text)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#39;');
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
     }
 
     function groupedPool() {
@@ -78,25 +78,25 @@
     }
 
     function renderResults(results) {
-        resultStage.classList.remove('is-active');
-        resultStage.classList.toggle('is-ten-pull', results.length >= 10);
+        resultStage.classList.remove("is-active");
+        resultStage.classList.toggle("is-ten-pull", results.length >= 10);
         const highestRarity = results.reduce((highest, item) => Math.max(highest, item.rarity), 3);
         resultStage.dataset.highestRarity = String(highestRarity);
         resultGrid.innerHTML = results.map((item, index) => {
-            const imageStyle = item.image ? `style="background-image:url('${encodeURI(item.image)}')"` : '';
+            const imageStyle = item.image ? `style="background-image:url('${encodeURI(item.image)}')"` : "";
             return `
-                <article class="wish-card ${rarityClass(item.rarity)}${index === 0 && results.length >= 10 ? ' is-featured' : ''}" style="animation-delay:${index * 90}ms">
+                <article class="wish-card ${rarityClass(item.rarity)}${index === 0 && results.length >= 10 ? " is-featured" : ""}" style="animation-delay:${index * 72}ms">
                     <div class="wish-card-art" ${imageStyle}></div>
                     <div class="wish-card-overlay"></div>
                     <div class="wish-card-meta">
                         <p class="wish-card-rarity">${rarityLabel(item.rarity)}</p>
                         <h3>${escapeHtml(item.name)}</h3>
-                        <p>${escapeHtml(item.title || item.series || 'Waiting for your art')}</p>
+                        <p>${escapeHtml(item.title || item.series || "Waiting for your art")}</p>
                     </div>
                 </article>
             `;
-        }).join('');
-        requestAnimationFrame(() => resultStage.classList.add('is-active'));
+        }).join("");
+        requestAnimationFrame(() => resultStage.classList.add("is-active"));
     }
 
     function playCinematic(results) {
@@ -107,23 +107,23 @@
 
         const highestRarity = results.reduce((highest, item) => Math.max(highest, item.rarity), 3);
         cinematic.className = `wish-cinematic is-active ${rarityClass(highestRarity)}`;
-        cinematic.setAttribute('aria-hidden', 'false');
+        cinematic.setAttribute("aria-hidden", "false");
         cinematicText.textContent = highestRarity >= 5
-            ? '金色流星划破夜空'
+            ? "金色流星划破夜空"
             : highestRarity >= 4
-                ? '紫色流星即将坠落'
-                : '蓝色流星轻轻掠过';
+                ? "紫色流星即将坠落"
+                : "蓝色流星轻轻掠过";
 
         window.setTimeout(() => {
-            cinematic.classList.add('is-impact');
-        }, 720);
+            cinematic.classList.add("is-impact");
+        }, 660);
 
         window.setTimeout(() => {
-            cinematic.classList.remove('is-impact');
-            cinematic.classList.remove('is-active');
-            cinematic.setAttribute('aria-hidden', 'true');
+            cinematic.classList.remove("is-impact");
+            cinematic.classList.remove("is-active");
+            cinematic.setAttribute("aria-hidden", "true");
             renderResults(results);
-        }, 1500);
+        }, 1420);
     }
 
     function renderHistory() {
@@ -134,24 +134,24 @@
                     <span>${escapeHtml(item.name)}</span>
                     <span>${rarityLabel(item.rarity)}</span>
                 </li>
-            `).join('')
-            : '<li>No pull history yet.</li>';
+            `).join("")
+            : "<li>No pull history yet.</li>";
     }
 
     function renderCollection() {
         const { collection } = window.GameState.getState().gacha;
         const items = poolState.items
             .filter((item) => collection[item.id])
-            .sort((left, right) => right.rarity - left.rarity || left.name.localeCompare(right.name, 'zh-CN'));
+            .sort((left, right) => right.rarity - left.rarity || left.name.localeCompare(right.name, "zh-CN"));
 
         collectionGrid.innerHTML = items.length
             ? items.map((item) => `
                 <article class="collection-card ${rarityClass(item.rarity)}">
-                    <div class="collection-art"${item.image ? ` style="background-image:url('${encodeURI(item.image)}')"` : ''}></div>
+                    <div class="collection-art"${item.image ? ` style="background-image:url('${encodeURI(item.image)}')"` : ""}></div>
                     <h3>${escapeHtml(item.name)}</h3>
                     <p>${rarityLabel(item.rarity)} · Owned ${collection[item.id]}</p>
                 </article>
-            `).join('')
+            `).join("")
             : '<p class="gacha-panel-empty">Pulled cards will appear here.</p>';
     }
 
@@ -162,24 +162,23 @@
     }
 
     function setButtonsDisabled(disabled) {
-        document.querySelectorAll('[data-gacha-count]').forEach((button) => {
+        document.querySelectorAll("[data-gacha-count]").forEach((button) => {
             button.disabled = disabled;
         });
     }
 
     function handleDraw(count, cost) {
         if (!poolState.items.length) {
-            window.showGameToast('Pool is empty. Fill data/gacha/pool.json first.', 'error');
+            window.showGameToast("Pool is empty. Fill data/gacha/pool.json first.", "error");
             return;
         }
-        if (!window.GameState.spendCoins(cost, 'gacha-spend')) {
-            window.showGameToast(`Not enough Q coins. Need ${cost}.`, 'error');
+        if (!window.GameState.spendCoins(cost, "gacha-spend")) {
+            window.showGameToast(`Not enough Q coins. Need ${cost}.`, "error");
             return;
         }
 
         setButtonsDisabled(true);
-        resultStage.classList.remove('is-active');
-        resultStage.classList.remove('is-ten-pull');
+        resultStage.classList.remove("is-active", "is-ten-pull");
         window.setTimeout(() => {
             const results = draw(count);
             playCinematic(results);
@@ -189,12 +188,12 @@
             window.setTimeout(() => {
                 setButtonsDisabled(false);
             }, 1500);
-        }, 180);
+        }, 140);
     }
 
-    document.querySelectorAll('[data-gacha-count]').forEach((button) => {
-        button.addEventListener('click', () => {
-            const count = Number(button.dataset.gachaCount || '0');
+    document.querySelectorAll("[data-gacha-count]").forEach((button) => {
+        button.addEventListener("click", () => {
+            const count = Number(button.dataset.gachaCount || "0");
             handleDraw(count, count === 10 ? TEN_COST : SINGLE_COST);
         });
     });
@@ -205,7 +204,7 @@
         updatePityText();
     });
 
-    fetch('data/gacha/pool.json')
+    fetch("data/gacha/pool.json")
         .then((response) => response.json())
         .then((items) => {
             poolState.items = Array.isArray(items) ? items.filter((item) => item && item.id && item.name && item.rarity) : [];

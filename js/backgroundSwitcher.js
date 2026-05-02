@@ -157,7 +157,7 @@
     const toggleButton = document.createElement("button");
     toggleButton.type = "button";
     toggleButton.className = "btn-action background-switcher-toggle";
-    toggleButton.textContent = "\u2190";
+    toggleButton.textContent = "🎨";
     toggleButton.setAttribute("aria-label", "\u9009\u62e9\u80cc\u666f");
     toggleButton.setAttribute("title", "\u9009\u62e9\u80cc\u666f");
     toggleButton.setAttribute("aria-expanded", "false");
@@ -527,6 +527,7 @@
     const setPanelOpen = (open) => {
         window.clearTimeout(panelTransitionTimer);
         toggleButton.setAttribute("aria-expanded", open ? "true" : "false");
+        toggleButton.textContent = open ? "←" : "🎨";
         switcher.classList.toggle("is-open", open);
 
         if (open) {
@@ -608,7 +609,7 @@
     });
 
     const ensureFullscreenControl = () => {
-        if (!document.fullscreenEnabled) {
+        if (!document.fullscreenEnabled || new URLSearchParams(window.location.search).has("fullscreenShell")) {
             return;
         }
 
@@ -623,19 +624,45 @@
             button.setAttribute("title", isFullscreen ? "\u9000\u51fa\u5168\u5c4f" : "\u8fdb\u5165\u5168\u5c4f");
         };
 
+        const fullscreenShellSrc = () => {
+            const url = new URL(window.location.href);
+            url.searchParams.set("fullscreenShell", "1");
+            return url.href;
+        };
+
+        const enterFullscreenShell = async () => {
+            const shell = document.createElement("div");
+            shell.className = "fullscreen-shell";
+            shell.innerHTML = `<iframe class="fullscreen-shell-frame" src="${fullscreenShellSrc()}" title="全屏浏览" allow="fullscreen"></iframe>`;
+            document.body.appendChild(shell);
+
+            try {
+                await shell.requestFullscreen();
+            } catch (error) {
+                shell.remove();
+            }
+        };
+
         button.addEventListener("click", async () => {
             try {
                 if (document.fullscreenElement) {
                     await document.exitFullscreen();
                 } else {
-                    await document.documentElement.requestFullscreen();
+                    await enterFullscreenShell();
                 }
             } catch (error) {
                 // Ignore browser-specific fullscreen failures.
             }
         });
 
-        document.addEventListener("fullscreenchange", updateLabel);
+        document.addEventListener("fullscreenchange", () => {
+            document.querySelectorAll(".fullscreen-shell").forEach((shell) => {
+                if (document.fullscreenElement !== shell) {
+                    shell.remove();
+                }
+            });
+            updateLabel();
+        });
         updateLabel();
 
         const host = document.querySelector(".page-header") || document.querySelector(".top-right-actions");
@@ -649,8 +676,8 @@
         }
     };
 
-    switcher.appendChild(toggleButton);
     switcher.appendChild(panel);
+    switcher.appendChild(toggleButton);
     document.body.insertAdjacentElement("afterbegin", switcher);
 
     ensureFullscreenControl();

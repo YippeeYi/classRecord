@@ -7,9 +7,14 @@
     const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const TRANSITION_MS = REDUCED_MOTION ? 0 : 180;
     const FULLSCREEN_STORAGE_KEY = 'classRecord:keepFullscreen';
+    let isNavigating = false;
 
     const syncFullscreenPreference = () => {
         try {
+            if (isNavigating) {
+                sessionStorage.setItem(FULLSCREEN_STORAGE_KEY, '1');
+                return;
+            }
             if (document.fullscreenElement) {
                 sessionStorage.setItem(FULLSCREEN_STORAGE_KEY, '1');
             } else {
@@ -32,7 +37,7 @@
 
     document.addEventListener('fullscreenchange', syncFullscreenPreference);
 
-    window.addEventListener('load', () => {
+    const restoreFullscreen = () => {
         try {
             if (sessionStorage.getItem(FULLSCREEN_STORAGE_KEY) === '1' && !document.fullscreenElement && document.fullscreenEnabled) {
                 document.documentElement.requestFullscreen().catch(() => {});
@@ -40,7 +45,10 @@
         } catch (error) {
             // Ignore fullscreen restore failures.
         }
-    }, { once: true });
+    };
+
+    window.addEventListener('load', restoreFullscreen, { once: true });
+    document.addEventListener('pointerdown', restoreFullscreen, { once: true, capture: true });
 
     const prefetchCache = new Set();
 
@@ -96,11 +104,13 @@
 
         const url = new URL(href, window.location.href);
         if (url.origin !== window.location.origin) {
+            isNavigating = Boolean(document.fullscreenElement);
             syncFullscreenPreference();
             window.location.href = url.href;
             return;
         }
 
+        isNavigating = Boolean(document.fullscreenElement);
         syncFullscreenPreference();
         document.body.classList.remove('page-ready');
         document.body.classList.add('page-leaving');
