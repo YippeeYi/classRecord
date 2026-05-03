@@ -51,7 +51,10 @@
 
         <section class="gacha-columns">
             <article class="gacha-panel">
-                <h2>最近获得</h2>
+                <div class="gacha-panel-head">
+                    <h2>最近获得</h2>
+                    <button id="gacha-history-open" class="btn-action gacha-history-open" type="button">全部记录</button>
+                </div>
                 <ul id="gacha-history" class="gacha-history"></ul>
             </article>
             <article class="gacha-panel">
@@ -83,6 +86,25 @@
 
         <button id="wish-reveal-next" class="wish-next-hit" type="button" aria-label="继续展示下一张卡"></button>
         <p id="wish-reveal-hint" class="wish-reveal-hint">星轨正在划过夜空...</p>
+    </section>
+
+    <section id="gacha-history-modal" class="gacha-history-modal" hidden aria-hidden="true">
+        <div class="gacha-history-backdrop" data-history-close></div>
+        <div class="gacha-history-dialog" role="dialog" aria-modal="true" aria-labelledby="gacha-history-title">
+            <div class="gacha-history-dialog-head">
+                <div>
+                    <p class="feature-eyebrow">Pull History</p>
+                    <h2 id="gacha-history-title">全部抽卡记录</h2>
+                </div>
+                <button class="wish-ghost-btn" type="button" data-history-close>关闭</button>
+            </div>
+            <ul id="gacha-history-all" class="gacha-history gacha-history-all"></ul>
+            <div class="gacha-history-pager">
+                <button id="gacha-history-prev" class="btn-action" type="button">上一页</button>
+                <span id="gacha-history-page">1 / 1</span>
+                <button id="gacha-history-next" class="btn-action" type="button">下一页</button>
+            </div>
+        </div>
     </section>
 
     <script src="js/gameSystem.js"></script>

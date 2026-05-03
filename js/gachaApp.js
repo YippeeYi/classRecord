@@ -2,6 +2,8 @@
     const SINGLE_COST = 1;
     const TEN_COST = 1;
     const REVEAL_DELAY = 1180;
+    const RECENT_HISTORY_LIMIT = 8;
+    const HISTORY_PAGE_SIZE = 12;
     const poolState = { items: [] };
     const revealState = {
         results: [],
@@ -9,6 +11,7 @@
         timer: 0,
         isSummary: false
     };
+    const historyState = { page: 1 };
 
     const resultStage = document.getElementById("gacha-result-stage");
     const resultGrid = document.getElementById("gacha-result-grid");
@@ -26,6 +29,12 @@
     const revealNext = document.getElementById("wish-reveal-next");
     const revealSkip = document.getElementById("wish-reveal-skip");
     const revealClose = document.getElementById("wish-reveal-close");
+    const historyOpen = document.getElementById("gacha-history-open");
+    const historyModal = document.getElementById("gacha-history-modal");
+    const historyAllList = document.getElementById("gacha-history-all");
+    const historyPrev = document.getElementById("gacha-history-prev");
+    const historyNext = document.getElementById("gacha-history-next");
+    const historyPage = document.getElementById("gacha-history-page");
 
     const rarityLabel = (rarity) => `${rarity} 星`;
     const rarityClass = (rarity) => `rarity-${rarity}`;
@@ -51,22 +60,27 @@
         return {
             3: poolState.items.filter((item) => item.rarity === 3),
             4: poolState.items.filter((item) => item.rarity === 4),
-            5: poolState.items.filter((item) => item.rarity === 5)
+            5: poolState.items.filter((item) => item.rarity === 5),
+            6: poolState.items.filter((item) => item.rarity === 6)
         };
     }
 
     function rollRarity(state, guaranteeFourStar = false) {
         if (state.pity5 >= 89) return 5;
-        if (guaranteeFourStar || state.pity4 >= 9) return Math.random() < 0.12 ? 5 : 4;
         const random = Math.random();
-        if (random < 0.006) return 5;
-        if (random < 0.057) return 4;
+        if (random < 0.002) return 6;
+        if (guaranteeFourStar || state.pity4 >= 9) return Math.random() < 0.12 ? 5 : 4;
+        if (random < 0.008) return 5;
+        if (random < 0.059) return 4;
         return 3;
     }
 
     function pickFromPool(pool, rarity) {
-        const items = pool[rarity] || [];
-        return items.length ? items[Math.floor(Math.random() * items.length)] : null;
+        for (let next = rarity; next >= 3; next -= 1) {
+            const items = pool[next] || [];
+            if (items.length) return items[Math.floor(Math.random() * items.length)];
+        }
+        return null;
     }
 
     function draw(count) {
@@ -82,10 +96,10 @@
             if (!item) continue;
             results.push(item);
 
-            if (rarity === 5) {
+            if (item.rarity >= 5) {
                 pity.pity5 = 0;
                 pity.pity4 = 0;
-            } else if (rarity === 4) {
+            } else if (item.rarity === 4) {
                 pity.pity4 = 0;
                 pity.pity5 += 1;
             } else {
@@ -99,9 +113,9 @@
         return results;
     }
 
-    function cardMarkup(item, index = 0, isFeatured = false) {
+    function cardMarkup(item, index = 0, isLarge = false) {
         return `
-            <article class="wish-card ${rarityClass(item.rarity)}${isFeatured ? " is-featured" : ""}" style="animation-delay:${index * 64}ms">
+            <article class="wish-card ${rarityClass(item.rarity)}${isLarge ? " is-large" : ""}" style="animation-delay:${index * 64}ms">
                 <div class="wish-card-art"${itemImageStyle(item)}></div>
                 <div class="wish-card-overlay"></div>
                 <div class="wish-card-meta">
@@ -117,7 +131,7 @@
         resultStage.classList.remove("is-active");
         resultStage.classList.toggle("is-ten-pull", results.length >= 10);
         resultStage.dataset.highestRarity = String(highestRarity(results));
-        resultGrid.innerHTML = results.map((item, index) => cardMarkup(item, index, results.length >= 10 && index === 0)).join("");
+        resultGrid.innerHTML = results.map((item, index) => cardMarkup(item, index)).join("");
         requestAnimationFrame(() => resultStage.classList.add("is-active"));
     }
 
@@ -135,8 +149,8 @@
     }
 
     function resetRevealClasses() {
-        revealScreen.classList.remove("is-opening", "is-card", "is-summary", "rarity-3", "rarity-4", "rarity-5");
-        revealMeteor.classList.remove("rarity-3", "rarity-4", "rarity-5");
+        revealScreen.classList.remove("is-opening", "is-card", "is-summary", "rarity-3", "rarity-4", "rarity-5", "rarity-6");
+        revealMeteor.classList.remove("rarity-3", "rarity-4", "rarity-5", "rarity-6");
     }
 
     function showCurrentCard() {
@@ -155,6 +169,13 @@
         renderRevealCard(item, revealState.index);
     }
 
+    function openingHint(rarity) {
+        if (rarity >= 6) return "彩色星轨正在坠落...";
+        if (rarity >= 5) return "金色星轨正在坠落...";
+        if (rarity >= 4) return "紫色星轨正在坠落...";
+        return "蓝色星轨正在坠落...";
+    }
+
     function startOpening(results) {
         const rarity = highestRarity(results);
         resetRevealClasses();
@@ -163,7 +184,7 @@
         revealSummary.hidden = true;
         revealClose.hidden = true;
         revealSkip.hidden = results.length <= 1;
-        revealHint.textContent = rarity >= 5 ? "金色星轨正在坠落..." : rarity >= 4 ? "紫色星轨正在坠落..." : "蓝色星轨正在坠落...";
+        revealHint.textContent = openingHint(rarity);
         revealScreen.classList.add("is-opening", rarityClass(rarity));
         revealMeteor.classList.add(rarityClass(rarity));
         clearTimeout(revealState.timer);
@@ -217,16 +238,51 @@
         startOpening(results);
     }
 
+    function historyItemMarkup(item) {
+        return `
+            <li class="${rarityClass(item.rarity)}">
+                <span>${escapeHtml(item.name)}</span>
+                <span>${rarityLabel(item.rarity)}</span>
+            </li>
+        `;
+    }
+
     function renderHistory() {
         const history = window.GameState.getState().gacha.history || [];
-        historyList.innerHTML = history.length
-            ? history.map((item) => `
-                <li class="${rarityClass(item.rarity)}">
-                    <span>${escapeHtml(item.name)}</span>
-                    <span>${rarityLabel(item.rarity)}</span>
-                </li>
-            `).join("")
+        const recent = history.slice(0, RECENT_HISTORY_LIMIT);
+        historyList.innerHTML = recent.length
+            ? recent.map(historyItemMarkup).join("")
             : "<li>还没有抽卡记录。</li>";
+        historyOpen.hidden = history.length <= RECENT_HISTORY_LIMIT;
+    }
+
+    function renderHistoryModal() {
+        const history = window.GameState.getState().gacha.history || [];
+        const totalPages = Math.max(1, Math.ceil(history.length / HISTORY_PAGE_SIZE));
+        historyState.page = Math.min(Math.max(historyState.page, 1), totalPages);
+        const start = (historyState.page - 1) * HISTORY_PAGE_SIZE;
+        const pageItems = history.slice(start, start + HISTORY_PAGE_SIZE);
+
+        historyAllList.innerHTML = pageItems.length
+            ? pageItems.map(historyItemMarkup).join("")
+            : "<li>还没有抽卡记录。</li>";
+        historyPage.textContent = `${historyState.page} / ${totalPages}`;
+        historyPrev.disabled = historyState.page <= 1;
+        historyNext.disabled = historyState.page >= totalPages;
+    }
+
+    function openHistoryModal() {
+        historyState.page = 1;
+        renderHistoryModal();
+        historyModal.hidden = false;
+        historyModal.setAttribute("aria-hidden", "false");
+        document.body.classList.add("is-history-modal-open");
+    }
+
+    function closeHistoryModal() {
+        historyModal.hidden = true;
+        historyModal.setAttribute("aria-hidden", "true");
+        document.body.classList.remove("is-history-modal-open");
     }
 
     function renderCollection() {
@@ -272,6 +328,7 @@
         window.setTimeout(() => {
             const results = draw(count);
             renderHistory();
+            renderHistoryModal();
             renderCollection();
             updatePityText();
             openReveal(results);
@@ -295,7 +352,23 @@
         event.stopPropagation();
         closeReveal();
     });
+    historyOpen.addEventListener("click", openHistoryModal);
+    historyPrev.addEventListener("click", () => {
+        historyState.page -= 1;
+        renderHistoryModal();
+    });
+    historyNext.addEventListener("click", () => {
+        historyState.page += 1;
+        renderHistoryModal();
+    });
+    document.querySelectorAll("[data-history-close]").forEach((node) => {
+        node.addEventListener("click", closeHistoryModal);
+    });
     document.addEventListener("keydown", (event) => {
+        if (!historyModal.hidden && event.key === "Escape") {
+            closeHistoryModal();
+            return;
+        }
         if (revealScreen.hidden) return;
         if (event.key === "Escape") {
             showSummary();
@@ -309,6 +382,7 @@
 
     window.GameState.subscribe(() => {
         renderHistory();
+        renderHistoryModal();
         renderCollection();
         updatePityText();
     });
@@ -319,12 +393,14 @@
             poolState.items = Array.isArray(items) ? items.filter((item) => item && item.id && item.name && item.rarity) : [];
             emptyState.hidden = poolState.items.length > 0;
             renderHistory();
+            renderHistoryModal();
             renderCollection();
             updatePityText();
         })
         .catch(() => {
             emptyState.hidden = false;
             renderHistory();
+            renderHistoryModal();
             renderCollection();
             updatePityText();
         });

@@ -1867,6 +1867,7 @@ body>footer {
 }
 
 .wish-card {
+  --rarity-border: rgba(130, 166, 214, 0.92);
   position: relative;
   min-height: 268px;
   aspect-ratio: 5 / 7;
@@ -1875,12 +1876,12 @@ body>footer {
   transform: translateY(26px) scale(0.94) rotateX(8deg);
   opacity: 0;
   animation: wishReveal 0.68s cubic-bezier(.18,.86,.22,1) forwards;
-  box-shadow: 0 20px 32px rgba(17, 24, 39, 0.18);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: none;
+  border: 2px solid var(--rarity-border);
   isolation: isolate;
 }
 
-.wish-card.is-featured {
+.wish-card.is-large {
   min-height: 310px;
   transform-origin: center bottom;
 }
@@ -1936,25 +1937,43 @@ body>footer {
 }
 
 .wish-card::before {
-  border: 1px solid rgba(255, 255, 255, 0.42);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  border: 1px solid color-mix(in srgb, var(--rarity-border) 70%, white);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
 }
 
 .wish-card.rarity-5::before {
   border-color: rgba(255, 225, 132, 0.96);
   box-shadow:
     inset 0 0 0 1px rgba(255, 252, 218, 0.7),
-    0 0 0 1px rgba(255, 211, 96, 0.62),
-    0 0 22px rgba(255, 209, 87, 0.72),
-    0 0 48px rgba(255, 174, 36, 0.34);
+    0 0 0 1px rgba(255, 211, 96, 0.7),
+    0 0 24px rgba(255, 210, 92, 0.78),
+    0 0 54px rgba(255, 176, 38, 0.38);
 }
 
 .wish-card.rarity-5::after {
-  inset: -35%;
+  inset: -42%;
   background: conic-gradient(from 20deg, transparent 0 24%, rgba(255, 241, 178, 0.78) 30%, transparent 38% 100%);
   opacity: 0.72;
   mix-blend-mode: screen;
   animation: fiveStarGleam 2.8s linear infinite;
+}
+
+.wish-card.rarity-6::before {
+  border: 2px solid transparent;
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.12)) padding-box,
+    conic-gradient(from var(--rainbow-angle, 0deg), #ff5c8a, #ffd166, #6ee7b7, #60a5fa, #c084fc, #ff5c8a) border-box;
+  animation: sixStarBorder 3.6s linear infinite;
+}
+
+.wish-card.rarity-6::after {
+  inset: 0;
+  opacity: 0.4;
+  background:
+    linear-gradient(120deg, transparent 0 24%, rgba(255, 255, 255, 0.62) 32%, transparent 42% 100%),
+    conic-gradient(from 180deg, rgba(255, 92, 138, 0.2), rgba(96, 165, 250, 0.18), rgba(192, 132, 252, 0.22), rgba(255, 209, 102, 0.2), rgba(255, 92, 138, 0.2));
+  mix-blend-mode: screen;
+  animation: sixStarSweep 3.2s ease-in-out infinite;
 }
 
 .wish-card-meta {
@@ -2000,6 +2019,27 @@ body>footer {
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+@keyframes sixStarBorder {
+  from {
+    --rainbow-angle: 0deg;
+  }
+
+  to {
+    --rainbow-angle: 360deg;
+  }
+}
+
+@keyframes sixStarSweep {
+  0%,
+  100% {
+    transform: translateX(-16%) rotate(0deg);
+  }
+
+  50% {
+    transform: translateX(16%) rotate(8deg);
   }
 }
 
@@ -2107,15 +2147,25 @@ body>footer {
 }
 
 .rarity-5 {
+  --rarity-border: #ffd26a;
   background: linear-gradient(160deg, #fff3d0, #f3a95b 46%, #5d3b8d 100%);
 }
 
 .rarity-4 {
+  --rarity-border: #b892ff;
   background: linear-gradient(160deg, #f5ebff, #9a78e5 48%, #43579f 100%);
 }
 
 .rarity-3 {
+  --rarity-border: #6da7e9;
   background: linear-gradient(160deg, #eff7ff, #78a8e5 50%, #2f517a 100%);
+}
+
+.rarity-6 {
+  --rarity-border: #f4f7ff;
+  background:
+    radial-gradient(circle at 24% 18%, rgba(255, 255, 255, 0.92), transparent 16%),
+    linear-gradient(135deg, #ff5c8a 0%, #ffd166 20%, #6ee7b7 42%, #60a5fa 64%, #c084fc 82%, #ff8fb3 100%);
 }
 
 body.is-wish-revealing {
@@ -2192,6 +2242,14 @@ body.is-wish-revealing {
     0 0 72px rgba(255, 166, 56, 0.64);
 }
 
+.wish-reveal-meteor.rarity-6::before {
+  height: 10px;
+  background: linear-gradient(90deg, transparent, #ff5c8a, #ffd166, #6ee7b7, #60a5fa, #c084fc, transparent);
+  box-shadow:
+    0 0 26px rgba(255, 255, 255, 0.96),
+    0 0 72px rgba(96, 165, 250, 0.58);
+}
+
 .wish-reveal-screen.is-opening .wish-reveal-meteor::before {
   animation: wishMeteorFull 1.12s cubic-bezier(.14,.78,.18,1) forwards;
 }
@@ -2248,22 +2306,12 @@ body.is-wish-revealing {
   width: min(360px, 76vw);
   padding: 10px;
   border-radius: 24px;
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.34),
-    0 0 72px rgba(255, 255, 255, 0.22);
+  box-shadow: none;
   animation: wishCardArrive 0.56s cubic-bezier(.18,.86,.22,1) both;
 }
 
-.wish-reveal-card-shell.rarity-4 {
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.34),
-    0 0 86px rgba(175, 116, 255, 0.55);
-}
-
 .wish-reveal-card-shell.rarity-5 {
-  box-shadow:
-    0 30px 90px rgba(0, 0, 0, 0.34),
-    0 0 104px rgba(255, 197, 84, 0.7);
+  box-shadow: 0 0 92px rgba(255, 197, 84, 0.68);
 }
 
 .wish-reveal-card-shell .wish-card {
