@@ -2,7 +2,7 @@
     const SINGLE_COST = 1;
     const TEN_COST = 1;
     const REVEAL_DELAY = 1180;
-    const RECENT_HISTORY_LIMIT = 50;
+    const RECENT_HISTORY_LIMIT = 20;
     const HISTORY_PAGE_SIZE = 10;
     const poolState = { items: [] };
     const revealState = {
