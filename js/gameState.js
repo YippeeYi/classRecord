@@ -82,7 +82,7 @@
         },
         subscribe(listener) {
             if (typeof listener !== 'function') {
-                return () => {};
+                return () => { };
             }
             listeners.add(listener);
             return () => listeners.delete(listener);
@@ -139,7 +139,7 @@
             emitChange('quiz-result', { isCorrect });
         },
         recordPull(results) {
-            currentState.gacha.history = [...results, ...currentState.gacha.history].slice(0, 60);
+            currentState.gacha.history = [...results, ...currentState.gacha.history].slice(0, 1000);
             currentState.gacha.totalPulls += results.length;
             results.forEach((item) => {
                 currentState.gacha.collection[item.id] = (currentState.gacha.collection[item.id] || 0) + 1;
