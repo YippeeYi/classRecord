@@ -40,6 +40,38 @@
         "image": "images/gacha/5-3-ColumbinaHyposelenia.png"
     },
     {
+        "id": "5-4-NaviaCaspar",
+        "name": "娜维娅·卡萨帕",
+        "title": "Navia Caspar",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-4-NaviaCaspar.png"
+    },
+    {
+        "id": "5-5-Clorinde",
+        "name": "克洛琳德",
+        "title": "Clorinde",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-5-Clorinde.png"
+    },
+    {
+        "id": "5-6-Nahida",
+        "name": "纳西妲",
+        "title": "Nahida",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-6-Nahida.png"
+    },
+    {
+        "id": "5-7-Zhongli",
+        "name": "钟离",
+        "title": "Zhongli",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-7-Zhongli.png"
+    },
+    {
         "id": "placeholder-4-1",
         "name": "暮色书签",
         "title": "4 星展示位",
