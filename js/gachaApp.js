@@ -68,9 +68,9 @@
     function rollRarity(state, guaranteeFourStar = false) {
         if (state.pity5 >= 89) return 5;
         const random = Math.random();
-        if (random < 0.5) return 6;
+        if (random < 0.002) return 6;
         if (guaranteeFourStar || state.pity4 >= 9) return Math.random() < 0.12 ? 5 : 4;
-        if (random < 1) return 5;
+        if (random < 0.008) return 5;
         if (random < 0.059) return 4;
         return 3;
     }
