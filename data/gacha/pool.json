@@ -1,19 +1,27 @@
 [
     {
-        "id": "placeholder-6-1",
-        "name": "虹轨终章",
-        "title": "6 星展示位",
-        "series": "请替换为你的正式卡面",
+        "id": "6-1-qb",
+        "name": "？？？",
+        "title": "qb",
+        "series": "class",
         "rarity": 6,
-        "image": ""
+        "image": "images/gacha/6-1-qb.png"
     },
     {
-        "id": "placeholder-6-2",
-        "name": "棱镜誓约",
-        "title": "6 星展示位",
-        "series": "请替换为你的正式卡面",
+        "id": "6-2-lp",
+        "name": "！！！",
+        "title": "lp",
+        "series": "class",
         "rarity": 6,
-        "image": ""
+        "image": "images/gacha/6-2-lp.png"
+    },
+    {
+        "id": "6-3-SilverWolfLV.999",
+        "name": "银狼LV.999",
+        "title": "Silver Wolf LV.999",
+        "series": "Honkai: Star Rail",
+        "rarity": 6,
+        "image": "images/gacha/6-3-SilverWolfLV.999.png"
     },
     {
         "id": "5-1-Furina",
@@ -70,6 +78,62 @@
         "series": "Genshin Impact",
         "rarity": 5,
         "image": "images/gacha/5-7-Zhongli.png"
+    },
+    {
+        "id": "5-8-Skirk",
+        "name": "丝柯克",
+        "title": "Skirk",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-8-Skirk.png"
+    },
+    {
+        "id": "5-9-Citlali",
+        "name": "茜特菈莉",
+        "title": "Citlali",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-9-Citlali.png"
+    },
+    {
+        "id": "5-10-SilverWolf",
+        "name": "银狼",
+        "title": "Silver Wolf",
+        "series": "Honkai: Star Rail",
+        "rarity": 5,
+        "image": "images/gacha/5-10-SilverWolf.png"
+    },
+    {
+        "id": "5-11-Sparkle",
+        "name": "花火",
+        "title": "Sparkle",
+        "series": "Honkai: Star Rail",
+        "rarity": 5,
+        "image": "images/gacha/5-11-Sparkle.png"
+    },
+    {
+        "id": "5-12-Sparxie",
+        "name": "火花",
+        "title": "Sparxie",
+        "series": "Honkai: Star Rail",
+        "rarity": 5,
+        "image": "images/gacha/5-12-Sparxie.png"
+    },
+    {
+        "id": "5-13-Firefly",
+        "name": "流萤",
+        "title": "Firefly",
+        "series": "Honkai: Star Rail",
+        "rarity": 5,
+        "image": "images/gacha/5-13-Firefly.png"
+    },
+    {
+        "id": "5-14-Cyrene",
+        "name": "昔涟",
+        "title": "Cyrene",
+        "series": "Honkai: Star Rail",
+        "rarity": 5,
+        "image": "images/gacha/5-14-Cyrene.png"
     },
     {
         "id": "placeholder-4-1",
