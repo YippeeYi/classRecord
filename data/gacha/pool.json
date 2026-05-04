@@ -24,12 +24,20 @@
         "image": "images/gacha/5-1-Furina.png"
     },
     {
-        "id": "placeholder-5-2",
-        "name": "月海巡礼",
-        "title": "5 星展示位",
-        "series": "请替换为你的正式卡面",
+        "id": "5-2-RaidenShogun",
+        "name": "雷电将军",
+        "title": "Raiden Shogun",
+        "series": "Genshin Impact",
         "rarity": 5,
-        "image": ""
+        "image": "images/gacha/5-2-RaidenShogun.png"
+    },
+    {
+        "id": "5-3-ColumbinaHyposelenia",
+        "name": "哥伦比娅·希珀塞莱尼娅",
+        "title": "Columbina Hyposelenia",
+        "series": "Genshin Impact",
+        "rarity": 5,
+        "image": "images/gacha/5-3-ColumbinaHyposelenia.png"
     },
     {
         "id": "placeholder-4-1",
