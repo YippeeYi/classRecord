@@ -16,12 +16,12 @@
         "image": ""
     },
     {
-        "id": "placeholder-5-1",
-        "name": "烁金星轨",
-        "title": "5 星展示位",
-        "series": "请替换为你的正式卡面",
+        "id": "5-1-Furina",
+        "name": "芙宁娜",
+        "title": "Furina",
+        "series": "Genshin Impact",
         "rarity": 5,
-        "image": ""
+        "image": "5-1-Furina.png"
     },
     {
         "id": "placeholder-5-2",
