@@ -56,7 +56,7 @@
                 localStorage.removeItem(STORAGE_KEY);
             }
         } catch (error) {
-            // The current session can still play even if storage is unavailable.
+            // Keep the in-memory safe playable even if storage is blocked.
         }
     }
 
@@ -158,6 +158,14 @@
         };
     }
 
+    function allOutlined() {
+        return Boolean(state.safe) && state.safe.items.every((item) => item.outlined || item.extracted);
+    }
+
+    function allExtracted() {
+        return Boolean(state.safe) && state.safe.items.every((item) => item.extracted);
+    }
+
     function itemAt(cell) {
         if (!state.safe) return null;
         const id = state.safe.grid[cell.y][cell.x];
@@ -166,11 +174,23 @@
 
     function updateControls() {
         const hasSafe = Boolean(state.safe);
+        const outlinedDone = allOutlined();
+        const extractedDone = allExtracted();
         buyButton.hidden = hasSafe;
         game.hidden = !hasSafe;
-        revealAllButton.disabled = !hasSafe || state.safe.revealAllUsed;
-        extractAllButton.disabled = !hasSafe || state.safe.extractAllUsed;
-        scanRareButton.disabled = !hasSafe || state.safe.scanRareUsed;
+
+        modeButtons.forEach((button) => {
+            const mode = button.dataset.mode;
+            button.disabled = !hasSafe || extractedDone || (mode === "outline" && outlinedDone);
+        });
+
+        if (state.mode === "outline" && outlinedDone && !extractedDone) {
+            setMode("extract", false);
+        }
+
+        revealAllButton.disabled = !hasSafe || extractedDone || outlinedDone || state.safe.revealAllUsed;
+        extractAllButton.disabled = !hasSafe || extractedDone || state.safe.extractAllUsed;
+        scanRareButton.disabled = !hasSafe || extractedDone || state.safe.scanRareUsed;
     }
 
     function renderBoard() {
@@ -213,12 +233,13 @@
             : "稀有小格数量：未知";
     }
 
-    function setMode(mode) {
+    function setMode(mode, shouldUpdate = true) {
         state.mode = mode;
         modeButtons.forEach((button) => {
             button.classList.toggle("is-active", button.dataset.mode === mode);
         });
         modeLabel.textContent = mode === "extract" ? "开取一格" : "侦察一格";
+        if (shouldUpdate) updateControls();
     }
 
     function extractItem(item, silent = false) {
@@ -233,7 +254,19 @@
     function handleCell(cell) {
         const item = itemAt(cell);
         if (!item) return;
+
+        if (allExtracted()) {
+            addLog("保险箱已经开空，只能换箱弃置。");
+            updateControls();
+            return;
+        }
+
         if (state.mode === "outline") {
+            if (allOutlined()) {
+                addLog("所有物品都已侦察，无需继续侦察。");
+                updateControls();
+                return;
+            }
             if (item.outlined) {
                 addLog("这个轮廓已经侦察过。");
                 return;
@@ -245,6 +278,7 @@
             renderBoard();
             return;
         }
+
         if (item.extracted) {
             addLog("这个物品已经取出。");
             return;
@@ -257,7 +291,7 @@
 
     function activateSafe(safe, logText) {
         state.safe = safe;
-        setMode("outline");
+        setMode("outline", false);
         if (logText) addLog(logText);
         saveSafe();
         renderBoard();
@@ -271,10 +305,12 @@
 
     buyButton.addEventListener("click", () => buySafe());
     modeButtons.forEach((button) => {
-        button.addEventListener("click", () => setMode(button.dataset.mode));
+        button.addEventListener("click", () => {
+            if (!button.disabled) setMode(button.dataset.mode);
+        });
     });
     revealAllButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.revealAllUsed) return;
+        if (!state.safe || state.safe.revealAllUsed || allOutlined() || allExtracted()) return;
         if (!spend(COSTS.revealAll, "全图轮廓")) return;
         state.safe.revealAllUsed = true;
         state.safe.items.forEach((item) => {
@@ -285,7 +321,7 @@
         renderBoard();
     });
     extractAllButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.extractAllUsed) return;
+        if (!state.safe || state.safe.extractAllUsed || allExtracted()) return;
         if (!spend(COSTS.extractAll, "全箱开取")) return;
         state.safe.extractAllUsed = true;
         const total = state.safe.items.reduce((sum, item) => sum + extractItem(item, true), 0);
@@ -294,7 +330,7 @@
         renderBoard();
     });
     scanRareButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.scanRareUsed) return;
+        if (!state.safe || state.safe.scanRareUsed || allExtracted()) return;
         if (!spend(COSTS.scanRare, "稀有扫描")) return;
         state.safe.scanRareUsed = true;
         state.safe.rareKnown = true;
@@ -303,6 +339,10 @@
         renderBoard();
     });
     rerollButton.addEventListener("click", () => {
+        if (state.safe && !allExtracted()) {
+            const ok = window.confirm("当前保险箱仍有未开取物品，换箱会直接弃置。确认换箱吗？");
+            if (!ok) return;
+        }
         buySafe(COSTS.reroll, "换箱弃置");
     });
 
