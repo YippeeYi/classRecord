@@ -2,8 +2,8 @@
     const SINGLE_COST = 1;
     const TEN_COST = 1;
     const REVEAL_DELAY = 1180;
-    const RECENT_HISTORY_LIMIT = 50;
-    const HISTORY_PAGE_SIZE = 10;
+    const RECENT_HISTORY_LIMIT = 8;
+    const HISTORY_PAGE_SIZE = 12;
     const poolState = { items: [] };
     const revealState = {
         results: [],
@@ -129,6 +129,7 @@
 
     function renderResults(results) {
         resultStage.classList.remove("is-active");
+        resultStage.hidden = !results.length;
         resultStage.classList.toggle("is-ten-pull", results.length >= 10);
         resultStage.dataset.highestRarity = String(highestRarity(results));
         resultGrid.innerHTML = results.map((item, index) => cardMarkup(item, index)).join("");
@@ -202,13 +203,16 @@
         revealClose.hidden = false;
         revealHint.textContent = "单击返回抽卡页";
         revealSummaryGrid.innerHTML = revealState.results.map((item, index) => cardMarkup(item, index)).join("");
-        renderResults(revealState.results);
+        revealSummaryGrid.classList.toggle("is-single", revealState.results.length === 1);
     }
 
     function closeReveal() {
         clearTimeout(revealState.timer);
         revealScreen.hidden = true;
         resetRevealClasses();
+        resultGrid.innerHTML = "";
+        resultStage.hidden = true;
+        resultStage.classList.remove("is-active", "is-ten-pull");
         document.body.classList.remove("is-wish-revealing");
     }
 

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编日史 · 摸金</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preload" href="fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font"
+        type="font/ttf">
+    <script src="js/authGate.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+
+<body class="mojing-page">
+    <div class="page-header">
+        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">←</button>
+    </div>
+
+    <main class="mojing-shell">
+        <section class="mojing-brief">
+            <p class="feature-eyebrow">Lockbox Raid</p>
+            <h1>摸金保险箱</h1>
+            <p>黑箱内被切成若干矩形物品。先侦察轮廓，再选择开格，稀有度和尺寸决定收益。</p>
+            <div class="mojing-wallet">
+                <span>Q币</span>
+                <strong><span data-qcoin-balance>0</span></strong>
+            </div>
+            <button id="mojing-buy" class="btn-action mojing-primary" type="button">购买保险箱 · 30 Q币</button>
+        </section>
+
+        <section id="mojing-game" class="mojing-game" hidden>
+            <div class="mojing-toolbar">
+                <button class="mojing-tool is-active" type="button" data-mode="outline">侦察一格 · 8</button>
+                <button class="mojing-tool" type="button" data-mode="extract">开取一格 · 28</button>
+                <button id="mojing-reveal-all" class="mojing-tool" type="button">全图轮廓 · 70</button>
+                <button id="mojing-extract-all" class="mojing-tool" type="button">全箱开取 · 160</button>
+                <button id="mojing-scan-rare" class="mojing-tool" type="button">稀有扫描 · 45</button>
+                <button id="mojing-reroll" class="mojing-tool danger" type="button">换箱弃置 · 35</button>
+            </div>
+
+            <div class="mojing-layout">
+                <section class="mojing-board-panel">
+                    <div class="mojing-board-head">
+                        <div>
+                            <span id="mojing-size">--</span>
+                            <strong id="mojing-mode-label">侦察一格</strong>
+                        </div>
+                        <p id="mojing-rare-count">稀有小格数量：未知</p>
+                    </div>
+                    <div id="mojing-board" class="mojing-board" aria-label="保险箱网格"></div>
+                </section>
+
+                <aside class="mojing-log-panel">
+                    <h2>行动记录</h2>
+                    <ul id="mojing-log" class="mojing-log"></ul>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/gameSystem.js"></script>
+    <script src="js/backgroundOptions.js"></script>
+    <script src="js/backgroundSwitcher.js"></script>
+    <script src="js/mojingApp.js"></script>
+</body>
+
+</html>
