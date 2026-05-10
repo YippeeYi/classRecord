@@ -110,7 +110,7 @@
     }
 
     function makeSafe() {
-        const n = randomInt(9, 12);
+        const n = randomInt(9, 21);
         const grid = Array.from({ length: n }, () => Array.from({ length: n }, () => null));
         const items = [];
 
