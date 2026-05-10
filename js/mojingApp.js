@@ -6,7 +6,7 @@
         extract: 30,
         revealAll: 100,
         extractAll: 400,
-        scanRare: 30,
+        scanRare: 50,
         reroll: 30
     };
     const QUALITY = [
