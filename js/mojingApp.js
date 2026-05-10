@@ -11,11 +11,11 @@
     };
     const QUALITY = [
         { key: "white", label: "白", weight: 44, mult: 1.0 },
-        { key: "green", label: "绿", weight: 26, mult: 1.45 },
-        { key: "blue", label: "蓝", weight: 16, mult: 2.1 },
-        { key: "purple", label: "紫", weight: 8, mult: 3.25 },
-        { key: "gold", label: "金", weight: 3, mult: 7.2 },
-        { key: "red", label: "红", weight: 1, mult: 13.4 }
+        { key: "green", label: "绿", weight: 26, mult: 2.45 },
+        { key: "blue", label: "蓝", weight: 16, mult: 5.1 },
+        { key: "purple", label: "紫", weight: 8, mult: 13.25 },
+        { key: "gold", label: "金", weight: 3, mult: 37.2 },
+        { key: "red", label: "红", weight: 1, mult: 83.4 }
     ];
     const state = {
         safe: null,
@@ -126,7 +126,7 @@
             const quality = rollQuality();
             const id = `item-${items.length}`;
             const area = width * height;
-            const value = Math.round(area * (3 + randomInt(0, 4)) * quality.mult);
+            const value = Math.round(area * (1 + randomInt(0, 3)) * quality.mult);
             const item = {
                 id,
                 x,
