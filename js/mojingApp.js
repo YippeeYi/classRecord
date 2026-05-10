@@ -1,4 +1,5 @@
 (() => {
+    const STORAGE_KEY = "classRecord:mojingSafe";
     const COSTS = {
         buy: 30,
         outline: 8,
@@ -36,6 +37,27 @@
 
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    function readStoredSafe() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            return raw ? JSON.parse(raw) : null;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    function saveSafe() {
+        try {
+            if (state.safe) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state.safe));
+            } else {
+                localStorage.removeItem(STORAGE_KEY);
+            }
+        } catch (error) {
+            // The current session can still play even if storage is unavailable.
+        }
     }
 
     function spend(amount, label) {
@@ -125,7 +147,15 @@
             }
         }
 
-        return { n, grid, items, rareKnown: false };
+        return {
+            n,
+            grid,
+            items,
+            rareKnown: false,
+            revealAllUsed: false,
+            extractAllUsed: false,
+            scanRareUsed: false
+        };
     }
 
     function itemAt(cell) {
@@ -134,7 +164,17 @@
         return state.safe.items.find((item) => item.id === id) || null;
     }
 
+    function updateControls() {
+        const hasSafe = Boolean(state.safe);
+        buyButton.hidden = hasSafe;
+        game.hidden = !hasSafe;
+        revealAllButton.disabled = !hasSafe || state.safe.revealAllUsed;
+        extractAllButton.disabled = !hasSafe || state.safe.extractAllUsed;
+        scanRareButton.disabled = !hasSafe || state.safe.scanRareUsed;
+    }
+
     function renderBoard() {
+        updateControls();
         if (!state.safe) return;
         board.style.setProperty("--mojing-n", String(state.safe.n));
         board.innerHTML = "";
@@ -148,10 +188,7 @@
             node.classList.toggle("is-extracted", item.extracted);
             node.innerHTML = `
                 <div class="mojing-item-art"></div>
-                <div class="mojing-item-meta">
-                    <strong>${item.quality.label}级物品</strong>
-                    <span>${item.width}x${item.height} · ${item.value} Q币</span>
-                </div>
+                <div class="mojing-item-value">${item.value}</div>
             `;
             board.appendChild(node);
         });
@@ -189,7 +226,7 @@
         item.extracted = true;
         item.outlined = true;
         window.GameState.addCoins(item.value, "mojing-loot");
-        if (!silent) addLog(`获得 ${item.quality.label}级物品，收益 ${item.value} Q币。`);
+        if (!silent) addLog(`获得物品，收益 ${item.value} Q币。`);
         return item.value;
     }
 
@@ -204,6 +241,7 @@
             if (!spend(COSTS.outline, "侦察一格")) return;
             item.outlined = true;
             addLog(`侦察到 ${item.width}x${item.height} 的灰色轮廓。`);
+            saveSafe();
             renderBoard();
             return;
         }
@@ -213,16 +251,22 @@
         }
         if (!spend(COSTS.extract, "开取一格")) return;
         extractItem(item);
+        saveSafe();
+        renderBoard();
+    }
+
+    function activateSafe(safe, logText) {
+        state.safe = safe;
+        setMode("outline");
+        if (logText) addLog(logText);
+        saveSafe();
         renderBoard();
     }
 
     function buySafe(cost = COSTS.buy, label = "购买保险箱") {
         if (!spend(cost, label)) return;
-        state.safe = makeSafe();
-        game.hidden = false;
-        setMode("outline");
-        addLog(`新保险箱入手：${state.safe.n}x${state.safe.n}。`);
-        renderBoard();
+        const safe = makeSafe();
+        activateSafe(safe, `新保险箱入手：${safe.n}x${safe.n}。`);
     }
 
     buyButton.addEventListener("click", () => buySafe());
@@ -230,26 +274,42 @@
         button.addEventListener("click", () => setMode(button.dataset.mode));
     });
     revealAllButton.addEventListener("click", () => {
-        if (!state.safe || !spend(COSTS.revealAll, "全图轮廓")) return;
+        if (!state.safe || state.safe.revealAllUsed) return;
+        if (!spend(COSTS.revealAll, "全图轮廓")) return;
+        state.safe.revealAllUsed = true;
         state.safe.items.forEach((item) => {
             if (!item.extracted) item.outlined = true;
         });
         addLog("所有未开取物品轮廓已标记为灰色。");
+        saveSafe();
         renderBoard();
     });
     extractAllButton.addEventListener("click", () => {
-        if (!state.safe || !spend(COSTS.extractAll, "全箱开取")) return;
+        if (!state.safe || state.safe.extractAllUsed) return;
+        if (!spend(COSTS.extractAll, "全箱开取")) return;
+        state.safe.extractAllUsed = true;
         const total = state.safe.items.reduce((sum, item) => sum + extractItem(item, true), 0);
         addLog(`全箱开取完成，总收益 ${total} Q币。`);
+        saveSafe();
         renderBoard();
     });
     scanRareButton.addEventListener("click", () => {
-        if (!state.safe || !spend(COSTS.scanRare, "稀有扫描")) return;
+        if (!state.safe || state.safe.scanRareUsed) return;
+        if (!spend(COSTS.scanRare, "稀有扫描")) return;
+        state.safe.scanRareUsed = true;
         state.safe.rareKnown = true;
         addLog("扫描完成：已获得紫/金/红品质小格总数。");
+        saveSafe();
         renderBoard();
     });
     rerollButton.addEventListener("click", () => {
         buySafe(COSTS.reroll, "换箱弃置");
     });
+
+    const storedSafe = readStoredSafe();
+    if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
+        activateSafe(storedSafe, "已恢复上次保险箱。");
+    } else {
+        updateControls();
+    }
 })();

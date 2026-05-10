@@ -1835,6 +1835,27 @@ body>footer {
     linear-gradient(180deg, #f7f4ef 0%, #dfe7f8 42%, #f9f0e1 100%);
 }
 
+.gacha-page .feature-hero,
+.gacha-page .gacha-panel,
+.gacha-page .asset-hint-panel {
+  color: #172033;
+}
+
+.gacha-page .feature-eyebrow {
+  color: #475569;
+}
+
+.gacha-page .feature-summary,
+.gacha-page .asset-hint-panel p,
+.gacha-page .gacha-panel-empty {
+  color: #334155;
+}
+
+.gacha-page .gacha-panel h2,
+.gacha-page .asset-hint-panel h2 {
+  color: #111827;
+}
+
 .gacha-actions {
   margin-top: 18px;
   display: flex;
@@ -1900,6 +1921,8 @@ body>footer {
   border: 2px solid var(--rarity-border);
   isolation: isolate;
   background-clip: padding-box;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
 }
 
 .wish-card.is-large {
@@ -1939,8 +1962,14 @@ body>footer {
   min-height: 220px;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(14, 23, 43, 0.18));
-  background-size: cover;
+  background-color: rgba(14, 23, 43, 0.18);
+  background-size: contain;
   background-position: center;
+  background-repeat: no-repeat;
+  image-rendering: auto;
+  -ms-interpolation-mode: bicubic;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .wish-card-overlay {
@@ -2554,6 +2583,10 @@ body.is-wish-revealing {
   background-clip: padding-box;
 }
 
+.collection-art {
+  aspect-ratio: 5 / 6;
+}
+
 .collection-card.rarity-5 {
   box-shadow: 0 0 28px rgba(255, 210, 92, 0.34);
 }
@@ -2616,6 +2649,14 @@ body.is-wish-revealing {
     rgba(15, 23, 42, 0.94);
   border: 1px solid rgba(255, 255, 255, 0.18);
   box-shadow: 0 28px 72px rgba(0, 0, 0, 0.36);
+}
+
+.gacha-history-dialog .feature-eyebrow {
+  color: rgba(226, 232, 240, 0.86);
+}
+
+.gacha-history-dialog h2 {
+  color: #fff;
 }
 
 .gacha-history-dialog-head,
@@ -2684,6 +2725,10 @@ body.is-wish-revealing {
   --page-bg-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.46));
 }
 
+.mojing-page .feature-eyebrow {
+  color: #fbbf24;
+}
+
 .mojing-shell {
   width: min(1180px, calc(100vw - 28px));
   margin: 72px auto 34px;
@@ -2713,11 +2758,12 @@ body.is-wish-revealing {
   margin: 4px 0 8px;
   font-size: clamp(34px, 6vw, 72px);
   letter-spacing: 0;
+  color: #f9fafb;
 }
 
 .mojing-brief p {
   max-width: 760px;
-  color: rgba(229, 231, 235, 0.78);
+  color: rgba(243, 244, 246, 0.9);
 }
 
 .mojing-wallet {
@@ -2740,10 +2786,19 @@ body.is-wish-revealing {
 .mojing-primary,
 .mojing-tool {
   border-color: rgba(148, 163, 184, 0.24);
-  color: #e5e7eb;
+  color: #f8fafc;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%),
     linear-gradient(180deg, #2b3038, #15181e);
+}
+
+.mojing-primary {
+  color: #050608;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08) 44%),
+    linear-gradient(180deg, #facc15, #d97706);
+  border-color: rgba(251, 191, 36, 0.72);
+  font-weight: 800;
 }
 
 .mojing-game {
@@ -2766,6 +2821,12 @@ body.is-wish-revealing {
 .mojing-tool.is-active {
   border-color: rgba(251, 191, 36, 0.62);
   box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.18), 0 0 22px rgba(251, 191, 36, 0.14);
+}
+
+.mojing-tool:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+  filter: grayscale(0.8);
 }
 
 .mojing-tool.danger {
@@ -2794,7 +2855,7 @@ body.is-wish-revealing {
 
 .mojing-board-head span,
 .mojing-board-head p {
-  color: rgba(229, 231, 235, 0.68);
+  color: rgba(243, 244, 246, 0.82);
 }
 
 .mojing-board-head strong {
@@ -2813,7 +2874,7 @@ body.is-wish-revealing {
   aspect-ratio: 1;
   margin: 0 auto;
   border: 2px solid rgba(148, 163, 184, 0.28);
-  border-radius: 12px;
+  border-radius: 0;
   overflow: hidden;
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 34%),
@@ -2827,8 +2888,8 @@ body.is-wish-revealing {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  border-radius: 5px;
-  border: 2px solid transparent;
+  border-radius: 0;
+  border: 3px solid transparent;
   background: rgba(5, 6, 8, 0.96);
   pointer-events: none;
 }
@@ -2839,46 +2900,54 @@ body.is-wish-revealing {
 }
 
 .mojing-item.is-outlined {
-  border-color: rgba(156, 163, 175, 0.9);
+  border-color: rgba(209, 213, 219, 0.98);
   background: rgba(5, 6, 8, 0.92);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
+    0 0 16px rgba(209, 213, 219, 0.18);
 }
 
 .mojing-item.is-extracted {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
     rgba(17, 24, 39, 0.98);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
 }
 
 .mojing-item.quality-white.is-extracted {
   border-color: #e5e7eb;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32), 0 0 18px rgba(229, 231, 235, 0.2);
 }
 
 .mojing-item.quality-green.is-extracted {
   border-color: #22c55e;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 18px rgba(34, 197, 94, 0.28);
 }
 
 .mojing-item.quality-blue.is-extracted {
   border-color: #3b82f6;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 20px rgba(59, 130, 246, 0.34);
 }
 
 .mojing-item.quality-purple.is-extracted {
   border-color: #a855f7;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 22px rgba(168, 85, 247, 0.4);
 }
 
 .mojing-item.quality-gold.is-extracted {
   border-color: #f59e0b;
-  box-shadow: 0 0 20px rgba(245, 158, 11, 0.24);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 28px rgba(245, 158, 11, 0.46);
 }
 
 .mojing-item.quality-red.is-extracted {
   border-color: #ef4444;
-  box-shadow: 0 0 24px rgba(239, 68, 68, 0.28);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 32px rgba(239, 68, 68, 0.52);
 }
 
 .mojing-item-art {
   position: absolute;
   inset: 8%;
-  border-radius: 6px;
+  border-radius: 0;
   opacity: 0;
   background:
     radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.5), transparent 18%),
@@ -2889,18 +2958,19 @@ body.is-wish-revealing {
   opacity: 1;
 }
 
-.mojing-item-meta {
+.mojing-item-value {
   position: absolute;
-  inset: auto 6px 6px;
+  inset: 0;
   display: grid;
-  gap: 2px;
+  place-items: center;
   opacity: 0;
   color: #fff;
   text-shadow: 0 2px 8px #000;
-  font-size: 11px;
+  font-weight: 800;
+  font-size: clamp(14px, 1.6vw, 24px);
 }
 
-.mojing-item.is-extracted .mojing-item-meta {
+.mojing-item.is-extracted .mojing-item-value {
   opacity: 1;
 }
 
@@ -2935,7 +3005,7 @@ body.is-wish-revealing {
   padding: 10px 12px;
   border-radius: 10px;
   background: rgba(3, 4, 5, 0.48);
-  color: rgba(229, 231, 235, 0.82);
+  color: rgba(248, 250, 252, 0.92);
   border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
