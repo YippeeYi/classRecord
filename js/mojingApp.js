@@ -2,20 +2,20 @@
     const STORAGE_KEY = "classRecord:mojingSafe";
     const COSTS = {
         buy: 30,
-        outline: 8,
-        extract: 28,
-        revealAll: 70,
-        extractAll: 160,
-        scanRare: 45,
-        reroll: 35
+        outline: 5,
+        extract: 30,
+        revealAll: 100,
+        extractAll: 400,
+        scanRare: 30,
+        reroll: 30
     };
     const QUALITY = [
         { key: "white", label: "白", weight: 44, mult: 1.0 },
         { key: "green", label: "绿", weight: 26, mult: 1.45 },
         { key: "blue", label: "蓝", weight: 16, mult: 2.1 },
         { key: "purple", label: "紫", weight: 8, mult: 3.25 },
-        { key: "gold", label: "金", weight: 4, mult: 5.2 },
-        { key: "red", label: "红", weight: 2, mult: 8.4 }
+        { key: "gold", label: "金", weight: 3, mult: 7.2 },
+        { key: "red", label: "红", weight: 1, mult: 13.4 }
     ];
     const state = {
         safe: null,
@@ -126,7 +126,7 @@
             const quality = rollQuality();
             const id = `item-${items.length}`;
             const area = width * height;
-            const value = Math.round(area * (10 + randomInt(0, 7)) * quality.mult);
+            const value = Math.round(area * (3 + randomInt(0, 4)) * quality.mult);
             const item = {
                 id,
                 x,
