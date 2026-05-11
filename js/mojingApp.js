@@ -201,7 +201,7 @@
         items.forEach((item) => {
             item.quality = rollQuality();
             item.area = item.width * item.height;
-            item.value = Math.round(item.area * (1 + randomInt(0, 3)) * item.quality.mult);
+            item.value = Math.round(item.area * randomInt(10, 50) / 10 * item.quality.mult);
             item.outlined = false;
             item.extracted = false;
         });
