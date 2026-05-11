@@ -277,6 +277,14 @@
         scanRareButton.disabled = !hasSafe || extractedDone || state.safe.scanRareUsed;
     }
 
+    // 格式化价格
+    function formatValue(value) {
+        if (value > 999) {
+            return (value / 1000).toFixed(1) + 'k';
+        }
+        return value;
+    }
+
     function renderBoard() {
         updateControls();
         if (!state.safe) return;
@@ -292,7 +300,7 @@
             node.classList.toggle("is-extracted", item.extracted);
             node.innerHTML = `
                 <div class="mojing-item-art"></div>
-                <div class="mojing-item-value">${item.value}</div>
+                <div class="mojing-item-value">${formatValue(item.value)}</div>
             `;
             board.appendChild(node);
         });
