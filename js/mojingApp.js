@@ -2,11 +2,11 @@
     const STORAGE_KEY = "classRecord:mojingSafe";
     const COSTS = {
         buy: 30,
-        outline: 5,
-        extract: 30,
-        revealAll: 100,
-        extractAll: 400,
-        scanRare: 50,
+        outline: 10,
+        extract: 100,
+        revealAll: 300,
+        extractAll: 3000,
+        scanRare: 100,
         reroll: 30
     };
     const QUALITY = [
@@ -111,51 +111,110 @@
 
     function makeSafe() {
         const n = randomInt(9, 21);
-        const grid = Array.from({ length: n }, () => Array.from({ length: n }, () => null));
+        const grid = Array.from({ length: n }, () => Array(n).fill(null));
         const items = [];
+        let idCounter = 0;
 
-        while (firstEmpty(grid)) {
-            const { x, y } = firstEmpty(grid);
-            let maxW = 0;
-            while (maxW < 6 && x + maxW < n && isEmpty(grid, x + maxW, y)) {
-                maxW += 1;
+        function canPlace(x, y, w, h) {
+            if (x < 0 || y < 0 || x + w > n || y + h > n) return false;
+            for (let dy = 0; dy < h; dy++)
+                for (let dx = 0; dx < w; dx++)
+                    if (grid[y + dy][x + dx] !== null) return false;
+            return true;
+        }
+
+        function placeRect(rect) {
+            for (let dy = 0; dy < rect.height; dy++)
+                for (let dx = 0; dx < rect.width; dx++)
+                    grid[rect.y + dy][rect.x + dx] = rect.id;
+            items.push(rect);
+        }
+
+        function getEmptyCells() {
+            const cells = [];
+            for (let y = 0; y < n; y++)
+                for (let x = 0; x < n; x++)
+                    if (grid[y][x] === null) cells.push({ x, y });
+            return cells;
+        }
+
+        while (true) {
+            const emptyCells = getEmptyCells();
+            if (emptyCells.length === 0) break;
+
+            // 1️⃣ 随机初始矩形数
+            const k = Math.max(1, Math.floor(emptyCells.length / 10));
+            const queue = [];
+
+            for (let i = 0; i < k; i++) {
+                const idx = randomInt(0, emptyCells.length - 1);
+                const { x, y } = emptyCells.splice(idx, 1)[0];
+                const speed = randomInt(1, 10);
+                const rect = {
+                    id: `item-${idCounter++}`,
+                    x, y,
+                    width: 1,
+                    height: 1,
+                    speed
+                };
+                queue.push(rect);
+                placeRect(rect);
             }
-            const width = randomInt(1, Math.max(1, maxW));
-            const maxH = Math.max(1, maxHeightForWidth(grid, x, y, width));
-            const height = randomInt(1, maxH);
-            const quality = rollQuality();
-            const id = `item-${items.length}`;
-            const area = width * height;
-            const value = Math.round(area * (1 + randomInt(0, 3)) * quality.mult);
-            const item = {
-                id,
-                x,
-                y,
-                width,
-                height,
-                area,
-                value,
-                quality,
-                outlined: false,
-                extracted: false
-            };
-            items.push(item);
-            for (let dy = 0; dy < height; dy += 1) {
-                for (let dx = 0; dx < width; dx += 1) {
-                    grid[y + dy][x + dx] = id;
+
+            // 2️⃣ 优先队列处理
+            queue.sort((a, b) => a.speed - b.speed);
+
+            while (queue.length > 0) {
+                const rect = queue.shift();
+
+                // 随机尝试四个方向
+                const dirs = ["up", "down", "left", "right"].sort(() => Math.random() - 0.5);
+                let expanded = false;
+
+                for (const dir of dirs) {
+                    let newX = rect.x, newY = rect.y, newW = rect.width, newH = rect.height;
+                    if (dir === "up" && rect.height < 6) { newY -= 1; newH += 1; }
+                    else if (dir === "down" && rect.height < 6) { newH += 1; }
+                    else if (dir === "left" && rect.width < 6) { newX -= 1; newW += 1; }
+                    else if (dir === "right" && rect.width < 6) { newW += 1; }
+                    else continue;
+
+                    if (canPlace(newX, newY, newW, newH)) {
+                        // 移除旧矩形占位
+                        for (let dy = 0; dy < rect.height; dy++)
+                            for (let dx = 0; dx < rect.width; dx++)
+                                grid[rect.y + dy][rect.x + dx] = null;
+
+                        rect.x = newX;
+                        rect.y = newY;
+                        rect.width = newW;
+                        rect.height = newH;
+
+                        placeRect(rect);
+
+                        rect.speed += randomInt(1, 5); // 速度增加
+                        queue.push(rect);
+                        queue.sort((a, b) => a.speed - b.speed); // 保持最小优先
+                        expanded = true;
+                        break;
+                    }
                 }
+
+                if (!expanded) continue; // 无法扩张就丢弃
             }
         }
 
-        return {
-            n,
-            grid,
-            items,
-            rareKnown: false,
-            revealAllUsed: false,
-            extractAllUsed: false,
-            scanRareUsed: false
-        };
+        // 3️⃣ 生成质量和价值信息
+        items.forEach((item) => {
+            item.quality = rollQuality();
+            const area = item.width * item.height;
+            item.area = area;
+            item.value = Math.round(area * (1 + randomInt(0, 3)) * item.quality.mult);
+            item.outlined = false;
+            item.extracted = false;
+        });
+
+        return { n, grid, items, rareKnown: false, revealAllUsed: false, extractAllUsed: false, scanRareUsed: false };
     }
 
     function allOutlined() {
