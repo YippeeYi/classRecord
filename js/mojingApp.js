@@ -145,6 +145,12 @@
             items.push(rect);
         }
 
+        function removeRect(rect) {
+            for (let dy = 0; dy < rect.height; dy++)
+                for (let dx = 0; dx < rect.width; dx++)
+                    grid[rect.y + dy][rect.x + dx] = null;
+        }
+
         function getEmptyCells() {
             const cells = [];
             for (let y = 0; y < n; y++)
@@ -178,25 +184,25 @@
         function expandRects(queue) {
             while (queue.length > 0) {
                 // 取出最小速度
-                queue.sort((a, b) => a.speed - b.speed); // 小优先
+                queue.sort((a, b) => a.speed - b.speed);
                 const rect = queue.shift();
+
                 const dirs = ["up", "down", "left", "right"].sort(() => Math.random() - 0.5);
                 let expanded = false;
 
                 for (const dir of dirs) {
                     let newX = rect.x, newY = rect.y, newW = rect.width, newH = rect.height;
+
                     if (dir === "up" && rect.height < 6) { newY -= 1; newH += 1; }
                     else if (dir === "down" && rect.height < 6) { newH += 1; }
                     else if (dir === "left" && rect.width < 6) { newX -= 1; newW += 1; }
                     else if (dir === "right" && rect.width < 6) { newW += 1; }
                     else continue;
 
-                    if (canPlace(newX, newY, newW, newH)) {
-                        // 清空旧矩形
-                        for (let dy = 0; dy < rect.height; dy++)
-                            for (let dx = 0; dx < rect.width; dx++)
-                                grid[rect.y + dy][rect.x + dx] = null;
+                    // **先移除旧矩形占位**
+                    removeRect(rect);
 
+                    if (canPlace(newX, newY, newW, newH)) {
                         rect.x = newX;
                         rect.y = newY;
                         rect.width = newW;
@@ -204,19 +210,18 @@
 
                         placeRect(rect);
 
-                        rect.speed += randomInt(1, 5); // 增加速度
+                        rect.speed += randomInt(1, 5);
                         queue.push(rect);
                         expanded = true;
                         break;
+                    } else {
+                        // 扩张失败，恢复原占位
+                        placeRect(rect);
                     }
                 }
-
-                // 如果无法扩张则丢弃
-                if (!expanded) continue;
             }
         }
 
-        // 核心循环：直到没有空格
         while (true) {
             const emptyCells = getEmptyCells();
             if (emptyCells.length === 0) break;
@@ -224,7 +229,7 @@
             expandRects(queue);
         }
 
-        // 为每个矩形生成质量和价值
+        // 生成矩形质量与价值
         items.forEach((item) => {
             item.quality = rollQuality();
             const area = item.width * item.height;
