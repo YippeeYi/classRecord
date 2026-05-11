@@ -6,8 +6,8 @@
         buy: 30,
         outline: 10,
         extract: 100,
-        revealAll: 300,
-        extractAll: 3000,
+        revealAll: 200,
+        extractAll: 2000,
         scanRare: 100,
         reroll: 30
     };
