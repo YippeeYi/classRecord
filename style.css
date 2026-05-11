@@ -1340,6 +1340,7 @@ body>footer {
 }
 
 @media (max-width: 720px) {
+
   .people-table th,
   .people-table td,
   .glossary-table th,
@@ -1917,7 +1918,7 @@ body>footer {
   overflow: hidden;
   transform: translateY(26px) scale(0.94) rotateX(8deg);
   opacity: 0;
-  animation: wishReveal 0.68s cubic-bezier(.18,.86,.22,1) forwards;
+  animation: wishReveal 0.68s cubic-bezier(.18, .86, .22, 1) forwards;
   box-shadow: none;
   border: 2px solid var(--rarity-border-dark);
   isolation: isolate;
@@ -2084,6 +2085,7 @@ body>footer {
 }
 
 @keyframes sixStarSweep {
+
   0%,
   100% {
     transform: translateX(-16%) rotate(0deg);
@@ -2132,7 +2134,7 @@ body>footer {
   background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0));
   box-shadow: 0 0 18px rgba(255, 255, 255, 0.9);
   transform: rotate(-18deg) translateX(0);
-  animation: meteorFlight 1.2s cubic-bezier(.14,.78,.18,1) forwards;
+  animation: meteorFlight 1.2s cubic-bezier(.14, .78, .18, 1) forwards;
 }
 
 .wish-cinematic.rarity-4 .wish-cinematic-trail::before {
@@ -2308,7 +2310,7 @@ body.is-wish-revealing {
 }
 
 .wish-reveal-screen.is-opening .wish-reveal-meteor::before {
-  animation: wishMeteorFull 1.12s cubic-bezier(.14,.78,.18,1) forwards;
+  animation: wishMeteorFull 1.12s cubic-bezier(.14, .78, .18, 1) forwards;
 }
 
 .wish-reveal-flash {
@@ -2364,7 +2366,7 @@ body.is-wish-revealing {
   padding: 10px;
   border-radius: 24px;
   box-shadow: none;
-  animation: wishCardArrive 0.56s cubic-bezier(.18,.86,.22,1) both;
+  animation: wishCardArrive 0.56s cubic-bezier(.18, .86, .22, 1) both;
 }
 
 .wish-reveal-card-shell.rarity-5 {
@@ -2438,7 +2440,7 @@ body.is-wish-revealing {
   min-height: 0;
   opacity: 0;
   transform: translateY(20px) scale(0.96);
-  animation: wishReveal 0.5s cubic-bezier(.18,.86,.22,1) forwards;
+  animation: wishReveal 0.5s cubic-bezier(.18, .86, .22, 1) forwards;
 }
 
 .wish-next-hit {
@@ -2493,6 +2495,7 @@ body.is-wish-revealing {
 }
 
 @keyframes wishFullFlash {
+
   0%,
   72% {
     opacity: 0;
@@ -2921,6 +2924,17 @@ body.is-wish-revealing {
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
     var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  border-color: transparent;
+  /* 移除 is-outlined 的边框 */
+}
+
+/* 防止 is-outlined 样式覆盖 extracted */
+.mojing-item.is-extracted.is-outlined {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
+    var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
+  border-color: transparent;
 }
 
 .mojing-item.quality-white.is-extracted {
@@ -3142,4 +3156,3 @@ body.is-wish-revealing {
     white-space: normal;
   }
 }
-
