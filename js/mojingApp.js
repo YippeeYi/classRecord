@@ -124,32 +124,8 @@
         return QUALITY[0];
     }
 
-    function isEmpty(grid, x, y) {
-        return y >= 0 && y < grid.length && x >= 0 && x < grid.length && grid[y][x] === null;
-    }
-
-    function firstEmpty(grid) {
-        for (let y = 0; y < grid.length; y += 1) {
-            for (let x = 0; x < grid.length; x += 1) {
-                if (grid[y][x] === null) return { x, y };
-            }
-        }
-        return null;
-    }
-
-    function maxHeightForWidth(grid, x, y, width) {
-        let height = 0;
-        while (height < 6 && y + height < grid.length) {
-            for (let dx = 0; dx < width; dx += 1) {
-                if (!isEmpty(grid, x + dx, y + height)) return height;
-            }
-            height += 1;
-        }
-        return height;
-    }
-
     function makeSafe() {
-        const n = randomInt(9, 21);
+        const n = randomInt(10, 20);
         const grid = Array.from({ length: n }, () => Array(n).fill(null));
         const items = [];
         let idCounter = 0;
@@ -177,15 +153,11 @@
             return cells;
         }
 
-        while (true) {
-            const emptyCells = getEmptyCells();
-            if (emptyCells.length === 0) break;
-
-            // 1️⃣ 随机初始矩形数
+        function generateInitialRects(emptyCells) {
             const k = Math.max(1, Math.floor(emptyCells.length / 10));
             const queue = [];
 
-            for (let i = 0; i < k; i++) {
+            for (let i = 0; i < k && emptyCells.length > 0; i++) {
                 const idx = randomInt(0, emptyCells.length - 1);
                 const { x, y } = emptyCells.splice(idx, 1)[0];
                 const speed = randomInt(1, 10);
@@ -200,13 +172,14 @@
                 placeRect(rect);
             }
 
-            // 2️⃣ 优先队列处理
-            queue.sort((a, b) => a.speed - b.speed);
+            return queue;
+        }
 
+        function expandRects(queue) {
             while (queue.length > 0) {
+                // 取出最小速度
+                queue.sort((a, b) => a.speed - b.speed); // 小优先
                 const rect = queue.shift();
-
-                // 随机尝试四个方向
                 const dirs = ["up", "down", "left", "right"].sort(() => Math.random() - 0.5);
                 let expanded = false;
 
@@ -219,7 +192,7 @@
                     else continue;
 
                     if (canPlace(newX, newY, newW, newH)) {
-                        // 移除旧矩形占位
+                        // 清空旧矩形
                         for (let dy = 0; dy < rect.height; dy++)
                             for (let dx = 0; dx < rect.width; dx++)
                                 grid[rect.y + dy][rect.x + dx] = null;
@@ -231,19 +204,27 @@
 
                         placeRect(rect);
 
-                        rect.speed += randomInt(1, 5); // 速度增加
+                        rect.speed += randomInt(1, 5); // 增加速度
                         queue.push(rect);
-                        queue.sort((a, b) => a.speed - b.speed); // 保持最小优先
                         expanded = true;
                         break;
                     }
                 }
 
-                if (!expanded) continue; // 无法扩张就丢弃
+                // 如果无法扩张则丢弃
+                if (!expanded) continue;
             }
         }
 
-        // 3️⃣ 生成质量和价值信息
+        // 核心循环：直到没有空格
+        while (true) {
+            const emptyCells = getEmptyCells();
+            if (emptyCells.length === 0) break;
+            const queue = generateInitialRects(emptyCells);
+            expandRects(queue);
+        }
+
+        // 为每个矩形生成质量和价值
         items.forEach((item) => {
             item.quality = rollQuality();
             const area = item.width * item.height;
