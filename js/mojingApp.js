@@ -1,5 +1,7 @@
 (() => {
     const STORAGE_KEY = "classRecord:mojingSafe";
+
+    // 七个消耗常数
     const COSTS = {
         buy: 30,
         outline: 10,
@@ -9,6 +11,7 @@
         scanRare: 100,
         reroll: 30
     };
+
     const QUALITY = [
         { key: "white", label: "白", weight: 44, mult: 1.0 },
         { key: "green", label: "绿", weight: 26, mult: 2.45 },
@@ -17,11 +20,44 @@
         { key: "gold", label: "金", weight: 3, mult: 37.2 },
         { key: "red", label: "红", weight: 1, mult: 83.4 }
     ];
+
     const state = {
         safe: null,
         mode: "outline"
     };
 
+    // -------------------- 动态生成工具栏按钮 --------------------
+    function initToolbar() {
+        const toolbarContainer = document.querySelector(".mojing-toolbar");
+        const buttonsData = [
+            { mode: "outline", label: "侦察一格", costKey: "outline" },
+            { mode: "extract", label: "开取一格", costKey: "extract" },
+            { id: "mojing-reveal-all", label: "全图轮廓", costKey: "revealAll" },
+            { id: "mojing-extract-all", label: "全箱开取", costKey: "extractAll" },
+            { id: "mojing-scan-rare", label: "稀有扫描", costKey: "scanRare" },
+            { id: "mojing-reroll", label: "换箱弃置", costKey: "reroll" },
+        ];
+
+        toolbarContainer.innerHTML = ""; // 清空旧内容
+
+        buttonsData.forEach(btnData => {
+            const btn = document.createElement("button");
+            btn.type = "button";
+            btn.className = "mojing-tool";
+            if (btnData.mode) {
+                btn.dataset.mode = btnData.mode;
+                if (btnData.mode === "outline") btn.classList.add("is-active");
+            }
+            if (btnData.id) btn.id = btnData.id;
+            const cost = COSTS[btnData.costKey] ?? 0;
+            btn.textContent = `${btnData.label} · ${cost}`;
+            toolbarContainer.appendChild(btn);
+        });
+    }
+
+    initToolbar(); // 调用生成工具栏
+
+    // -------------------- 获取按钮引用 --------------------
     const buyButton = document.getElementById("mojing-buy");
     const game = document.getElementById("mojing-game");
     const board = document.getElementById("mojing-board");
@@ -35,6 +71,7 @@
     const scanRareButton = document.getElementById("mojing-scan-rare");
     const rerollButton = document.getElementById("mojing-reroll");
 
+    // -------------------- 随机数 / 本地存储 --------------------
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -60,12 +97,14 @@
         }
     }
 
+    // -------------------- 消耗 Q币 --------------------
     function spend(amount, label) {
         if (window.GameState.spendCoins(amount, "mojing-spend")) return true;
         window.showGameToast(`${label} 需要 ${amount} Q币。`, "error");
         return false;
     }
 
+    // -------------------- 记录日志 --------------------
     function addLog(text) {
         const li = document.createElement("li");
         li.textContent = text;
