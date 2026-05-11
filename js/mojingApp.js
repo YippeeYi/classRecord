@@ -26,7 +26,6 @@
         mode: "outline"
     };
 
-    // -------------------- 动态生成工具栏按钮 --------------------
     function initToolbar() {
         const toolbarContainer = document.querySelector(".mojing-toolbar");
         const buttonsData = [
@@ -38,8 +37,7 @@
             { id: "mojing-reroll", label: "换箱弃置", costKey: "reroll" },
         ];
 
-        toolbarContainer.innerHTML = ""; // 清空旧内容
-
+        toolbarContainer.innerHTML = "";
         buttonsData.forEach(btnData => {
             const btn = document.createElement("button");
             btn.type = "button";
@@ -55,9 +53,8 @@
         });
     }
 
-    initToolbar(); // 调用生成工具栏
+    initToolbar();
 
-    // -------------------- 获取按钮引用 --------------------
     const buyButton = document.getElementById("mojing-buy");
     const game = document.getElementById("mojing-game");
     const board = document.getElementById("mojing-board");
@@ -71,7 +68,6 @@
     const scanRareButton = document.getElementById("mojing-scan-rare");
     const rerollButton = document.getElementById("mojing-reroll");
 
-    // -------------------- 随机数 / 本地存储 --------------------
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -80,7 +76,7 @@
         try {
             const raw = localStorage.getItem(STORAGE_KEY);
             return raw ? JSON.parse(raw) : null;
-        } catch (error) {
+        } catch {
             return null;
         }
     }
@@ -92,19 +88,15 @@
             } else {
                 localStorage.removeItem(STORAGE_KEY);
             }
-        } catch (error) {
-            // Keep the in-memory safe playable even if storage is blocked.
-        }
+        } catch { }
     }
 
-    // -------------------- 消耗 Q币 --------------------
     function spend(amount, label) {
         if (window.GameState.spendCoins(amount, "mojing-spend")) return true;
         window.showGameToast(`${label} 需要 ${amount} Q币。`, "error");
         return false;
     }
 
-    // -------------------- 记录日志 --------------------
     function addLog(text) {
         const li = document.createElement("li");
         li.textContent = text;
@@ -162,60 +154,37 @@
         function generateInitialRects(emptyCells) {
             const k = Math.max(1, Math.floor(emptyCells.length / 10));
             const queue = [];
-
             for (let i = 0; i < k && emptyCells.length > 0; i++) {
                 const idx = randomInt(0, emptyCells.length - 1);
                 const { x, y } = emptyCells.splice(idx, 1)[0];
                 const speed = randomInt(1, 10);
-                const rect = {
-                    id: `item-${idCounter++}`,
-                    x, y,
-                    width: 1,
-                    height: 1,
-                    speed
-                };
+                const rect = { id: `item-${idCounter++}`, x, y, width: 1, height: 1, speed };
                 queue.push(rect);
                 placeRect(rect);
             }
-
             return queue;
         }
 
         function expandRects(queue) {
             while (queue.length > 0) {
-                // 取出最小速度
                 queue.sort((a, b) => a.speed - b.speed);
                 const rect = queue.shift();
-
                 const dirs = ["up", "down", "left", "right"].sort(() => Math.random() - 0.5);
-                let expanded = false;
-
                 for (const dir of dirs) {
                     let newX = rect.x, newY = rect.y, newW = rect.width, newH = rect.height;
-
                     if (dir === "up" && rect.height < 6) { newY -= 1; newH += 1; }
                     else if (dir === "down" && rect.height < 6) { newH += 1; }
                     else if (dir === "left" && rect.width < 6) { newX -= 1; newW += 1; }
                     else if (dir === "right" && rect.width < 6) { newW += 1; }
                     else continue;
-
-                    // **先移除旧矩形占位**
                     removeRect(rect);
-
                     if (canPlace(newX, newY, newW, newH)) {
-                        rect.x = newX;
-                        rect.y = newY;
-                        rect.width = newW;
-                        rect.height = newH;
-
+                        rect.x = newX; rect.y = newY; rect.width = newW; rect.height = newH;
                         placeRect(rect);
-
                         rect.speed += randomInt(1, 5);
                         queue.push(rect);
-                        expanded = true;
                         break;
                     } else {
-                        // 扩张失败，恢复原占位
                         placeRect(rect);
                     }
                 }
@@ -229,12 +198,10 @@
             expandRects(queue);
         }
 
-        // 生成矩形质量与价值
         items.forEach((item) => {
             item.quality = rollQuality();
-            const area = item.width * item.height;
-            item.area = area;
-            item.value = Math.round(area * (1 + randomInt(0, 3)) * item.quality.mult);
+            item.area = item.width * item.height;
+            item.value = Math.round(item.area * (1 + randomInt(0, 3)) * item.quality.mult);
             item.outlined = false;
             item.extracted = false;
         });
@@ -277,11 +244,8 @@
         scanRareButton.disabled = !hasSafe || extractedDone || state.safe.scanRareUsed;
     }
 
-    // 格式化价格
     function formatValue(value) {
-        if (value > 999) {
-            return (value / 1000).toFixed(1) + 'k';
-        }
+        if (value > 999) return (value / 1000).toFixed(1) + "k";
         return value;
     }
 
@@ -290,6 +254,7 @@
         if (!state.safe) return;
         board.style.setProperty("--mojing-n", String(state.safe.n));
         board.innerHTML = "";
+
         state.safe.items.forEach((item) => {
             const node = document.createElement("div");
             node.className = `mojing-item quality-${item.quality.key}`;
@@ -305,8 +270,8 @@
             board.appendChild(node);
         });
 
-        for (let y = 0; y < state.safe.n; y += 1) {
-            for (let x = 0; x < state.safe.n; x += 1) {
+        for (let y = 0; y < state.safe.n; y++) {
+            for (let x = 0; x < state.safe.n; x++) {
                 const cell = document.createElement("button");
                 cell.type = "button";
                 cell.className = "mojing-cell";
@@ -321,7 +286,9 @@
 
         sizeNode.textContent = `${state.safe.n} x ${state.safe.n}`;
         rareCount.textContent = state.safe.rareKnown
-            ? `稀有小格数量：${state.safe.items.filter((item) => ["purple", "gold", "red"].includes(item.quality.key)).reduce((sum, item) => sum + item.area, 0)}`
+            ? `稀有小格数量：${state.safe.items
+                .filter(item => ["purple", "gold", "red"].includes(item.quality.key))
+                .reduce((sum, item) => sum + (item.width * item.height), 0)}`
             : "稀有小格数量：未知";
     }
 
