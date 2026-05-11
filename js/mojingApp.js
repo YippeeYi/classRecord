@@ -13,12 +13,12 @@
     };
 
     const QUALITY = [
-        { key: "white", label: "白", weight: 44, mult: 1.0 },
-        { key: "green", label: "绿", weight: 26, mult: 2.45 },
-        { key: "blue", label: "蓝", weight: 16, mult: 5.1 },
-        { key: "purple", label: "紫", weight: 8, mult: 13.25 },
-        { key: "gold", label: "金", weight: 3, mult: 37.2 },
-        { key: "red", label: "红", weight: 1, mult: 83.4 }
+        { key: "white", label: "白", weight: 44, mult: 1 },
+        { key: "green", label: "绿", weight: 26, mult: 1.2 },
+        { key: "blue", label: "蓝", weight: 16, mult: 2.7 },
+        { key: "purple", label: "紫", weight: 8, mult: 7 },
+        { key: "gold", label: "金", weight: 3, mult: 25 },
+        { key: "red", label: "红", weight: 1, mult: 120 }
     ];
 
     const state = {
