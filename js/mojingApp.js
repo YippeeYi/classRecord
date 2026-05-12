@@ -286,9 +286,10 @@
 
         sizeNode.textContent = `${state.safe.n} x ${state.safe.n}`;
         rareCount.textContent = state.safe.rareKnown
-            ? `稀有小格数量：${state.safe.items
-                .filter(item => ["purple", "gold", "red"].includes(item.quality.key))
-                .reduce((sum, item) => sum + (item.width * item.height), 0)}`
+            ? `稀有小格数量：${state.safe.grid.flat().reduce((sum, id) => {
+                const item = state.safe.items.find(i => i.id === id);
+                return sum + (item && ["purple", "gold", "red"].includes(item.quality.key) ? 1 : 0);
+            }, 0)}`
             : "稀有小格数量：未知";
     }
 

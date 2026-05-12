@@ -2882,7 +2882,7 @@ body.is-wish-revealing {
   display: grid;
   grid-template-columns: repeat(var(--mojing-n), minmax(0, 1fr));
   grid-template-rows: repeat(var(--mojing-n), minmax(0, 1fr));
-  width: min(76vh, 100%);
+  width: min(100vh, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
   border: 2px solid rgba(148, 163, 184, 0.28);
@@ -2914,16 +2914,12 @@ body.is-wish-revealing {
 .mojing-item.is-outlined {
   border-color: rgba(209, 213, 219, 0.98);
   background: rgba(5, 6, 8, 0.92);
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 0 16px rgba(209, 213, 219, 0.18);
 }
 
 .mojing-item.is-extracted {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
     var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
   border-color: transparent;
   /* 移除 is-outlined 的边框 */
 }
@@ -2933,7 +2929,6 @@ body.is-wish-revealing {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
     var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.24);
   border-color: transparent;
 }
 
@@ -2942,7 +2937,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(229, 231, 235, 0.24), transparent 42%),
     linear-gradient(145deg, #20242b, #0f1116);
   border-color: #e5e7eb;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.32), 0 0 18px rgba(229, 231, 235, 0.2);
 }
 
 .mojing-item.quality-green.is-extracted {
@@ -2950,7 +2944,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(34, 197, 94, 0.28), transparent 44%),
     linear-gradient(145deg, #123422, #07140d);
   border-color: #22c55e;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 18px rgba(34, 197, 94, 0.28);
 }
 
 .mojing-item.quality-blue.is-extracted {
@@ -2958,7 +2951,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(59, 130, 246, 0.3), transparent 44%),
     linear-gradient(145deg, #142d58, #071120);
   border-color: #3b82f6;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 20px rgba(59, 130, 246, 0.34);
 }
 
 .mojing-item.quality-purple.is-extracted {
@@ -2966,7 +2958,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(168, 85, 247, 0.32), transparent 44%),
     linear-gradient(145deg, #351a5c, #13091f);
   border-color: #a855f7;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 22px rgba(168, 85, 247, 0.4);
 }
 
 .mojing-item.quality-gold.is-extracted {
@@ -2974,7 +2965,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(245, 158, 11, 0.34), transparent 44%),
     linear-gradient(145deg, #4a2a07, #180d03);
   border-color: #f59e0b;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 28px rgba(245, 158, 11, 0.46);
 }
 
 .mojing-item.quality-red.is-extracted {
@@ -2982,7 +2972,6 @@ body.is-wish-revealing {
     radial-gradient(circle at 35% 28%, rgba(239, 68, 68, 0.34), transparent 44%),
     linear-gradient(145deg, #4a1111, #190505);
   border-color: #ef4444;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.26), 0 0 32px rgba(239, 68, 68, 0.52);
 }
 
 .mojing-item-art {
