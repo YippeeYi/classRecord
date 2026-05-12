@@ -2882,7 +2882,7 @@ body.is-wish-revealing {
   display: grid;
   grid-template-columns: repeat(var(--mojing-n), minmax(0, 1fr));
   grid-template-rows: repeat(var(--mojing-n), minmax(0, 1fr));
-  width: min(100vh, 100%);
+  width: min(96vh, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
   border: 2px solid rgba(148, 163, 184, 0.28);
@@ -2980,7 +2980,6 @@ body.is-wish-revealing {
   border-radius: 0;
   opacity: 0;
   background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.5), transparent 18%),
     linear-gradient(135deg, rgba(148, 163, 184, 0.48), rgba(30, 41, 59, 0.7));
 }
 
@@ -2997,7 +2996,7 @@ body.is-wish-revealing {
   color: #fff;
   text-shadow: 0 2px 8px #000;
   font-weight: 800;
-  font-size: clamp(14px, 1.6vw, 24px);
+  font-size: clamp(12px, 1.2vw, 18px);
 }
 
 .mojing-item.is-extracted .mojing-item-value {

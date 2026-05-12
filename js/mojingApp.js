@@ -3,22 +3,22 @@
 
     // 七个消耗常数
     const COSTS = {
-        buy: 30,
+        buy: 500,
         outline: 10,
         extract: 100,
-        revealAll: 200,
-        extractAll: 2000,
+        revealAll: 300,
+        extractAll: 3000,
         scanRare: 100,
-        reroll: 30
+        reroll: 500
     };
 
     const QUALITY = [
         { key: "white", label: "白", weight: 44, mult: 1 },
-        { key: "green", label: "绿", weight: 26, mult: 1.2 },
-        { key: "blue", label: "蓝", weight: 16, mult: 2.7 },
-        { key: "purple", label: "紫", weight: 8, mult: 7 },
-        { key: "gold", label: "金", weight: 3, mult: 25 },
-        { key: "red", label: "红", weight: 1, mult: 120 }
+        { key: "green", label: "绿", weight: 26, mult: 2 },
+        { key: "blue", label: "蓝", weight: 16, mult: 5 },
+        { key: "purple", label: "紫", weight: 8, mult: 13 },
+        { key: "gold", label: "金", weight: 3, mult: 50 },
+        { key: "red", label: "红", weight: 1, mult: 1000 }
     ];
 
     const state = {
@@ -201,7 +201,7 @@
         items.forEach((item) => {
             item.quality = rollQuality();
             item.area = item.width * item.height;
-            item.value = Math.round(item.area * randomInt(10, 50) / 10 * item.quality.mult);
+            item.value = Math.round(Math.pow(2, item.area / 18 + 2 * Math.random()) * item.area * item.quality.mult);
             item.outlined = false;
             item.extracted = false;
         });
@@ -245,8 +245,14 @@
     }
 
     function formatValue(value) {
-        if (value > 999) return (value / 1000).toFixed(1) + "k";
-        return value;
+        if (value >= 1_000_000) {
+            const v = value / 1_000_000;
+            return v.toPrecision(3) + "M";
+        } else if (value >= 1_000) {
+            const v = value / 1_000;
+            return v.toPrecision(3) + "k";
+        }
+        return value.toString();
     }
 
     function renderBoard() {
