@@ -84,7 +84,6 @@
     function saveSafe() {
         try {
             if (state.safe) {
-                // 确保每个 item 字段完整
                 state.safe.items.forEach(item => {
                     if (typeof item.outlined !== 'boolean') item.outlined = false;
                     if (typeof item.extracted !== 'boolean') item.extracted = false;
@@ -315,10 +314,16 @@
 
     function extractItem(item, silent = false) {
         if (!item || item.extracted) return 0;
+
         item.extracted = true;
-        item.outlined = true;
+        item.outlined = true; // 保证轮廓也显示
         window.GameState.addCoins(item.value, "mojing-loot");
+
+        // 渲染板更新
+        renderBoard();
+
         if (!silent) addLog(`获得物品，收益 ${item.value} Q币。`);
+        saveSafe();
         return item.value;
     }
 
@@ -419,11 +424,13 @@
 
     const storedSafe = readStoredSafe();
     if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
-        // 补充默认字段，避免旧数据缺失
         storedSafe.items.forEach(item => {
             if (typeof item.outlined !== 'boolean') item.outlined = false;
             if (typeof item.extracted !== 'boolean') item.extracted = false;
-            if (!item.quality) item.quality = rollQuality(); // 保证旧数据有质量字段
+            if (!item.quality) item.quality = rollQuality(); // 保证老数据也有质量字段
+            if (typeof item.value !== 'number') {
+                item.value = Math.round(item.width * item.height * randomInt(10, 50) / 10 * item.quality.mult);
+            }
         });
         activateSafe(storedSafe, "已恢复上次保险箱。");
     } else {
