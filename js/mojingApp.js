@@ -84,6 +84,11 @@
     function saveSafe() {
         try {
             if (state.safe) {
+                // 确保每个 item 字段完整
+                state.safe.items.forEach(item => {
+                    if (typeof item.outlined !== 'boolean') item.outlined = false;
+                    if (typeof item.extracted !== 'boolean') item.extracted = false;
+                });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state.safe));
             } else {
                 localStorage.removeItem(STORAGE_KEY);
@@ -414,6 +419,12 @@
 
     const storedSafe = readStoredSafe();
     if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
+        // 补充默认字段，避免旧数据缺失
+        storedSafe.items.forEach(item => {
+            if (typeof item.outlined !== 'boolean') item.outlined = false;
+            if (typeof item.extracted !== 'boolean') item.extracted = false;
+            if (!item.quality) item.quality = rollQuality(); // 保证旧数据有质量字段
+        });
         activateSafe(storedSafe, "已恢复上次保险箱。");
     } else {
         updateControls();
