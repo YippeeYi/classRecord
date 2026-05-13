@@ -304,7 +304,6 @@
             node.classList.toggle("is-outlined", item.outlined && !item.extracted);
             node.classList.toggle("is-extracted", item.extracted);
             node.innerHTML = `
-            <div class="mojing-item-art"></div>
             <div class="mojing-item-value">${formatValue(item.value)}</div>
         `;
             board.appendChild(node);
