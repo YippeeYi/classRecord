@@ -136,11 +136,14 @@
             return true;
         }
 
-        function placeRect(rect) {
+        function placeRect(rect, isNew = false) {
             for (let dy = 0; dy < rect.height; dy++)
                 for (let dx = 0; dx < rect.width; dx++)
                     grid[rect.y + dy][rect.x + dx] = rect.id;
-            items.push(rect);
+
+            if (isNew) {
+                items.push(rect);
+            }
         }
 
         function removeRect(rect) {
@@ -166,7 +169,7 @@
                 const speed = randomInt(1, 10);
                 const rect = { id: `item-${idCounter++}`, x, y, width: 1, height: 1, speed };
                 queue.push(rect);
-                placeRect(rect);
+                placeRect(rect, true);
             }
             return queue;
         }
@@ -263,12 +266,25 @@
 
     function getExtractedCoins() {
         if (!state.safe) return 0;
-        return state.safe.items.filter(item => item.extracted).reduce((sum, item) => sum + item.value, 0);
+
+        return state.safe.items.reduce((sum, item) => {
+            return sum + (item.extracted ? item.value : 0);
+        }, 0);
     }
 
     function getExtractedRare() {
         if (!state.safe) return 0;
-        return state.safe.items.filter(item => item.extracted && ["purple", "gold", "red"].includes(item.quality.key)).length;
+
+        return state.safe.items.reduce((sum, item) => {
+            if (
+                item.extracted &&
+                ["purple", "gold", "red"].includes(item.quality.key)
+            ) {
+                return sum + item.area;
+            }
+
+            return sum;
+        }, 0);
     }
 
     function renderBoard() {
@@ -459,6 +475,16 @@
 
     const storedSafe = readStoredSafe();
     if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
+        // 去除重复 item（修复旧存档）
+        const uniqueMap = new Map();
+
+        storedSafe.items.forEach(item => {
+            if (!uniqueMap.has(item.id)) {
+                uniqueMap.set(item.id, item);
+            }
+        });
+
+        storedSafe.items = [...uniqueMap.values()];
         storedSafe.items.forEach(item => {
             // 保留原来的 outlined 和 extracted 状态
             if (typeof item.outlined !== 'boolean') item.outlined = false;
