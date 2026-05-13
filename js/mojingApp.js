@@ -256,10 +256,10 @@
     function formatValue(value) {
         if (value >= 1_000_000) {
             const v = value / 1_000_000;
-            return v.toPrecision(2) + "M";
+            return Math.floor(v) + "M";
         } else if (value >= 1_000) {
             const v = value / 1_000;
-            return v.toPrecision(2) + "k";
+            return Math.floor(v) + "k";
         }
         return value.toString();
     }
