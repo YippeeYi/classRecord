@@ -68,6 +68,8 @@
     const scanRareButton = document.getElementById("mojing-scan-rare");
     const rerollButton = document.getElementById("mojing-reroll");
 
+    buyButton.textContent = `购买保险箱 · ${COSTS.buy} Q币`;
+
     function randomInt(min, max) {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
@@ -259,12 +261,24 @@
         return value.toString();
     }
 
+    function getExtractedCoins() {
+        if (!state.safe) return 0;
+        return state.safe.items.filter(item => item.extracted).reduce((sum, item) => sum + item.value, 0);
+    }
+
+    function getExtractedRare() {
+        if (!state.safe) return 0;
+        return state.safe.items.filter(item => item.extracted && ["purple", "gold", "red"].includes(item.quality.key)).length;
+    }
+
     function renderBoard() {
         updateControls();
         if (!state.safe) return;
+
         board.style.setProperty("--mojing-n", String(state.safe.n));
         board.innerHTML = "";
 
+        // 渲染每个物品
         state.safe.items.forEach((item) => {
             const node = document.createElement("div");
             node.className = `mojing-item quality-${item.quality.key}`;
@@ -274,17 +288,18 @@
             node.classList.toggle("is-outlined", item.outlined && !item.extracted);
             node.classList.toggle("is-extracted", item.extracted);
             node.innerHTML = `
-                <div class="mojing-item-art"></div>
-                <div class="mojing-item-value">${formatValue(item.value)}</div>
-            `;
+            <div class="mojing-item-art"></div>
+            <div class="mojing-item-value">${formatValue(item.value)}</div>
+        `;
             board.appendChild(node);
         });
 
+        // 渲染每个小格
         for (let y = 0; y < state.safe.n; y++) {
             for (let x = 0; x < state.safe.n; x++) {
                 const cell = document.createElement("button");
                 cell.type = "button";
-                cell.className = "mojing-cell";
+                cell.className = "mojing-cell"; // 内部网格线
                 cell.style.gridColumn = x + 1;
                 cell.style.gridRow = y + 1;
                 cell.dataset.x = String(x);
@@ -295,12 +310,32 @@
         }
 
         sizeNode.textContent = `${state.safe.n} x ${state.safe.n}`;
+
+        // 更新稀有数量与总开取信息
         rareCount.textContent = state.safe.rareKnown
             ? `稀有小格数量：${state.safe.grid.flat().reduce((sum, id) => {
                 const item = state.safe.items.find(i => i.id === id);
                 return sum + (item && ["purple", "gold", "red"].includes(item.quality.key) ? 1 : 0);
             }, 0)}`
             : "稀有小格数量：未知";
+
+        // 左上角已开取总 Q币和稀有格数
+        let extractedCoinsNode = document.getElementById("mojing-extracted-coins");
+        let extractedRareNode = document.getElementById("mojing-extracted-rare");
+
+        if (!extractedCoinsNode) {
+            extractedCoinsNode = document.createElement("p");
+            extractedCoinsNode.id = "mojing-extracted-coins";
+            rareCount.insertAdjacentElement("afterend", extractedCoinsNode);
+        }
+        if (!extractedRareNode) {
+            extractedRareNode = document.createElement("p");
+            extractedRareNode.id = "mojing-extracted-rare";
+            extractedCoinsNode.insertAdjacentElement("afterend", extractedRareNode);
+        }
+
+        extractedCoinsNode.textContent = `已开取 Q币总数：${getExtractedCoins()}`;
+        extractedRareNode.textContent = `已开取稀有小格总数：${getExtractedRare()}`;
     }
 
     function setMode(mode, shouldUpdate = true) {
@@ -425,12 +460,11 @@
     const storedSafe = readStoredSafe();
     if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
         storedSafe.items.forEach(item => {
+            // 保留原来的 outlined 和 extracted 状态
             if (typeof item.outlined !== 'boolean') item.outlined = false;
             if (typeof item.extracted !== 'boolean') item.extracted = false;
-            if (!item.quality) item.quality = rollQuality(); // 保证老数据也有质量字段
-            if (typeof item.value !== 'number') {
-                item.value = Math.round(item.width * item.height * randomInt(10, 50) / 10 * item.quality.mult);
-            }
+            // 保留原来的 value，不要重新随机
+            if (!item.quality) item.quality = rollQuality(); // 仅生成 quality 字段
         });
         activateSafe(storedSafe, "已恢复上次保险箱。");
     } else {

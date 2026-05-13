@@ -2778,6 +2778,20 @@ body.is-wish-revealing {
   color: rgba(243, 244, 246, 0.9);
 }
 
+.mojing-board {
+  display: grid;
+  gap: 1px;
+  /* 控制网格间隔 */
+  background-color: #444;
+  /* 可调整为较深颜色 */
+}
+
+.mojing-cell {
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  /* 较深但不太明显 */
+  background-color: transparent;
+}
+
 .mojing-wallet {
   margin: 18px 0;
   display: inline-flex;
@@ -2882,7 +2896,7 @@ body.is-wish-revealing {
   display: grid;
   grid-template-columns: repeat(var(--mojing-n), minmax(0, 1fr));
   grid-template-rows: repeat(var(--mojing-n), minmax(0, 1fr));
-  width: min(96vh, 100%);
+  width: min(120vh, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
   border: 2px solid rgba(148, 163, 184, 0.28);
