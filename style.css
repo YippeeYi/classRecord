@@ -3032,6 +3032,29 @@ body.is-wish-revealing {
   z-index: 2;
   display: grid;
   place-items: center;
+  font-size: clamp(12px, 1.2vw, 20px);
+}
+
+.mojin-item-meta {
+  bottom: 5px;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.mojin-item.is-extracted .mojin-item-value,
+.mojin-item.is-extracted .mojin-item-meta {
+  opacity: 1;
+}
+
+.mojin-magnifier {
+  --orbit-radius: min(18%, 18px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 4;
+  width: clamp(18px, 22%, 42px);
+  aspect-ratio: 1;
   opacity: 0;
   color: #fff;
   text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, 0.8);
@@ -3042,6 +3065,12 @@ body.is-wish-revealing {
 
 .mojin-item.is-extracted .mojin-item-value {
   opacity: 1;
+  animation: mojin-magnifier-orbit var(--mojin-open-duration, 900ms) linear infinite;
+}
+
+.mojin-item.is-opening {
+  border-color: #f5c86a;
+  box-shadow: inset 0 0 20px rgba(245, 200, 106, 0.16), 0 0 24px rgba(245, 200, 106, 0.22);
 }
 
 .mojin-magnifier {
