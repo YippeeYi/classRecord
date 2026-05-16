@@ -1,8 +1,11 @@
 (() => {
-    const QUESTION_REWARD = 100;
+    const CHOICE_REWARD = 100;
+    const FILL_REWARD = 500;
     const questionText = document.getElementById('quiz-question-text');
     const questionMeta = document.getElementById('quiz-question-meta');
     const optionsWrap = document.getElementById('quiz-options');
+    const fillForm = document.getElementById('quiz-fill-form');
+    const fillInput = document.getElementById('quiz-fill-input');
     const feedback = document.getElementById('quiz-feedback');
     const nextButton = document.getElementById('quiz-next-btn');
 
@@ -66,7 +69,7 @@
             .replace(/\(\((.+?)\)\)/g, '$1');
     }
 
-    function buildQuestion(record, answerPool) {
+    function getQuestionBase(record) {
         const text = buildStemText(record).trim();
         if (!text) return null;
 
@@ -79,15 +82,38 @@
         const maskedText = text.replace(answer, '________________________');
         if (maskedText === text) return null;
 
-        const distractors = shuffle(answerPool.filter((item) => item !== answer && !maskedText.includes(item))).slice(0, 3);
-        if (distractors.length < 3) return null;
-
         return {
             id: record.id,
             date: record.date,
             answer,
-            maskedText,
-            options: shuffle([answer, ...distractors])
+            maskedText
+        };
+    }
+
+    function buildChoiceQuestion(record, answerPool) {
+        const base = getQuestionBase(record);
+        if (!base) return null;
+
+        const distractors = shuffle(answerPool.filter((item) => item !== base.answer && !base.maskedText.includes(item))).slice(0, 3);
+        if (distractors.length < 3) return null;
+
+        return {
+            ...base,
+            type: 'choice',
+            reward: CHOICE_REWARD,
+            options: shuffle([base.answer, ...distractors])
+        };
+    }
+
+    function buildFillQuestion(record) {
+        const base = getQuestionBase(record);
+        if (!base) return null;
+
+        return {
+            ...base,
+            type: 'fill',
+            reward: FILL_REWARD,
+            options: []
         };
     }
 
@@ -101,6 +127,8 @@
             questionText.textContent = 'No question can be generated yet.';
             questionMeta.textContent = 'Add more tagged records first.';
             optionsWrap.innerHTML = '';
+            optionsWrap.hidden = true;
+            if (fillForm) fillForm.hidden = true;
             nextButton.disabled = true;
             return;
         }
@@ -111,7 +139,21 @@
         feedback.className = 'quiz-feedback';
         nextButton.disabled = false;
         questionText.innerHTML = formatContent(currentQuestion.maskedText);
-        questionMeta.textContent = `Record ${currentQuestion.id} · ${currentQuestion.date} · Reward ${QUESTION_REWARD} Q`;
+        questionMeta.textContent = `条目 ${currentQuestion.id} · ${currentQuestion.date} · ${currentQuestion.type === 'fill' ? '填空题' : '选择题'} · 答对奖励 ${currentQuestion.reward} Q币`;
+
+        const isFill = currentQuestion.type === 'fill';
+        optionsWrap.hidden = isFill;
+        if (fillForm) fillForm.hidden = !isFill;
+
+        if (isFill) {
+            optionsWrap.innerHTML = '';
+            if (fillInput) {
+                fillInput.value = '';
+                fillInput.disabled = false;
+                fillInput.focus();
+            }
+            return;
+        }
 
         optionsWrap.innerHTML = currentQuestion.options.map((option, index) => `
             <button class="quiz-option" type="button" data-option="${escapeHtml(option)}">
@@ -127,27 +169,37 @@
         const isCorrect = option === currentQuestion.answer;
         window.GameState.recordQuizResult(isCorrect);
 
-        optionsWrap.querySelectorAll('.quiz-option').forEach((button) => {
-            const value = button.dataset.option || '';
-            button.disabled = true;
-            if (value === currentQuestion.answer) {
-                button.classList.add('is-correct');
-            } else if (value === option) {
-                button.classList.add('is-wrong');
-            }
-        });
+        if (currentQuestion.type === 'fill') {
+            if (fillInput) fillInput.disabled = true;
+        } else {
+            optionsWrap.querySelectorAll('.quiz-option').forEach((button) => {
+                const value = button.dataset.option || '';
+                button.disabled = true;
+                if (value === currentQuestion.answer) {
+                    button.classList.add('is-correct');
+                } else if (value === option) {
+                    button.classList.add('is-wrong');
+                }
+            });
+        }
 
         if (isCorrect) {
-            window.GameState.addCoins(QUESTION_REWARD, 'quiz-reward');
-            setFeedback(`Correct. +${QUESTION_REWARD} Q`, 'success');
+            window.GameState.addCoins(currentQuestion.reward, 'quiz-reward');
+            setFeedback(`回答正确，获得 ${currentQuestion.reward} Q币。`, 'success');
         } else {
-            setFeedback(`Wrong. Answer: ${currentQuestion.answer}`, 'error');
+            setFeedback(`回答错误，正确答案是 ${currentQuestion.answer}。`, 'error');
         }
     }
 
     optionsWrap?.addEventListener('click', (event) => {
         const button = event.target.closest('.quiz-option');
         if (button) handleAnswer(button.dataset.option || '');
+    });
+
+    fillForm?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        if (!fillInput) return;
+        handleAnswer(fillInput.value);
     });
 
     nextButton?.addEventListener('click', renderQuestion);
@@ -158,7 +210,9 @@
             const answerPool = [...new Set(
                 records.flatMap((record) => extractLabeledTokens(record.content || '').map((label) => stripOptionMarkup(label)))
             )].filter(Boolean);
-            questionBank = records.map((record) => buildQuestion(record, answerPool)).filter(Boolean);
+            const choiceQuestions = records.map((record) => buildChoiceQuestion(record, answerPool)).filter(Boolean);
+            const fillQuestions = records.map((record) => buildFillQuestion(record)).filter(Boolean);
+            questionBank = shuffle([...choiceQuestions, ...fillQuestions]);
             renderQuestion();
         });
 })();

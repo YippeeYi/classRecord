@@ -355,12 +355,15 @@
             node.style.setProperty("--mojin-open-duration", `${item.openDuration || getOpenDuration(item)}ms`);
             node.classList.toggle("is-outlined", item.outlined && !item.extracted);
             node.classList.toggle("is-extracted", item.extracted);
+            node.classList.toggle("is-prize-gold", item.extracted && item.quality.key === "gold");
+            node.classList.toggle("is-prize-red", item.extracted && item.quality.key === "red");
             node.classList.toggle(OPENING_CLASS, Boolean(item.opening));
             const imageMarkup = item.extracted
                 ? `<img src="${imagePathFor(item)}" alt="" loading="lazy" decoding="async">`
                 : "";
             node.innerHTML = `
                 <div class="mojin-item-art" aria-hidden="true">${imageMarkup}</div>
+                <div class="mojin-prize-flare" aria-hidden="true"></div>
                 <div class="mojin-item-value">${formatValue(item.value)}</div>
                 <div class="mojin-magnifier" aria-hidden="true"></div>
             `;
