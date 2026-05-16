@@ -15,12 +15,12 @@
     };
 
     const QUALITY = [
-        { key: "white", label: "白", rank: 0, weight: 690, mult: 1 },
-        { key: "green", label: "绿", rank: 1, weight: 230, mult: 2.6 },
-        { key: "blue", label: "蓝", rank: 2, weight: 64, mult: 8 },
-        { key: "purple", label: "紫", rank: 3, weight: 14, mult: 30 },
-        { key: "gold", label: "金", rank: 4, weight: 1.8, mult: 145 },
-        { key: "red", label: "红", rank: 5, weight: 0.22, mult: 3600 }
+        { key: "white", label: "白", rank: 0, weight: 560, mult: 1 },
+        { key: "green", label: "绿", rank: 1, weight: 245, mult: 2.6 },
+        { key: "blue", label: "蓝", rank: 2, weight: 105, mult: 8 },
+        { key: "purple", label: "紫", rank: 3, weight: 38, mult: 30 },
+        { key: "gold", label: "金", rank: 4, weight: 9, mult: 145 },
+        { key: "red", label: "红", rank: 5, weight: 2, mult: 3600 }
     ];
 
     const state = {
@@ -150,7 +150,7 @@
 
     function getOpenDuration(item) {
         const rank = item.quality.rank;
-        const base = 560 + rank * 250;
+        const base = 920 + rank * 380;
         const jitter = 0.94 + Math.random() * 0.12;
         return Math.round(base * jitter);
     }
@@ -350,6 +350,8 @@
             node.dataset.itemId = item.id;
             node.style.gridColumn = `${item.x + 1} / span ${item.width}`;
             node.style.gridRow = `${item.y + 1} / span ${item.height}`;
+            node.style.setProperty("--mojin-item-w", item.width);
+            node.style.setProperty("--mojin-item-h", item.height);
             node.style.setProperty("--mojin-open-duration", `${item.openDuration || getOpenDuration(item)}ms`);
             node.classList.toggle("is-outlined", item.outlined && !item.extracted);
             node.classList.toggle("is-extracted", item.extracted);
@@ -360,7 +362,6 @@
             node.innerHTML = `
                 <div class="mojin-item-art" aria-hidden="true">${imageMarkup}</div>
                 <div class="mojin-item-value">${formatValue(item.value)}</div>
-                <div class="mojin-item-meta">${item.quality.label} · ${item.width}×${item.height}</div>
                 <div class="mojin-magnifier" aria-hidden="true"></div>
             `;
             const img = node.querySelector("img");
