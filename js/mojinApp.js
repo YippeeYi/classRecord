@@ -1,7 +1,9 @@
 (() => {
-    const STORAGE_KEY = "classRecord:mojingSafe";
+    const STORAGE_KEY = "classRecord:mojinSafe";
+    const LEGACY_STORAGE_KEY = "classRecord:mo" + "jingSafe";
+    const OPENING_CLASS = "is-opening";
+    const ITEM_IMAGE_BASE = "images/mojin";
 
-    // 七个消耗常数
     const COSTS = {
         buy: 500,
         outline: 10,
@@ -13,35 +15,36 @@
     };
 
     const QUALITY = [
-        { key: "white", label: "白", weight: 44, mult: 1 },
-        { key: "green", label: "绿", weight: 26, mult: 2 },
-        { key: "blue", label: "蓝", weight: 16, mult: 5 },
-        { key: "purple", label: "紫", weight: 8, mult: 13 },
-        { key: "gold", label: "金", weight: 3, mult: 50 },
-        { key: "red", label: "红", weight: 1, mult: 1000 }
+        { key: "white", label: "白", rank: 0, weight: 690, mult: 1 },
+        { key: "green", label: "绿", rank: 1, weight: 230, mult: 2.6 },
+        { key: "blue", label: "蓝", rank: 2, weight: 64, mult: 8 },
+        { key: "purple", label: "紫", rank: 3, weight: 14, mult: 30 },
+        { key: "gold", label: "金", rank: 4, weight: 1.8, mult: 145 },
+        { key: "red", label: "红", rank: 5, weight: 0.22, mult: 3600 }
     ];
 
     const state = {
         safe: null,
-        mode: "outline"
+        mode: "outline",
+        isOpening: false
     };
 
     function initToolbar() {
-        const toolbarContainer = document.querySelector(".mojing-toolbar");
+        const toolbarContainer = document.querySelector(".mojin-toolbar");
         const buttonsData = [
             { mode: "outline", label: "侦察一格", costKey: "outline" },
             { mode: "extract", label: "开取一格", costKey: "extract" },
-            { id: "mojing-reveal-all", label: "全图轮廓", costKey: "revealAll" },
-            { id: "mojing-extract-all", label: "全箱开取", costKey: "extractAll" },
-            { id: "mojing-scan-rare", label: "稀有扫描", costKey: "scanRare" },
-            { id: "mojing-reroll", label: "换箱弃置", costKey: "reroll" },
+            { id: "mojin-reveal-all", label: "全图轮廓", costKey: "revealAll" },
+            { id: "mojin-extract-all", label: "全箱开取", costKey: "extractAll" },
+            { id: "mojin-scan-rare", label: "稀有扫描", costKey: "scanRare" },
+            { id: "mojin-reroll", label: "换箱弃置", costKey: "reroll" },
         ];
 
         toolbarContainer.innerHTML = "";
-        buttonsData.forEach(btnData => {
+        buttonsData.forEach((btnData) => {
             const btn = document.createElement("button");
             btn.type = "button";
-            btn.className = "mojing-tool";
+            btn.className = "mojin-tool";
             if (btnData.mode) {
                 btn.dataset.mode = btnData.mode;
                 if (btnData.mode === "outline") btn.classList.add("is-active");
@@ -55,18 +58,18 @@
 
     initToolbar();
 
-    const buyButton = document.getElementById("mojing-buy");
-    const game = document.getElementById("mojing-game");
-    const board = document.getElementById("mojing-board");
-    const sizeNode = document.getElementById("mojing-size");
-    const modeLabel = document.getElementById("mojing-mode-label");
-    const rareCount = document.getElementById("mojing-rare-count");
-    const logList = document.getElementById("mojing-log");
+    const buyButton = document.getElementById("mojin-buy");
+    const game = document.getElementById("mojin-game");
+    const board = document.getElementById("mojin-board");
+    const sizeNode = document.getElementById("mojin-size");
+    const modeLabel = document.getElementById("mojin-mode-label");
+    const rareCount = document.getElementById("mojin-rare-count");
+    const logList = document.getElementById("mojin-log");
     const modeButtons = document.querySelectorAll("[data-mode]");
-    const revealAllButton = document.getElementById("mojing-reveal-all");
-    const extractAllButton = document.getElementById("mojing-extract-all");
-    const scanRareButton = document.getElementById("mojing-scan-rare");
-    const rerollButton = document.getElementById("mojing-reroll");
+    const revealAllButton = document.getElementById("mojin-reveal-all");
+    const extractAllButton = document.getElementById("mojin-extract-all");
+    const scanRareButton = document.getElementById("mojin-scan-rare");
+    const rerollButton = document.getElementById("mojin-reroll");
 
     buyButton.textContent = `购买保险箱 · ${COSTS.buy} Q币`;
 
@@ -74,9 +77,14 @@
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
+    function wait(ms) {
+        return new Promise((resolve) => window.setTimeout(resolve, ms));
+    }
+
     function readStoredSafe() {
         try {
-            const raw = localStorage.getItem(STORAGE_KEY);
+            const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
+            if (raw && localStorage.getItem(LEGACY_STORAGE_KEY)) localStorage.removeItem(LEGACY_STORAGE_KEY);
             return raw ? JSON.parse(raw) : null;
         } catch {
             return null;
@@ -86,9 +94,11 @@
     function saveSafe() {
         try {
             if (state.safe) {
-                state.safe.items.forEach(item => {
-                    if (typeof item.outlined !== 'boolean') item.outlined = false;
-                    if (typeof item.extracted !== 'boolean') item.extracted = false;
+                state.safe.items.forEach((item) => {
+                    if (typeof item.outlined !== "boolean") item.outlined = false;
+                    if (typeof item.extracted !== "boolean") item.extracted = false;
+                    delete item.opening;
+                    delete item.openDuration;
                 });
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(state.safe));
             } else {
@@ -98,7 +108,7 @@
     }
 
     function spend(amount, label) {
-        if (window.GameState.spendCoins(amount, "mojing-spend")) return true;
+        if (window.GameState.spendCoins(amount, "mojin-spend")) return true;
         window.showGameToast(`${label} 需要 ${amount} Q币。`, "error");
         return false;
     }
@@ -112,19 +122,57 @@
         }
     }
 
-    function rollQuality() {
-        const total = QUALITY.reduce((sum, item) => sum + item.weight, 0);
+    function pickWeighted(candidates = QUALITY) {
+        const total = candidates.reduce((sum, item) => sum + item.weight, 0);
         let roll = Math.random() * total;
-        for (const item of QUALITY) {
+        for (const item of candidates) {
             roll -= item.weight;
             if (roll <= 0) return item;
         }
-        return QUALITY[0];
+        return candidates[0];
+    }
+
+    function rollQuality() {
+        return pickWeighted(QUALITY);
+    }
+
+    function calculateRectValue(width, height, quality) {
+        const rank = quality.rank;
+        const area = width * height;
+        const longSide = Math.max(width, height);
+        const shortSide = Math.max(1, Math.min(width, height));
+        const shapeBonus = 1 + Math.pow(longSide / shortSide - 1, 1.35) * 0.32;
+        const qualityBonus = quality.mult * (1 + rank * 0.16);
+        const sizeBonus = area * (1 + Math.sqrt(area) * 0.18);
+        const randomFactor = 0.92 + Math.random() * 0.16;
+        return Math.max(1, Math.round(sizeBonus * shapeBonus * qualityBonus * randomFactor));
+    }
+
+    function getOpenDuration(item) {
+        const rank = item.quality.rank;
+        const base = 560 + rank * 250;
+        const jitter = 0.94 + Math.random() * 0.12;
+        return Math.round(base * jitter);
+    }
+
+    function assignRectQuality(item, cellQualities) {
+        const counts = new Map();
+        for (let dy = 0; dy < item.height; dy++) {
+            for (let dx = 0; dx < item.width; dx++) {
+                const quality = cellQualities[item.y + dy][item.x + dx];
+                counts.set(quality.key, (counts.get(quality.key) || 0) + 1);
+            }
+        }
+
+        const maxCount = Math.max(...counts.values());
+        const winners = QUALITY.filter((quality) => counts.get(quality.key) === maxCount);
+        return winners.length === 1 ? winners[0] : pickWeighted(winners);
     }
 
     function makeSafe() {
         const n = randomInt(10, 20);
         const grid = Array.from({ length: n }, () => Array(n).fill(null));
+        const cellQualities = Array.from({ length: n }, () => Array(n).fill(null));
         const items = [];
         let idCounter = 0;
 
@@ -141,9 +189,7 @@
                 for (let dx = 0; dx < rect.width; dx++)
                     grid[rect.y + dy][rect.x + dx] = rect.id;
 
-            if (isNew) {
-                items.push(rect);
-            }
+            if (isNew) items.push(rect);
         }
 
         function removeRect(rect) {
@@ -193,9 +239,8 @@
                         rect.speed += randomInt(1, 5);
                         queue.push(rect);
                         break;
-                    } else {
-                        placeRect(rect);
                     }
+                    placeRect(rect);
                 }
             }
         }
@@ -203,14 +248,19 @@
         while (true) {
             const emptyCells = getEmptyCells();
             if (emptyCells.length === 0) break;
-            const queue = generateInitialRects(emptyCells);
-            expandRects(queue);
+            expandRects(generateInitialRects(emptyCells));
+        }
+
+        for (let y = 0; y < n; y++) {
+            for (let x = 0; x < n; x++) {
+                cellQualities[y][x] = rollQuality();
+            }
         }
 
         items.forEach((item) => {
-            item.quality = rollQuality();
             item.area = item.width * item.height;
-            item.value = Math.round(Math.pow(2, item.area / 18 + 2 * Math.random()) * item.area * item.quality.mult);
+            item.quality = assignRectQuality(item, cellQualities);
+            item.value = calculateRectValue(item.width, item.height, item.quality);
             item.outlined = false;
             item.extracted = false;
         });
@@ -241,111 +291,113 @@
 
         modeButtons.forEach((button) => {
             const mode = button.dataset.mode;
-            button.disabled = !hasSafe || extractedDone || (mode === "outline" && outlinedDone);
+            button.disabled = state.isOpening || !hasSafe || extractedDone || (mode === "outline" && outlinedDone);
         });
 
         if (state.mode === "outline" && outlinedDone && !extractedDone) {
             setMode("extract", false);
         }
 
-        revealAllButton.disabled = !hasSafe || extractedDone || outlinedDone || state.safe.revealAllUsed;
-        extractAllButton.disabled = !hasSafe || extractedDone || state.safe.extractAllUsed;
-        scanRareButton.disabled = !hasSafe || extractedDone || state.safe.scanRareUsed;
+        revealAllButton.disabled = state.isOpening || !hasSafe || extractedDone || outlinedDone || state.safe.revealAllUsed;
+        extractAllButton.disabled = state.isOpening || !hasSafe || extractedDone || state.safe.extractAllUsed;
+        scanRareButton.disabled = state.isOpening || !hasSafe || extractedDone || state.safe.scanRareUsed;
+        rerollButton.disabled = state.isOpening || !hasSafe;
     }
 
     function formatValue(value) {
-        if (value >= 1_000_000) {
-            const v = value / 1_000_000;
-            return Math.floor(v) + "M";
-        } else if (value >= 1_000) {
-            const v = value / 1_000;
-            return Math.floor(v) + "k";
-        }
+        if (value >= 1_000_000) return `${Math.floor(value / 1_000_000)}M`;
+        if (value >= 1_000) return `${Math.floor(value / 1_000)}k`;
         return value.toString();
     }
 
     function getExtractedCoins() {
         if (!state.safe) return 0;
-
-        return state.safe.items.reduce((sum, item) => {
-            return sum + (item.extracted ? item.value : 0);
-        }, 0);
+        return state.safe.items.reduce((sum, item) => sum + (item.extracted ? item.value : 0), 0);
     }
 
     function getExtractedRare() {
         if (!state.safe) return 0;
-
         return state.safe.items.reduce((sum, item) => {
-            if (
-                item.extracted &&
-                ["purple", "gold", "red"].includes(item.quality.key)
-            ) {
-                return sum + item.area;
-            }
-
+            if (item.extracted && ["purple", "gold", "red"].includes(item.quality.key)) return sum + item.area;
             return sum;
         }, 0);
+    }
+
+    function getRareCellCount() {
+        if (!state.safe) return 0;
+        const itemMap = new Map(state.safe.items.map((item) => [item.id, item]));
+        return state.safe.grid.flat().reduce((sum, id) => {
+            const item = itemMap.get(id);
+            return sum + (item && ["purple", "gold", "red"].includes(item.quality.key) ? 1 : 0);
+        }, 0);
+    }
+
+    function imagePathFor(item) {
+        return `${ITEM_IMAGE_BASE}/${item.quality.key}-${item.width}x${item.height}.png`;
     }
 
     function renderBoard() {
         updateControls();
         if (!state.safe) return;
 
-        board.style.setProperty("--mojing-n", String(state.safe.n));
+        board.style.setProperty("--mojin-n", String(state.safe.n));
         board.innerHTML = "";
 
-        // 渲染每个物品
+        const fragment = document.createDocumentFragment();
         state.safe.items.forEach((item) => {
             const node = document.createElement("div");
-            node.className = `mojing-item quality-${item.quality.key}`;
+            node.className = `mojin-item quality-${item.quality.key}`;
             node.dataset.itemId = item.id;
             node.style.gridColumn = `${item.x + 1} / span ${item.width}`;
             node.style.gridRow = `${item.y + 1} / span ${item.height}`;
+            node.style.setProperty("--mojin-open-duration", `${item.openDuration || getOpenDuration(item)}ms`);
             node.classList.toggle("is-outlined", item.outlined && !item.extracted);
             node.classList.toggle("is-extracted", item.extracted);
+            node.classList.toggle(OPENING_CLASS, Boolean(item.opening));
+            const imageMarkup = item.extracted
+                ? `<img src="${imagePathFor(item)}" alt="" loading="lazy" decoding="async">`
+                : "";
             node.innerHTML = `
-            <div class="mojing-item-value">${formatValue(item.value)}</div>
-        `;
-            board.appendChild(node);
+                <div class="mojin-item-art" aria-hidden="true">${imageMarkup}</div>
+                <div class="mojin-item-value">${formatValue(item.value)}</div>
+                <div class="mojin-item-meta">${item.quality.label} · ${item.width}×${item.height}</div>
+                <div class="mojin-magnifier" aria-hidden="true"></div>
+            `;
+            const img = node.querySelector("img");
+            if (img) img.addEventListener("error", () => img.remove(), { once: true });
+            fragment.appendChild(node);
         });
 
-        // 渲染每个小格
         for (let y = 0; y < state.safe.n; y++) {
             for (let x = 0; x < state.safe.n; x++) {
                 const cell = document.createElement("button");
                 cell.type = "button";
-                cell.className = "mojing-cell"; // 内部网格线
+                cell.className = "mojin-cell";
                 cell.style.gridColumn = x + 1;
                 cell.style.gridRow = y + 1;
                 cell.dataset.x = String(x);
                 cell.dataset.y = String(y);
+                cell.disabled = state.isOpening;
                 cell.addEventListener("click", () => handleCell({ x, y }));
-                board.appendChild(cell);
+                fragment.appendChild(cell);
             }
         }
+        board.appendChild(fragment);
 
         sizeNode.textContent = `${state.safe.n} x ${state.safe.n}`;
+        rareCount.textContent = state.safe.rareKnown ? `稀有小格数量：${getRareCellCount()}` : "稀有小格数量：未知";
 
-        // 更新稀有数量与总开取信息
-        rareCount.textContent = state.safe.rareKnown
-            ? `稀有小格数量：${state.safe.grid.flat().reduce((sum, id) => {
-                const item = state.safe.items.find(i => i.id === id);
-                return sum + (item && ["purple", "gold", "red"].includes(item.quality.key) ? 1 : 0);
-            }, 0)}`
-            : "稀有小格数量：未知";
-
-        // 左上角已开取总 Q币和稀有格数
-        let extractedCoinsNode = document.getElementById("mojing-extracted-coins");
-        let extractedRareNode = document.getElementById("mojing-extracted-rare");
+        let extractedCoinsNode = document.getElementById("mojin-extracted-coins");
+        let extractedRareNode = document.getElementById("mojin-extracted-rare");
 
         if (!extractedCoinsNode) {
             extractedCoinsNode = document.createElement("p");
-            extractedCoinsNode.id = "mojing-extracted-coins";
+            extractedCoinsNode.id = "mojin-extracted-coins";
             rareCount.insertAdjacentElement("afterend", extractedCoinsNode);
         }
         if (!extractedRareNode) {
             extractedRareNode = document.createElement("p");
-            extractedRareNode.id = "mojing-extracted-rare";
+            extractedRareNode.id = "mojin-extracted-rare";
             extractedCoinsNode.insertAdjacentElement("afterend", extractedRareNode);
         }
 
@@ -362,22 +414,30 @@
         if (shouldUpdate) updateControls();
     }
 
-    function extractItem(item, silent = false) {
-        if (!item || item.extracted) return 0;
+    async function extractItem(item, silent = false) {
+        if (!item || item.extracted || item.opening) return 0;
 
-        item.extracted = true;
-        item.outlined = true; // 保证轮廓也显示
-        window.GameState.addCoins(item.value, "mojing-loot");
-
-        // 渲染板更新
+        item.opening = true;
+        item.openDuration = getOpenDuration(item);
+        state.isOpening = true;
         renderBoard();
+        await wait(item.openDuration);
 
-        if (!silent) addLog(`获得物品，收益 ${item.value} Q币。`);
+        item.opening = false;
+        delete item.openDuration;
+        item.extracted = true;
+        item.outlined = true;
+        state.isOpening = false;
+        window.GameState.addCoins(item.value, "mojin-loot");
+
+        if (!silent) addLog(`获得 ${item.quality.label}品质 ${item.width}×${item.height} 物品，收益 ${item.value} Q币。`);
         saveSafe();
+        renderBoard();
         return item.value;
     }
 
-    function handleCell(cell) {
+    async function handleCell(cell) {
+        if (state.isOpening) return;
         const item = itemAt(cell);
         if (!item) return;
 
@@ -399,7 +459,7 @@
             }
             if (!spend(COSTS.outline, "侦察一格")) return;
             item.outlined = true;
-            addLog(`侦察到 ${item.width}x${item.height} 的灰色轮廓。`);
+            addLog(`侦察到 ${item.width}×${item.height} 的灰色轮廓。`);
             saveSafe();
             renderBoard();
             return;
@@ -410,9 +470,7 @@
             return;
         }
         if (!spend(COSTS.extract, "开取一格")) return;
-        extractItem(item);
-        saveSafe();
-        renderBoard();
+        await extractItem(item);
     }
 
     function activateSafe(safe, logText) {
@@ -426,7 +484,7 @@
     function buySafe(cost = COSTS.buy, label = "购买保险箱") {
         if (!spend(cost, label)) return;
         const safe = makeSafe();
-        activateSafe(safe, `新保险箱入手：${safe.n}x${safe.n}。`);
+        activateSafe(safe, `新保险箱入手：${safe.n}×${safe.n}。`);
     }
 
     buyButton.addEventListener("click", () => buySafe());
@@ -436,7 +494,7 @@
         });
     });
     revealAllButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.revealAllUsed || allOutlined() || allExtracted()) return;
+        if (!state.safe || state.safe.revealAllUsed || allOutlined() || allExtracted() || state.isOpening) return;
         if (!spend(COSTS.revealAll, "全图轮廓")) return;
         state.safe.revealAllUsed = true;
         state.safe.items.forEach((item) => {
@@ -446,17 +504,23 @@
         saveSafe();
         renderBoard();
     });
-    extractAllButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.extractAllUsed || allExtracted()) return;
+    extractAllButton.addEventListener("click", async () => {
+        if (!state.safe || state.safe.extractAllUsed || allExtracted() || state.isOpening) return;
         if (!spend(COSTS.extractAll, "全箱开取")) return;
         state.safe.extractAllUsed = true;
-        const total = state.safe.items.reduce((sum, item) => sum + extractItem(item, true), 0);
+        let total = 0;
+        const orderedItems = [...state.safe.items]
+            .filter((item) => !item.extracted)
+            .sort((a, b) => (a.y - b.y) || (a.x - b.x));
+        for (const item of orderedItems) {
+            total += await extractItem(item, true);
+        }
         addLog(`全箱开取完成，总收益 ${total} Q币。`);
         saveSafe();
         renderBoard();
     });
     scanRareButton.addEventListener("click", () => {
-        if (!state.safe || state.safe.scanRareUsed || allExtracted()) return;
+        if (!state.safe || state.safe.scanRareUsed || allExtracted() || state.isOpening) return;
         if (!spend(COSTS.scanRare, "稀有扫描")) return;
         state.safe.scanRareUsed = true;
         state.safe.rareKnown = true;
@@ -465,6 +529,7 @@
         renderBoard();
     });
     rerollButton.addEventListener("click", () => {
+        if (state.isOpening) return;
         if (state.safe && !allExtracted()) {
             const ok = window.confirm("当前保险箱仍有未开取物品，换箱会直接弃置。确认换箱吗？");
             if (!ok) return;
@@ -474,22 +539,23 @@
 
     const storedSafe = readStoredSafe();
     if (storedSafe && Array.isArray(storedSafe.items) && Array.isArray(storedSafe.grid)) {
-        // 去除重复 item（修复旧存档）
         const uniqueMap = new Map();
-
-        storedSafe.items.forEach(item => {
-            if (!uniqueMap.has(item.id)) {
-                uniqueMap.set(item.id, item);
-            }
+        storedSafe.items.forEach((item) => {
+            if (!uniqueMap.has(item.id)) uniqueMap.set(item.id, item);
         });
 
         storedSafe.items = [...uniqueMap.values()];
-        storedSafe.items.forEach(item => {
-            // 保留原来的 outlined 和 extracted 状态
-            if (typeof item.outlined !== 'boolean') item.outlined = false;
-            if (typeof item.extracted !== 'boolean') item.extracted = false;
-            // 保留原来的 value，不要重新随机
-            if (!item.quality) item.quality = rollQuality(); // 仅生成 quality 字段
+        storedSafe.items.forEach((item) => {
+            if (typeof item.outlined !== "boolean") item.outlined = false;
+            if (typeof item.extracted !== "boolean") item.extracted = false;
+            delete item.opening;
+            delete item.openDuration;
+            if (!item.quality || typeof item.quality.rank !== "number") {
+                const key = item.quality?.key;
+                item.quality = QUALITY.find((quality) => quality.key === key) || rollQuality();
+            }
+            item.area = item.width * item.height;
+            if (!item.value) item.value = calculateRectValue(item.width, item.height, item.quality);
         });
         activateSafe(storedSafe, "已恢复上次保险箱。");
     } else {
