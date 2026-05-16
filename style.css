@@ -1,7 +1,4 @@
-﻿/* =====================================================================
-   涓€銆佸熀纭€灞傦紙瀛椾綋 / 鍙橀噺 / 椤甸潰绾ч€氱敤鏍峰紡锛?
-   璇存槑锛氭湰鍖轰粎鏀锯€滃叏绔欑骇鈥濆畾涔夛紝渚夸簬鍚庣画缁勪欢鏍峰紡鎸夋ā鍧楀悜涓嬭鐩栥€?
-   ===================================================================== */
+
 
 @font-face {
   font-family: "Google Sans Flex";
@@ -12,7 +9,7 @@
 }
 
 :root {
-  /* 鑹叉澘涓庨槾褰卞彉閲忥細渚涙寜閽€佸崱鐗囥€侀潰鏉垮鐢?*/
+  
   --bg-main: #faf6ef;
   --theme-accent: #8a6f61;
   --theme-accent-strong: #4f4038;
@@ -144,13 +141,13 @@ body>#record-list,
 body>#people-list,
 body>#glossary-list,
 body>footer {
-  /* 椤甸潰涓昏鍐呭缁熶竴瀹藉害涓庢按骞冲眳涓?*/
+  
   width: min(980px, 94vw);
   margin-left: auto;
   margin-right: auto;
 }
 
-/* 缁熶竴鐨勬祬鑹查珮鍏夋笎鍙橈紙鐢ㄤ簬涓€ф寜閽?鎺т欢锛?*/
+
 :is(.top-action-btn,
   .btn-action,
   .btn-select,
@@ -165,7 +162,7 @@ body>footer {
   background-image: var(--control-gradient);
 }
 
-/* 缁熶竴鐨勬繁鑹叉縺娲绘笎鍙橈紙鐢ㄤ簬婵€娲绘€?寮鸿皟鎸夐挳锛?*/
+
 :is(.top-nav button,
   .sort-option.is-active,
   .auth-page .auth-form button,
@@ -174,7 +171,7 @@ body>footer {
   background-image: var(--control-active-gradient);
 }
 
-/* 缁熶竴鎸夊帇鍙嶉锛屼繚鎸佺粍浠朵氦浜掍竴鑷?*/
+
 :is(.top-nav button,
   .top-action-btn,
   .record-filter .filter-dropdown-trigger,
@@ -328,18 +325,16 @@ body>footer {
   }
 }
 
-/* =====================================================================
-   浜屻€佷俊鎭彁绀哄眰锛堣鏄庢枃妗?/ 椤佃剼锛?
-   ===================================================================== */
 
-/* 闅愮瀹夊叏鎻愮ず */
+
+
 .notice {
   font-size: 14px;
   color: var(--text-subtle);
   margin-bottom: 20px;
 }
 
-/* 淇℃伅鏀堕泦璇存槑 */
+
 .footer {
   margin-top: 40px;
   padding: 14px 0;
@@ -349,11 +344,9 @@ body>footer {
   border-top: 2px solid var(--nav-border);
 }
 
-/* =====================================================================
-   涓夈€佸鑸笌鍏ㄥ眬鎿嶄綔灞?
-   ===================================================================== */
 
-/* 椤堕儴瀵艰埅鏍峰紡 */
+
+
 .top-nav {
   background: var(--nav-bg);
   backdrop-filter: blur(10px);
@@ -366,7 +359,7 @@ body>footer {
   z-index: 100;
 }
 
-/* 瀵艰埅鎸夐挳鏍峰紡 */
+
 .top-nav button {
   position: relative;
   overflow: hidden;
@@ -394,13 +387,11 @@ body>footer {
   outline: none;
 }
 
-/* 涓婚〉闈㈠彸涓婅鍔熻兘鎸夐挳锛氭牱寮忓湪鍚庣画 .top-right-actions 涓庨€氱敤鎸夐挳涓畾涔?*/
 
-/* =====================================================================
-   鍥涖€佽褰曢〉妯″潡锛堢瓫閫?/ 鍗＄墖锛?
-   ===================================================================== */
 
-/* 璁板綍绛涢€?*/
+
+
+
 .record-filter {
   display: flex;
   flex-wrap: wrap;
@@ -576,7 +567,7 @@ body>footer {
 
 .record:hover {
   box-shadow: 0 16px 36px rgba(var(--theme-rgb), 0.2);
-  /* 榧犳爣鎮仠鏃跺姞娣遍槾褰?*/
+  
 }
 
 @keyframes fadeInUp {
@@ -591,7 +582,7 @@ body>footer {
   }
 }
 
-/* 閲嶈璁板綍 */
+
 .record.importance-important {
   border-left: 7px solid var(--important-border);
   background: var(--important-bg);
@@ -613,11 +604,9 @@ body>footer {
   opacity: 0.85;
 }
 
-/* =====================================================================
-   浜斻€佽褰曞唴瀹瑰眰锛堝厓淇℃伅 / 姝ｆ枃锛?
-   ===================================================================== */
 
-/* 椤堕儴淇℃伅琛?*/
+
+
 .meta {
   margin-top: 4px;
   font-size: 14px;
@@ -627,7 +616,7 @@ body>footer {
   align-items: center;
 }
 
-/* 鍐呭 */
+
 .content {
   margin-top: 8px;
   font-size: 18px;
@@ -635,11 +624,9 @@ body>footer {
   letter-spacing: 0.02em;
 }
 
-/* =====================================================================
-   鍏€侀檮浠跺睍绀哄眰锛堝浘鐗?/ 闄勪欢鍒楄〃锛?
-   ===================================================================== */
 
-/* 鍥剧墖闄勪欢鎸夐挳 */
+
+
 .icon-group {
   position: absolute;
   right: 14px;
@@ -649,7 +636,7 @@ body>footer {
   gap: 8px;
   align-items: center;
 
-  /* 榛樿闅愯棌 */
+  
   opacity: 0;
   transform: translateY(6px);
   pointer-events: none;
@@ -659,7 +646,7 @@ body>footer {
     transform 0.18s ease;
 }
 
-/* hover 鏁翠釜 record 鏃舵樉绀?*/
+
 .record:hover .icon-group {
   opacity: 1;
   transform: translateY(0);
@@ -678,7 +665,7 @@ body>footer {
   height: 30px;
 
   font-size: 17px;
-  /* emoji 瀹為檯瑙嗚鏇村眳涓?*/
+  
   line-height: 1;
 
   border-radius: 999px;
@@ -706,7 +693,7 @@ body>footer {
   box-shadow: var(--control-shadow-hover);
 }
 
-/* 灞曞紑鍖哄煙 */
+
 .image-wrapper {
   display: none;
   margin-top: 12px;
@@ -745,11 +732,9 @@ body>footer {
   text-decoration: underline;
 }
 
-/* =====================================================================
-   涓冦€佹枃鏈爣璁板眰锛堜汉鐗?/ 鏈 / 榛戝箷锛?
-   ===================================================================== */
 
-/* 浜哄悕鎮仠&鍗曞嚮 */
+
+
 .person-tag {
   display: inline-block;
   cursor: pointer;
@@ -832,7 +817,7 @@ body>footer {
   transition: color 0.18s ease, background-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-/* 榛戝箷鐘舵€佹椂涔熼殣钘忓唴閮ㄦ爣绛炬牱寮忥紝閬垮厤鏈/浜哄悕闇插嚭 */
+
 .redacted:not(:hover) .redacted-content * {
   color: transparent !important;
   background: transparent !important;
@@ -845,23 +830,21 @@ body>footer {
   display: none;
 }
 
-/* hover 鎻紑鏁堟灉锛氶€忔槑搴︽笎鍙?*/
+
 .redacted:hover .redacted-content {
   color: inherit;
   background-color: rgba(0, 0, 0, 0);
   box-shadow: inset 0 0 0 1px transparent;
 }
 
-/* 閫傚簲澶氳鏂囨湰榛戝箷鏁堟灉 */
+
 .redacted-content,
 .redacted-mask {
   display: inline;
   word-break: break-word;
 }
 
-/* =====================================================================
-   鍏€佺储寮曡〃鏍煎眰锛堜汉鐗?/ 鏈锛?
-   ===================================================================== */
+
 
 .people-table,
 .glossary-table {
@@ -969,11 +952,9 @@ body>footer {
   border-color: var(--table-row-hover-border);
 }
 
-/* =====================================================================
-   涔濄€佽鎯呴〉淇℃伅灞傦紙浜虹墿 / 鏈璇︽儏锛?
-   ===================================================================== */
 
-/* 涓汉绠€浠?*/
+
+
 .person-info {
   margin-top: 16px;
 }
@@ -982,9 +963,9 @@ body>footer {
   margin-bottom: 10px;
   line-height: 1.6;
   display: flex;
-  /* 浣跨敤 flex 妯悜鎺掑垪 label + value */
+  
   align-items: flex-start;
-  /* 椤堕儴瀵归綈 */
+  
 }
 
 .info-label {
@@ -992,22 +973,20 @@ body>footer {
   font-size: 1.15em;
   margin-right: 6px;
   flex-shrink: 0;
-  /* 涓嶇缉灏忥紝淇濇寔鍥哄畾瀹藉害 */
+  
   width: 60px;
-  /* 鍙互鏍规嵁闇€瑕佽皟鏁村搴?*/
+  
 }
 
 .info-value {
   font-size: 1em;
   flex: 1;
-  /* 鍗犲墿浣欑┖闂?*/
+  
   white-space: pre-wrap;
   /* 鏀寔鎹㈣ */
 }
 
-/* =====================================================================
-   鍗併€佸垏鎹㈡帶浠跺眰锛堜汉鐗╅〉 tab锛?
-   ===================================================================== */
+
 
 .switch-group {
   margin: 18px 0 14px;
@@ -1056,9 +1035,7 @@ body>footer {
   box-shadow: var(--control-active-glow);
 }
 
-/* =====================================================================
-   鍗佷竴銆佹帓搴忔帶浠跺眰锛堜汉鐗?/ 鏈椤碉級
-   ===================================================================== */
+
 
 .sort-controls {
   margin: 18px 0 16px 20px;
@@ -1126,7 +1103,7 @@ body>footer {
   gap: 8px;
 }
 
-/* 鍏ㄥ眬鍙充笂瑙掓搷浣滃尯锛氱揣璺?page-header 瀹氫箟锛岄伩鍏嶅垎鏁ｅ埌椤甸潰涓撳睘妯″潡鏈熬 */
+
 .top-right-actions {
   position: fixed;
   top: 12px;
@@ -1350,7 +1327,7 @@ body>footer {
   }
 }
 
-/* 鍙闂€э細缁熶竴鍙仛鐒︽帶浠?focus-visible 琛ㄧ幇 */
+
 .top-nav button:focus-visible,
 .top-action-btn:focus-visible,
 .record-filter button:focus-visible,
@@ -1369,10 +1346,7 @@ body>footer {
   box-shadow: var(--focus-ring);
 }
 
-/* =====================================================================
-   鍗佷簩銆佸瑙堥〉妯″潡锛坓uide 椤甸潰锛?
-   璇存槑锛氬瑙堥〉甯冨眬涓庡搷搴斿紡瑙勫垯闆嗕腑鍦ㄦ枃浠舵湯灏撅紝閬垮厤涓庨€氱敤椤垫牱寮忎氦鍙夈€?
-   ===================================================================== */
+
 .guide-page {
   min-height: 100vh;
   margin: 0;
@@ -2727,293 +2701,419 @@ body.is-wish-revealing {
   background: rgba(180, 35, 24, 0.94);
 }
 
-.mojing-page {
+
+.mojin-page {
   min-height: 100vh;
-  color: #e5e7eb;
+  color: #e7ece7;
   --page-bg-base:
-    radial-gradient(circle at 18% 12%, rgba(148, 163, 184, 0.16), transparent 22%),
-    radial-gradient(circle at 82% 10%, rgba(217, 119, 6, 0.16), transparent 22%),
-    linear-gradient(180deg, #050608 0%, #111318 52%, #07080a 100%);
-  --page-bg-overlay: linear-gradient(180deg, rgba(0, 0, 0, 0.18), rgba(0, 0, 0, 0.46));
+    radial-gradient(circle at 18% 8%, rgba(160, 176, 156, 0.12), transparent 22%),
+    radial-gradient(circle at 76% 14%, rgba(211, 153, 61, 0.14), transparent 24%),
+    linear-gradient(180deg, #050706 0%, #0c100e 46%, #030404 100%);
+  --page-bg-overlay:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(255, 255, 255, 0.018) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.58));
+  --page-bg-size: auto, 32px 32px, cover;
 }
 
-.mojing-page .feature-eyebrow {
-  color: #fbbf24;
+.mojin-page .feature-eyebrow {
+  color: #d6b56d;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
 }
 
-.mojing-shell {
-  width: min(1180px, calc(100vw - 28px));
+.mojin-shell {
+  width: min(1240px, calc(100vw - 28px));
   margin: 72px auto 34px;
   display: grid;
   gap: 18px;
 }
 
-.mojing-brief,
-.mojing-game,
-.mojing-board-panel,
-.mojing-log-panel {
-  border: 1px solid rgba(148, 163, 184, 0.18);
+.mojin-brief,
+.mojin-game,
+.mojin-board-panel,
+.mojin-log-panel {
+  border: 1px solid rgba(195, 176, 128, 0.18);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.07), transparent 34%),
-    linear-gradient(180deg, rgba(31, 35, 42, 0.92), rgba(12, 14, 18, 0.94));
+    linear-gradient(135deg, rgba(225, 218, 194, 0.09), transparent 35%),
+    linear-gradient(180deg, rgba(25, 31, 27, 0.92), rgba(7, 9, 8, 0.96));
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.08),
-    0 18px 46px rgba(0, 0, 0, 0.28);
+    inset 0 0 0 1px rgba(0, 0, 0, 0.44),
+    0 24px 60px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(12px) saturate(1.08);
 }
 
-.mojing-brief {
+.mojin-brief {
+  position: relative;
+  overflow: hidden;
   padding: clamp(22px, 4vw, 42px);
-  border-radius: 18px;
+  border-radius: 20px;
 }
 
-.mojing-brief h1 {
+.mojin-brief::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(120deg, transparent 0 56%, rgba(214, 181, 109, 0.13) 56% 57%, transparent 57%),
+    radial-gradient(circle at 86% 22%, rgba(90, 111, 95, 0.28), transparent 26%);
+}
+
+.mojin-brief h1 {
+  position: relative;
   margin: 4px 0 8px;
   font-size: clamp(34px, 6vw, 72px);
-  letter-spacing: 0;
-  color: #f9fafb;
+  letter-spacing: 0.02em;
+  color: #f2efe4;
+  text-shadow: 0 10px 34px rgba(0, 0, 0, 0.5);
 }
 
-.mojing-brief p {
-  max-width: 760px;
-  color: rgba(243, 244, 246, 0.9);
+.mojin-brief p {
+  position: relative;
+  max-width: 780px;
+  color: rgba(229, 234, 224, 0.88);
 }
 
-.mojing-wallet {
+.mojin-wallet {
+  position: relative;
   margin: 18px 0;
   display: inline-flex;
   align-items: center;
   gap: 14px;
   padding: 10px 16px;
-  border: 1px solid rgba(217, 119, 6, 0.34);
-  border-radius: 12px;
-  background: rgba(10, 12, 16, 0.74);
-  color: #f9fafb;
+  border: 1px solid rgba(214, 181, 109, 0.42);
+  border-radius: 4px;
+  background: rgba(7, 10, 8, 0.76);
+  color: #f8fafc;
+  box-shadow: inset 0 0 18px rgba(214, 181, 109, 0.08);
 }
 
-.mojing-wallet strong {
-  color: #fbbf24;
+.mojin-wallet strong {
+  color: #f5c86a;
   font-size: 24px;
 }
 
-.mojing-primary,
-.mojing-tool {
-  border-color: rgba(148, 163, 184, 0.24);
-  color: #f8fafc;
+.mojin-primary,
+.mojin-tool {
+  border-color: rgba(181, 194, 172, 0.26);
+  color: #f4f7ef;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 45%),
-    linear-gradient(180deg, #2b3038, #15181e);
+    linear-gradient(135deg, rgba(255, 255, 255, 0.11), transparent 44%),
+    linear-gradient(180deg, #2a332c, #101511);
+  text-transform: uppercase;
 }
 
-.mojing-primary {
-  color: #050608;
+.mojin-primary {
+  color: #070907;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.08) 44%),
-    linear-gradient(180deg, #facc15, #d97706);
-  border-color: rgba(251, 191, 36, 0.72);
-  font-weight: 800;
+    linear-gradient(135deg, rgba(255, 255, 255, 0.58), rgba(255, 255, 255, 0.08) 42%),
+    linear-gradient(180deg, #f0c76c, #9f6b24);
+  border-color: rgba(245, 200, 106, 0.76);
+  font-weight: 900;
 }
 
-.mojing-game {
+.mojin-game {
   padding: 16px;
-  border-radius: 18px;
+  border-radius: 20px;
 }
 
-.mojing-toolbar {
+.mojin-toolbar {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
   margin-bottom: 16px;
 }
 
-.mojing-tool {
+.mojin-tool {
   padding: 10px 12px;
-  border-radius: 10px;
+  border-radius: 4px;
 }
 
-.mojing-tool.is-active {
-  border-color: rgba(251, 191, 36, 0.62);
-  box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.18), 0 0 22px rgba(251, 191, 36, 0.14);
+.mojin-tool.is-active {
+  border-color: rgba(245, 200, 106, 0.68);
+  box-shadow: 0 0 0 1px rgba(245, 200, 106, 0.2), 0 0 24px rgba(245, 200, 106, 0.14);
 }
 
-.mojing-tool:disabled {
+.mojin-tool:disabled {
   cursor: not-allowed;
-  opacity: 0.62;
-  filter: grayscale(0.8);
+  opacity: 0.58;
+  filter: grayscale(0.78);
 }
 
-.mojing-tool.danger {
-  border-color: rgba(248, 113, 113, 0.36);
-}
-
-.mojing-layout {
+.mojin-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 300px;
+  grid-template-columns: minmax(0, 1fr) 310px;
   gap: 16px;
 }
 
-.mojing-board-panel,
-.mojing-log-panel {
-  border-radius: 14px;
+.mojin-board-panel,
+.mojin-log-panel {
+  border-radius: 16px;
   padding: 14px;
 }
 
-.mojing-board-head {
+.mojin-board-head {
   display: flex;
   justify-content: space-between;
   gap: 14px;
   align-items: center;
   margin-bottom: 12px;
+  border-bottom: 1px solid rgba(181, 194, 172, 0.14);
+  padding-bottom: 10px;
 }
 
-.mojing-board-head span,
-.mojing-board-head p {
-  color: rgba(243, 244, 246, 0.82);
+.mojin-board-head span,
+.mojin-board-head p {
+  color: rgba(229, 234, 224, 0.82);
 }
 
-.mojing-board-head strong {
+.mojin-board-head strong {
   display: block;
   margin-top: 4px;
-  color: #f9fafb;
+  color: #f2efe4;
 }
 
-.mojing-board {
-  --mojing-n: 10;
+.mojin-board {
+  --mojin-n: 10;
   position: relative;
   display: grid;
-  grid-template-columns: repeat(var(--mojing-n), minmax(0, 1fr));
-  grid-template-rows: repeat(var(--mojing-n), minmax(0, 1fr));
+  grid-template-columns: repeat(var(--mojin-n), minmax(0, 1fr));
+  grid-template-rows: repeat(var(--mojin-n), minmax(0, 1fr));
   width: min(120vh, 100%);
   aspect-ratio: 1;
   margin: 0 auto;
-  border: 2px solid rgba(148, 163, 184, 0.28);
-  border-radius: 0;
+  border: 2px solid rgba(190, 184, 151, 0.34);
   overflow: hidden;
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.05), transparent 34%),
-    #030405;
+    linear-gradient(90deg, rgba(168, 180, 154, 0.16) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(168, 180, 154, 0.16) 1px, transparent 1px),
+    radial-gradient(circle at 50% 50%, rgba(54, 70, 56, 0.32), transparent 58%),
+    #030504;
+  background-size:
+    calc(100% / var(--mojin-n)) calc(100% / var(--mojin-n)),
+    calc(100% / var(--mojin-n)) calc(100% / var(--mojin-n)),
+    cover,
+    cover;
   box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
-    inset 0 0 60px rgba(0, 0, 0, 0.72);
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    inset 0 0 70px rgba(0, 0, 0, 0.82),
+    0 18px 44px rgba(0, 0, 0, 0.36);
 }
 
-.mojing-item {
+.mojin-board::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(214, 181, 109, 0.08), transparent 16% 84%, rgba(214, 181, 109, 0.08)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), transparent 22% 78%, rgba(0, 0, 0, 0.22));
+  mix-blend-mode: screen;
+}
+
+.mojin-item {
   position: relative;
   z-index: 1;
   overflow: hidden;
-  border-radius: 0;
-  border: 3px solid transparent;
-  background: rgba(5, 6, 8, 0.96);
+  border: 1px solid transparent;
+  background: transparent;
   pointer-events: none;
 }
 
-.mojing-item.is-outlined,
-.mojing-item.is-extracted {
+.mojin-item::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(168, 180, 154, 0.18) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(168, 180, 154, 0.18) 1px, transparent 1px);
+  background-size:
+    calc(100% / var(--mojin-item-w, 1)) calc(100% / var(--mojin-item-h, 1)),
+    calc(100% / var(--mojin-item-w, 1)) calc(100% / var(--mojin-item-h, 1));
+}
+
+.mojin-item.is-outlined,
+.mojin-item.is-extracted,
+.mojin-item.is-opening {
   z-index: 5;
 }
 
-.mojing-item.is-outlined {
-  border-color: rgba(209, 213, 219, 0.98);
-  background: rgba(5, 6, 8, 0.92);
-}
-
-.mojing-item.is-extracted {
+.mojin-item.is-outlined {
+  border-color: rgba(214, 214, 196, 0.98);
   background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
-    var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
-  border-color: transparent;
-  /* 移除 is-outlined 的边框 */
+    repeating-linear-gradient(135deg, rgba(214, 214, 196, 0.08) 0 7px, transparent 7px 14px),
+    rgba(5, 7, 6, 0.92);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
 }
 
-/* 防止 is-outlined 样式覆盖 extracted */
-.mojing-item.is-extracted.is-outlined {
-  background:
-    linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 38%),
-    var(--mojing-quality-bg, rgba(17, 24, 39, 0.98));
-  border-color: transparent;
-}
-
-.mojing-item.quality-white.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(229, 231, 235, 0.24), transparent 42%),
-    linear-gradient(145deg, #20242b, #0f1116);
-  border-color: #e5e7eb;
-}
-
-.mojing-item.quality-green.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(34, 197, 94, 0.28), transparent 44%),
-    linear-gradient(145deg, #123422, #07140d);
-  border-color: #22c55e;
-}
-
-.mojing-item.quality-blue.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(59, 130, 246, 0.3), transparent 44%),
-    linear-gradient(145deg, #142d58, #071120);
-  border-color: #3b82f6;
-}
-
-.mojing-item.quality-purple.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(168, 85, 247, 0.32), transparent 44%),
-    linear-gradient(145deg, #351a5c, #13091f);
-  border-color: #a855f7;
-}
-
-.mojing-item.quality-gold.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(245, 158, 11, 0.34), transparent 44%),
-    linear-gradient(145deg, #4a2a07, #180d03);
-  border-color: #f59e0b;
-}
-
-.mojing-item.quality-red.is-extracted {
-  --mojing-quality-bg:
-    radial-gradient(circle at 35% 28%, rgba(239, 68, 68, 0.34), transparent 44%),
-    linear-gradient(145deg, #4a1111, #190505);
-  border-color: #ef4444;
-}
-
-.mojing-item.is-extracted .mojing-item-art {
+.mojin-item.is-outlined::before,
+.mojin-item.is-extracted::before,
+.mojin-item.is-opening::before {
   opacity: 1;
 }
 
-.mojing-item-value {
+.mojin-item.is-extracted,
+.mojin-item.is-extracted.is-outlined {
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, 0.14), transparent 38%),
+    var(--mojin-quality-bg, rgba(17, 24, 39, 0.98));
+  border-color: var(--mojin-quality-border, rgba(229, 231, 235, 0.72));
+  box-shadow: inset 0 0 24px var(--mojin-quality-glow, rgba(255, 255, 255, 0.08));
+}
+
+.mojin-item.quality-white {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(229, 231, 235, 0.24), transparent 42%), linear-gradient(145deg, #20242b, #0f1116);
+  --mojin-quality-border: #d6d8d3;
+  --mojin-quality-glow: rgba(229, 231, 235, 0.12);
+}
+
+.mojin-item.quality-green {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(34, 197, 94, 0.3), transparent 44%), linear-gradient(145deg, #123422, #07140d);
+  --mojin-quality-border: #35d279;
+  --mojin-quality-glow: rgba(34, 197, 94, 0.2);
+}
+
+.mojin-item.quality-blue {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(59, 130, 246, 0.32), transparent 44%), linear-gradient(145deg, #142d58, #071120);
+  --mojin-quality-border: #4f95ff;
+  --mojin-quality-glow: rgba(59, 130, 246, 0.23);
+}
+
+.mojin-item.quality-purple {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(168, 85, 247, 0.36), transparent 44%), linear-gradient(145deg, #351a5c, #13091f);
+  --mojin-quality-border: #b66cff;
+  --mojin-quality-glow: rgba(168, 85, 247, 0.28);
+}
+
+.mojin-item.quality-gold {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(245, 183, 62, 0.42), transparent 44%), linear-gradient(145deg, #523309, #170d03);
+  --mojin-quality-border: #f5c86a;
+  --mojin-quality-glow: rgba(245, 183, 62, 0.36);
+}
+
+.mojin-item.quality-red {
+  --mojin-quality-bg: radial-gradient(circle at 35% 28%, rgba(255, 71, 87, 0.45), transparent 44%), linear-gradient(145deg, #551112, #190505);
+  --mojin-quality-border: #ff5161;
+  --mojin-quality-glow: rgba(255, 71, 87, 0.42);
+}
+
+.mojin-item-art {
+  position: absolute;
+  inset: 3px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  background: radial-gradient(circle at 52% 42%, var(--mojin-quality-glow, rgba(255, 255, 255, 0.1)), transparent 54%);
+  transition: opacity 0.22s ease;
+}
+
+.mojin-item-art img {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mojin-item.is-extracted .mojin-item-art {
+  opacity: 1;
+}
+
+.mojin-item-value {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
   display: grid;
   place-items: center;
   opacity: 0;
   color: #fff;
-  text-shadow: 0 2px 8px #000;
-  font-weight: 800;
-  font-size: clamp(12px, 1.2vw, 18px);
+  text-shadow: 0 2px 8px #000, 0 0 18px rgba(0, 0, 0, 0.8);
+  font-weight: 900;
+  text-align: center;
+  font-size: clamp(12px, 1.2vw, 20px);
 }
 
-.mojing-item.is-extracted .mojing-item-value {
+.mojin-item.is-extracted .mojin-item-value {
   opacity: 1;
 }
 
-.mojing-cell {
-  position: relative;
+.mojin-magnifier {
+  --orbit-radius: min(10%, 10px);
+  position: absolute;
+  left: 50%;
+  top: 50%;
   z-index: 4;
+  width: clamp(12px, 14%, 28px);
+  aspect-ratio: 1;
+  opacity: 0;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 12px rgba(245, 200, 106, 0.62));
+}
+
+.mojin-magnifier::before {
+  content: "";
+  position: absolute;
+  inset: 8% 20% 20% 8%;
+  border: 3px solid #f7df9e;
+  border-radius: 50%;
+  background: radial-gradient(circle at 38% 32%, rgba(255, 255, 255, 0.68), rgba(95, 120, 113, 0.24) 46%, rgba(0, 0, 0, 0.2));
+}
+
+.mojin-magnifier::after {
+  content: "";
+  position: absolute;
+  width: 36%;
+  height: 4px;
+  right: 5%;
+  bottom: 13%;
+  border-radius: 999px;
+  background: #f7df9e;
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.mojin-item.is-opening .mojin-magnifier {
+  opacity: 1;
+  animation: mojin-magnifier-orbit var(--mojin-open-duration, 1200ms) linear infinite;
+}
+
+.mojin-item.is-opening {
+  border-color: #f5c86a;
+  box-shadow: inset 0 0 20px rgba(245, 200, 106, 0.16), 0 0 24px rgba(245, 200, 106, 0.22);
+}
+
+.mojin-cell {
+  position: relative;
+  z-index: 8;
   border: 0;
   background: transparent;
   cursor: crosshair;
 }
 
-.mojing-cell:hover {
-  outline: 2px solid rgba(250, 204, 21, 0.86);
-  outline-offset: -2px;
-  background: rgba(250, 204, 21, 0.12);
+.mojin-cell:disabled {
+  cursor: wait;
 }
 
-.mojing-log-panel h2 {
+.mojin-cell:hover {
+  outline: 2px solid rgba(245, 200, 106, 0.9);
+  outline-offset: -2px;
+  background: rgba(245, 200, 106, 0.13);
+}
+
+.mojin-log-panel h2 {
   margin: 0 0 12px;
   font-size: 18px;
+  color: #f2efe4;
 }
 
-.mojing-log {
+.mojin-log {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -3021,14 +3121,21 @@ body.is-wish-revealing {
   gap: 8px;
 }
 
-.mojing-log li {
+.mojin-log li {
   padding: 10px 12px;
-  border-radius: 10px;
-  background: rgba(3, 4, 5, 0.48);
-  color: rgba(248, 250, 252, 0.92);
-  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 4px;
+  background: rgba(3, 5, 4, 0.56);
+  color: rgba(240, 244, 235, 0.92);
+  border: 1px solid rgba(181, 194, 172, 0.13);
 }
 
+@keyframes mojin-magnifier-orbit {
+  0% { transform: translate(calc(-50% + var(--orbit-radius)), -50%); }
+  25% { transform: translate(-50%, calc(-50% + var(--orbit-radius))); }
+  50% { transform: translate(calc(-50% - var(--orbit-radius)), -50%); }
+  75% { transform: translate(-50%, calc(-50% - var(--orbit-radius))); }
+  100% { transform: translate(calc(-50% + var(--orbit-radius)), -50%); }
+}
 
 @media (max-width: 920px) {
   .guide-stats-grid {
@@ -3039,11 +3146,11 @@ body.is-wish-revealing {
     grid-template-columns: 1fr;
   }
 
-  .mojing-layout {
+  .mojin-layout {
     grid-template-columns: 1fr;
   }
 
-  .mojing-board {
+  .mojin-board {
     width: min(92vw, 72vh);
   }
 }
