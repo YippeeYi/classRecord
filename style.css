@@ -1,6 +1,4 @@
-
-
-@font-face {
+﻿@font-face {
   font-family: "Google Sans Flex";
   src: url("fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");
   font-weight: 100 1000;
@@ -9,7 +7,7 @@
 }
 
 :root {
-  
+
   --bg-main: #faf6ef;
   --theme-accent: #8a6f61;
   --theme-accent-strong: #4f4038;
@@ -141,7 +139,7 @@ body>#record-list,
 body>#people-list,
 body>#glossary-list,
 body>footer {
-  
+
   width: min(980px, 94vw);
   margin-left: auto;
   margin-right: auto;
@@ -567,7 +565,7 @@ body>footer {
 
 .record:hover {
   box-shadow: 0 16px 36px rgba(var(--theme-rgb), 0.2);
-  
+
 }
 
 @keyframes fadeInUp {
@@ -636,7 +634,7 @@ body>footer {
   gap: 8px;
   align-items: center;
 
-  
+
   opacity: 0;
   transform: translateY(6px);
   pointer-events: none;
@@ -665,7 +663,7 @@ body>footer {
   height: 30px;
 
   font-size: 17px;
-  
+
   line-height: 1;
 
   border-radius: 999px;
@@ -963,9 +961,9 @@ body>footer {
   margin-bottom: 10px;
   line-height: 1.6;
   display: flex;
-  
+
   align-items: flex-start;
-  
+
 }
 
 .info-label {
@@ -973,15 +971,15 @@ body>footer {
   font-size: 1.15em;
   margin-right: 6px;
   flex-shrink: 0;
-  
+
   width: 60px;
-  
+
 }
 
 .info-value {
   font-size: 1em;
   flex: 1;
-  
+
   white-space: pre-wrap;
   /* 鏀寔鎹㈣ */
 }
@@ -3259,31 +3257,51 @@ body.is-wish-revealing {
 }
 
 @keyframes mojin-magnifier-orbit {
-  0% { transform: translate(calc(-50% + var(--orbit-radius)), -50%); }
-  25% { transform: translate(-50%, calc(-50% + var(--orbit-radius))); }
-  50% { transform: translate(calc(-50% - var(--orbit-radius)), -50%); }
-  75% { transform: translate(-50%, calc(-50% - var(--orbit-radius))); }
-  100% { transform: translate(calc(-50% + var(--orbit-radius)), -50%); }
-}
+  0% {
+    transform: translate(calc(-50% + var(--orbit-radius)), -50%);
+  }
 
-@keyframes mojin-pop-in {
-  0% { transform: scale(0.82); filter: brightness(1.8); }
-  70% { transform: scale(1.035); }
-  100% { transform: scale(1); filter: brightness(1); }
+  25% {
+    transform: translate(-50%, calc(-50% + var(--orbit-radius)));
+  }
+
+  50% {
+    transform: translate(calc(-50% - var(--orbit-radius)), -50%);
+  }
+
+  75% {
+    transform: translate(-50%, calc(-50% - var(--orbit-radius)));
+  }
+
+  100% {
+    transform: translate(calc(-50% + var(--orbit-radius)), -50%);
+  }
 }
 
 @keyframes mojin-prize-spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes mojin-gold-pulse {
-  from { filter: blur(0) brightness(1); }
-  to { filter: blur(1px) brightness(1.28); }
+  from {
+    filter: blur(0) brightness(1);
+  }
+
+  to {
+    filter: blur(1px) brightness(1.28);
+  }
 }
 
 @keyframes mojin-red-burst {
-  from { filter: saturate(1) brightness(1); }
-  to { filter: saturate(1.4) brightness(1.36); }
+  from {
+    filter: saturate(1) brightness(1);
+  }
+
+  to {
+    filter: saturate(1.4) brightness(1.36);
+  }
 }
 
 @media (max-width: 920px) {
