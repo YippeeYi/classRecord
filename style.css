@@ -590,6 +590,7 @@ body>footer {
     0 0 28px color-mix(in srgb, var(--important-border) 24%, transparent);
 }
 
+/* removed important highlight
 .record.importance-important::after {
   content: "";
   position: absolute;
@@ -599,7 +600,7 @@ body>footer {
   background:
     linear-gradient(120deg, transparent 0%, color-mix(in srgb, var(--important-border) 18%, white) 18%, transparent 34%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%);
-  opacity: 0.85;
+  opacity: 0;
 }
 
 
@@ -1791,11 +1792,12 @@ body>footer {
   color: #fff;
 }
 
-.record-lock-panel {
+ .record-lock-panel {
   display: grid;
   gap: 10px;
-  padding: 20px;
-  border-radius: 16px;
+  min-height: 0;
+  padding: 10px 0;
+  border-radius: 0;
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.12);
 }
@@ -3392,3 +3394,5 @@ body.is-wish-revealing {
     white-space: normal;
   }
 }
+.quiz-filter .quiz-filter-chip.is-active{background-image:var(--control-active-gradient);color:var(--control-active-text);}
+.quiz-option:active{transform: translateY(0); box-shadow: var(--control-shadow-pressed);}
