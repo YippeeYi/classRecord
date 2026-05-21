@@ -86,8 +86,8 @@ function buildRecordBody(record, isLocked) {
             <div class="attachments-wrapper" style="display:none">
                 <ul>
                     ${record.attachments.map((attachment) =>
-                        `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`
-                    ).join("")}
+        `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`
+    ).join("")}
                 </ul>
             </div>
         ` : ""}
@@ -125,7 +125,7 @@ function renderRecordList(records, container) {
     });
 }
 
-function filterRecordsByDate(records, { year, month, day, important }) {
+function filterRecordsByDate(records, { year, month, day }) {
     const hasYear = Boolean(year);
     const hasMonth = Boolean(month);
     const hasDay = Boolean(day);
@@ -140,7 +140,6 @@ function filterRecordsByDate(records, { year, month, day, important }) {
         if (hasYear && recordYear !== year) return false;
         if (hasMonth && recordMonth !== month) return false;
         if (hasDay && recordDay !== day) return false;
-        if (important && (record.importance || "normal") !== "important") return false;
         return true;
     });
 }
@@ -207,7 +206,6 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
             </button>
             <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
-        <div class="filter-field filter-important-field"><label><input type="checkbox" id="filter-important"> 仅重要</label></div>
         <div class="filter-actions">
             <button type="button" class="btn-action clear">清空</button>
         </div>
@@ -220,13 +218,11 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
     const filterFields = wrapper.querySelectorAll(".filter-field");
     const clearButton = wrapper.querySelector(".clear");
-    const importantCheckbox = wrapper.querySelector("#filter-important");
 
     let currentCriteria = {
         year: initial.year || "",
         month: initial.month || "",
-        day: initial.day || "",
-        important: Boolean(initial.important)
+        day: initial.day || ""
     };
 
     const updateTriggerLabels = (criteria) => {
@@ -269,8 +265,7 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const applyCriteria = (criteria) => {
         currentCriteria = { ...criteria };
         renderSelectOptions();
-        if (importantCheckbox) importantCheckbox.checked = Boolean(currentCriteria.important);
-    updateTriggerLabels(currentCriteria);
+        updateTriggerLabels(currentCriteria);
         onFilterChange?.(currentCriteria);
     };
 
@@ -323,11 +318,9 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
-    importantCheckbox?.addEventListener("change", () => applyCriteria({ ...currentCriteria, important: Boolean(importantCheckbox.checked) }));
-    clearButton.addEventListener("click", () => { if (importantCheckbox) importantCheckbox.checked = false; applyCriteria({ year: "", month: "", day: "", important: false }); });
+    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "" }));
 
     renderSelectOptions();
-    if (importantCheckbox) importantCheckbox.checked = Boolean(currentCriteria.important);
     updateTriggerLabels(currentCriteria);
 }
 
