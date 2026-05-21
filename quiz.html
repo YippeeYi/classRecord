@@ -22,7 +22,7 @@
         <section class="feature-hero">
             <p class="feature-eyebrow">Question Archive</p>
             <h1>编日史答题</h1>
-            <p class="feature-summary">系统会从编日史条目中提取纯文字内容，并随机挖空形成选择题或填空题。选择题答对获得 100 Q币，填空题答案完全相同才算正确，答对获得 500 Q币。</p>
+            <p class="feature-summary">系统会基于随机记录生成选择题与判断题，每题答对获得 100 Q币。</p>
             <div class="feature-balance-row">
                 <div class="balance-chip">
                     <span>当前 Q币</span>
@@ -36,20 +36,13 @@
         </section>
 
         <section class="quiz-card">
+            <div id="quiz-filter-bar" class="quiz-filter-bar"></div>
             <div class="quiz-card-head">
                 <p id="quiz-question-meta" class="quiz-question-meta"></p>
                 <button id="quiz-next-btn" class="btn-action" type="button">换一题</button>
             </div>
             <h2 id="quiz-question-text" class="quiz-question-text">正在生成题目…</h2>
             <div id="quiz-options" class="quiz-options"></div>
-            <form id="quiz-fill-form" class="quiz-fill-form" hidden>
-                <label class="quiz-fill-label" for="quiz-fill-input">填入完整答案（需完全相同）</label>
-                <div class="quiz-fill-row">
-                    <input id="quiz-fill-input" class="quiz-fill-input" type="text" autocomplete="off"
-                        spellcheck="false" placeholder="请输入挖空内容">
-                    <button class="btn-action quiz-submit" type="submit">提交答案</button>
-                </div>
-            </form>
             <p id="quiz-feedback" class="quiz-feedback"></p>
         </section>
     </main>
