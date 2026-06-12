@@ -18,24 +18,9 @@
         <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">↩</button>
     </div>
 
-    <main class="feature-shell">
-        <section class="feature-hero">
-            <p class="feature-eyebrow">Question Archive</p>
-            <h1>编日史答题</h1>
-            <p class="feature-summary">系统会从编日史条目中提取纯文字内容，并随机挖空形成选择题或填空题。选择题答对获得 100 Q币，填空题答案完全相同才算正确，答对获得 500 Q币。</p>
-            <div class="feature-balance-row">
-                <div class="balance-chip">
-                    <span>当前 Q币</span>
-                    <strong><span data-qcoin-balance>0</span></strong>
-                </div>
-                <div class="balance-chip">
-                    <span>累计答对</span>
-                    <strong><span data-qcoin-quiz-correct>0</span></strong>
-                </div>
-            </div>
-        </section>
-
+    <main class="feature-shell quiz-shell">
         <section class="quiz-card">
+            <span class="quiz-correct-chip">累计答对 <strong data-qcoin-quiz-correct>0</strong></span>
             <div id="quiz-filter" class="record-filter quiz-filter"></div>
             <div class="quiz-card-head">
                 <p id="quiz-question-meta" class="quiz-question-meta"></p>

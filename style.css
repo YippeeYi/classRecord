@@ -1619,6 +1619,7 @@ body>footer {
 }
 
 .quiz-card {
+  position: relative;
   padding: 28px;
 }
 
@@ -1645,9 +1646,12 @@ body>footer {
   gap: 6px;
 }
 
+.quiz-filter .filter-option.is-disabled,
 .quiz-filter .filter-option:disabled {
-  opacity: 0.42;
+  opacity: 0.38;
+  filter: grayscale(0.85);
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .quiz-filter-check {
@@ -1667,6 +1671,26 @@ body>footer {
   gap: 12px;
 }
 
+.quiz-correct-chip {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: var(--control-active-text);
+  background-image: var(--control-active-gradient);
+  box-shadow: var(--control-active-glow);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.quiz-correct-chip strong {
+  font-size: 15px;
+}
+
 .quiz-question-meta,
 .quiz-feedback,
 .asset-hint-panel p,
@@ -1675,6 +1699,10 @@ body>footer {
 }
 
 .quiz-question-meta {
+  display: flex;
+  align-items: center;
+  min-height: 34px;
+  padding-right: 132px;
   color: var(--text-soft);
   font-size: 14px;
 }
@@ -1704,6 +1732,10 @@ body>footer {
   font-weight: 600;
   line-height: 1.55;
   text-indent: 0;
+}
+
+.quiz-question-record.has-answer-blank {
+  padding-top: 8px;
 }
 
 .quiz-question-side {
@@ -1741,17 +1773,16 @@ body>footer {
 
 .quiz-answer-blank {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
   min-width: calc(var(--blank-chars, 4) * 1em);
-  height: 1.1em;
+  height: 1em;
   padding: 0 0.08em;
   border-bottom: 0.11em solid currentColor;
   color: var(--text-main);
   line-height: 1;
   text-indent: 0;
-  vertical-align: baseline;
-  transform: translateY(-0.08em);
+  vertical-align: -0.24em;
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
 }
 
@@ -1901,11 +1932,16 @@ body>footer {
 
 .quiz-feedback {
   margin-top: 18px;
-  min-height: 32px;
-  padding: 10px 14px;
+  min-height: 44px;
+  padding: 0 14px;
   border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   font-weight: 800;
+  line-height: 1.35;
+  text-align: center;
   opacity: 0;
   transform: translateY(4px);
   transition: opacity 0.22s ease, transform 0.22s ease, background 0.22s ease;

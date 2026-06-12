@@ -10,7 +10,6 @@
   const feedback = document.getElementById('quiz-feedback');
   const nextButton = document.getElementById('quiz-next-btn');
   const filterWrap = document.getElementById('quiz-filter');
-
   const typeLabels = { choice: '选择题', fill: '填空题', judge: '判断题' };
   const contentLabels = { person: '人名', term: '术语', author: '记录人', date: '记录时间' };
   const contentByType = {
@@ -74,16 +73,22 @@
     return escapedText.replace(escapeHtml(wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correctText)}</span></span>`);
   }
 
+  function renderJudgeCorrections(text, corrections, revealed = false) {
+    if (!revealed || !Array.isArray(corrections) || !corrections.length) return escapeHtml(text || '');
+    return corrections.reduce((html, correction) => html.replace(escapeHtml(correction.wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(correction.wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correction.correctText)}</span></span>`), escapeHtml(text || ''));
+  }
+
   function renderJudgeRecord(question, revealed = false) {
     if (question.answer === '\u6b63\u786e' || question.correctionTarget === 'side') {
       return escapeHtml(question.recordText || '');
     }
-    return renderJudgeCorrection(question.recordText || '', question.wrongText, question.correctText, revealed);
+    return renderJudgeCorrections(question.recordText || '', question.corrections || [{ wrongText: question.wrongText, correctText: question.correctText }], revealed);
   }
 
   function renderSideBox(question, revealed = false) {
     if (!question.sideText) return '';
-    const valueHtml = question.correctionTarget === 'side'
+    const shouldCorrectSide = question.correctionTarget === 'side' && question.answer !== '\u6b63\u786e';
+    const valueHtml = shouldCorrectSide
       ? renderJudgeCorrection(question.sideText, question.wrongText, question.correctText, revealed)
       : escapeHtml(question.sideText);
     return `<span class="quiz-question-side"><span class="quiz-side-label">${escapeHtml(question.sideLabel || '')}</span><span class="quiz-side-value">${valueHtml}</span></span>`;
@@ -100,7 +105,7 @@
     }
     questionText.innerHTML = `
       <span class="quiz-question-prompt">${escapeHtml(currentQuestion.prompt)}</span>
-      <span class="quiz-question-record">${formatContent(recordHtml)}</span>
+      <span class="quiz-question-record${shouldBlankRecord ? ' has-answer-blank' : ''}">${formatContent(recordHtml)}</span>
       ${renderSideBox(currentQuestion, revealed)}
     `;
   }
@@ -258,16 +263,28 @@
       };
     }
 
-    const target = pickRandom(availableRefs);
-    const sameLabels = kind === 'person'
-      ? shuffle((pools.personLabels.get(target.id) || []).filter((item) => item !== target.label))
-      : [];
     const generalPool = kind === 'person' ? pools.personOptions : pools.termOptions;
-    const replacement = pickRandom(uniqueValues([
-      ...sameLabels,
-      ...shuffle(generalPool.filter((item) => item !== target.label))
-    ]));
-    if (!replacement) return null;
+    const targets = kind === 'person'
+      ? shuffle(availableRefs).slice(0, Math.max(1, Math.min(3, availableRefs.length, 1 + Math.floor(Math.random() * 3))))
+      : [pickRandom(availableRefs)];
+    let recordText = text;
+    const corrections = [];
+    const usedReplacements = new Set();
+
+    targets.forEach((target) => {
+      const replacementPool = kind === 'person'
+        ? [...pools.personLabels.entries()]
+          .filter(([id]) => id !== target.id)
+          .flatMap(([, labels]) => labels)
+        : generalPool;
+      const replacement = pickRandom(uniqueValues(shuffle(replacementPool)
+        .filter((item) => item !== target.label && item !== target.id && !usedReplacements.has(item))));
+      if (!replacement || !recordText.includes(target.label)) return;
+      recordText = recordText.replace(target.label, replacement);
+      usedReplacements.add(replacement);
+      corrections.push({ wrongText: replacement, correctText: target.label });
+    });
+    if (!corrections.length) return null;
 
     return {
       id: record.id,
@@ -275,9 +292,10 @@
       content: kind,
       answer: '\u9519\u8bef',
       prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
-      recordText: text.replace(target.label, replacement),
-      wrongText: replacement,
-      correctText: target.label,
+      recordText,
+      corrections,
+      wrongText: corrections[0].wrongText,
+      correctText: corrections[0].correctText,
       reward: JUDGE_REWARD,
       options: ['\u6b63\u786e', '\u9519\u8bef']
     };
@@ -374,6 +392,10 @@
     return allQuestions.some((question) => types.has(question.type) && contents.has(question.content));
   }
 
+  function hasAnyQuestionInGroup(group, value) {
+    return allQuestions.some((question) => question[group === 'types' ? 'type' : 'content'] === value);
+  }
+
 
   function pruneFilters() {
     let changed = true;
@@ -414,9 +436,10 @@
       else nextSet.add(value);
       const nextTypes = group === 'types' ? nextSet : activeFilters.types;
       const nextContents = group === 'contents' ? nextSet : activeFilters.contents;
-      const disabled = !nextSet.size || !hasQuestionFor(nextTypes, nextContents);
+      const unavailable = !hasAnyQuestionInGroup(group, value) || !hasQuestionFor(nextTypes, nextContents);
+      const disabled = currentSet.has(value) ? nextSet.size === 0 : unavailable;
       return `
-        <button type="button" class="btn-action filter-option${currentSet.has(value) ? ' is-active' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>
+        <button type="button" class="btn-action filter-option${currentSet.has(value) ? ' is-active' : ''}${unavailable ? ' is-disabled' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>
           <span class="quiz-filter-check">${currentSet.has(value) ? '\u2713' : '+'}</span>${label}
         </button>
       `;
