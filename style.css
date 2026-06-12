@@ -1695,14 +1695,40 @@ body>footer {
 
 .quiz-question-record {
   display: block;
-  padding: 16px 18px 16px 26px;
+  padding: 14px 18px 14px 24px;
   border-left: 4px solid color-mix(in srgb, var(--theme-accent) 48%, transparent);
   border-radius: 16px;
   background: color-mix(in srgb, var(--theme-surface) 72%, transparent);
   color: var(--text-soft);
   font-size: clamp(17px, 2vw, 20px);
   font-weight: 600;
-  text-indent: 1em;
+  line-height: 1.55;
+  text-indent: 0;
+}
+
+.quiz-question-side {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 10px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(79, 70, 229, 0.12);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(244, 245, 255, 0.74));
+  color: var(--text-main);
+  font-size: 17px;
+}
+
+.quiz-side-label {
+  color: var(--text-subtle);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.quiz-side-value {
+  font-weight: 800;
 }
 
 .quiz-record-answer-line {
@@ -1718,13 +1744,14 @@ body>footer {
   align-items: flex-end;
   justify-content: center;
   min-width: calc(var(--blank-chars, 4) * 1em);
-  height: 1.35em;
+  height: 1.1em;
   padding: 0 0.08em;
   border-bottom: 0.11em solid currentColor;
   color: var(--text-main);
   line-height: 1;
   text-indent: 0;
   vertical-align: baseline;
+  transform: translateY(-0.08em);
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
 }
 
@@ -1908,37 +1935,39 @@ body>footer {
   inset: 0;
   z-index: 1;
   border-radius: 14px;
-  background:
-    linear-gradient(135deg, rgba(17, 24, 39, 0.82), rgba(48, 58, 82, 0.74)),
-    rgba(255, 252, 246, 0.24);
+  background: rgba(17, 24, 39, 0.82);
+  backdrop-filter: blur(3px) saturate(0.85);
   pointer-events: none;
 }
 
 .record.is-locked .meta,
 .record.is-locked .content {
-  filter: blur(1px) saturate(0.8);
+  opacity: 0;
 }
 
 .record-lock-panel {
   position: absolute;
   z-index: 2;
-  inset: 52px 18px 18px;
-  display: grid;
-  align-content: center;
-  justify-items: start;
-  gap: 10px;
+  left: 18px;
+  right: 18px;
+  top: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
   color: #fff8e6;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.28);
+  transform: translateY(-50%);
 }
 
 .record-lock-icon {
   width: fit-content;
-  padding: 6px 10px;
+  padding: 5px 9px;
   border-radius: 999px;
   background: rgba(244, 196, 48, 0.12);
   color: #ffe28e;
-  font-size: 12px;
-  letter-spacing: 0.16em;
+  font-size: 11px;
+  letter-spacing: 0.14em;
 }
 
 .record-lock-title,
@@ -1947,12 +1976,18 @@ body>footer {
 }
 
 .record-lock-title {
-  font-size: 20px;
-  font-weight: 700;
+  display: none;
 }
 
 .record-lock-copy {
-  color: rgba(255, 248, 230, 0.74);
+  display: none;
+}
+
+.record-unlock-btn {
+  flex: 0 0 auto;
+  min-height: 34px;
+  padding: 7px 12px;
+  white-space: nowrap;
 }
 
 .icon-group.is-hidden {

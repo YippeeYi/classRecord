@@ -65,26 +65,43 @@
     if (escapedRecord.includes(escapedAnswer)) {
       return escapedRecord.replace(escapedAnswer, blankHtml(answer, revealed));
     }
-    return `${escapedRecord}<span class="quiz-record-answer-line">???${blankHtml(answer, revealed)}</span>`;
+    return escapedRecord;
+  }
+
+  function renderJudgeCorrection(text, wrongText, correctText, revealed = false) {
+    const escapedText = escapeHtml(text || '');
+    if (!revealed || !wrongText) return escapedText;
+    return escapedText.replace(escapeHtml(wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correctText)}</span></span>`);
   }
 
   function renderJudgeRecord(question, revealed = false) {
-    const escapedRecord = escapeHtml(question.recordText || '');
-    if (!revealed || question.answer === '\u6b63\u786e' || !question.wrongText) return escapedRecord;
-    return escapedRecord.replace(escapeHtml(question.wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(question.wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(question.correctText)}</span></span>`);
+    if (question.answer === '\u6b63\u786e' || question.correctionTarget === 'side') {
+      return escapeHtml(question.recordText || '');
+    }
+    return renderJudgeCorrection(question.recordText || '', question.wrongText, question.correctText, revealed);
+  }
+
+  function renderSideBox(question, revealed = false) {
+    if (!question.sideText) return '';
+    const valueHtml = question.correctionTarget === 'side'
+      ? renderJudgeCorrection(question.sideText, question.wrongText, question.correctText, revealed)
+      : escapeHtml(question.sideText);
+    return `<span class="quiz-question-side"><span class="quiz-side-label">${escapeHtml(question.sideLabel || '')}</span><span class="quiz-side-value">${valueHtml}</span></span>`;
   }
 
   function renderQuestionBody(revealed = false) {
     if (!currentQuestion) return;
-    let recordHtml = escapeHtml(currentQuestion.recordText || currentQuestion.maskedText || '');
-    if (currentQuestion.type === 'choice' || currentQuestion.type === 'fill') {
-      recordHtml = renderRecordWithBlank(currentQuestion.recordText || currentQuestion.maskedText || '', currentQuestion.answer, revealed);
+    const shouldBlankRecord = (currentQuestion.type === 'choice' || currentQuestion.type === 'fill') && ['person', 'term'].includes(currentQuestion.content);
+    let recordHtml = escapeHtml(currentQuestion.recordText || '');
+    if (shouldBlankRecord) {
+      recordHtml = renderRecordWithBlank(currentQuestion.recordText || '', currentQuestion.answer, revealed);
     } else if (currentQuestion.type === 'judge') {
       recordHtml = renderJudgeRecord(currentQuestion, revealed);
     }
     questionText.innerHTML = `
       <span class="quiz-question-prompt">${escapeHtml(currentQuestion.prompt)}</span>
       <span class="quiz-question-record">${formatContent(recordHtml)}</span>
+      ${renderSideBox(currentQuestion, revealed)}
     `;
   }
 
@@ -276,7 +293,7 @@
       type: 'choice',
       content: 'author',
       answer: record.author,
-      prompt: '\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba\u662f\u8c01\uff1f',
+      prompt: '\u8bf7\u9009\u62e9\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba',
       recordText: buildStemText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.author, ...distractors])
@@ -310,7 +327,10 @@
       content: 'author',
       answer: shouldBeCorrect ? '\u6b63\u786e' : '\u9519\u8bef',
       prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u4eba\u4e0e\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u5339\u914d\u3002',
-      recordText: `${buildStemText(record).trim()}\n\n\u8bb0\u5f55\u4eba\uff1a${shownAuthor}`,
+      recordText: buildStemText(record).trim(),
+      sideLabel: '\u8bb0\u5f55\u4eba',
+      sideText: shownAuthor,
+      correctionTarget: 'side',
       wrongText: shownAuthor,
       correctText: record.author,
       reward: JUDGE_REWARD,
@@ -338,7 +358,7 @@
       type: 'choice',
       content: 'date',
       answer: record.date,
-      prompt: '\u8fd9\u6761\u8bb0\u5f55\u53d1\u751f\u5728\u4ec0\u4e48\u65f6\u95f4\uff1f',
+      prompt: '\u8bf7\u9009\u62e9\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u65f6\u95f4',
       recordText: buildStemText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.date, ...distractors])
