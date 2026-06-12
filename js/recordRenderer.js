@@ -55,8 +55,7 @@ function buildRecordBody(record, isLocked) {
                 ${timeText}
                 ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
             </span>
-            <span class="icon-group${isLocked ? " is-hidden" : ""}">
-                ${record.image ? `<span class="image-toggle">📷</span>` : ""}
+            <span class="icon-group${isLocked ? " is-hidden" : ""}">
                 ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
             </span>
         </div>
@@ -71,12 +70,7 @@ function buildRecordBody(record, isLocked) {
                 <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
                 <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
             </div>
-        ` : ""}
-        ${!isLocked && record.image ? `
-            <div class="image-wrapper" style="display:none">
-                <img src="${record.image}" alt="${record.id}">
-            </div>
-        ` : ""}
+        ` : ""}
 
         ${!isLocked && record.attachments?.length ? `
             <div class="attachments-wrapper" style="display:none">
@@ -121,18 +115,17 @@ function renderRecordList(records, container) {
     });
 }
 
-function filterRecordsByDate(records, { year, month, day, important } = {}) {
+function filterRecordsByDate(records, { year, month, day, important, excludeDaily } = {}) {
     const hasYear = Boolean(year);
     const hasMonth = Boolean(month);
     const hasDay = Boolean(day);
     const onlyImportant = Boolean(important);
-
-    if (!hasYear && !hasMonth && !hasDay && !onlyImportant) {
-        return records.slice();
-    }
+    const hideDaily = Boolean(excludeDaily);
+    if (!hasYear && !hasMonth && !hasDay && !onlyImportant && !hideDaily) return records.slice();
 
     return records.filter((record) => {
         if (onlyImportant && record.importance !== "important") return false;
+        if (hideDaily && String(record.fileName || record.id || "").replace(/\.json$/i, "").endsWith("-00")) return false;
         if (!record.date) return false;
         const [recordYear, recordMonth, recordDay] = record.date.split("-");
         if (hasYear && recordYear !== year) return false;
@@ -206,6 +199,7 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
         </div>
         <div class="filter-actions">
             <button type="button" class="btn-action filter-important" data-field="important">重要记录</button>
+            <button type="button" class="btn-action filter-exclude-daily" data-field="excludeDaily">隐藏 00 条目</button>
             <button type="button" class="btn-action clear">清空</button>
         </div>
     `;
@@ -218,6 +212,7 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const filterFields = wrapper.querySelectorAll(".filter-field");
     const clearButton = wrapper.querySelector(".clear");
     const importantButton = wrapper.querySelector(".filter-important");
+    const excludeDailyButton = wrapper.querySelector(".filter-exclude-daily");
 
     let currentCriteria = {
         year: initial.year || "",
@@ -234,6 +229,9 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
         };
         if (importantButton) {
             importantButton.classList.toggle("is-active", Boolean(criteria.important));
+        }
+        if (excludeDailyButton) {
+            excludeDailyButton.classList.toggle("is-active", Boolean(criteria.excludeDaily));
         }
         dropdownTriggers.forEach((trigger) => {
             const target = trigger.dataset.target;
@@ -323,27 +321,16 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
     importantButton?.addEventListener("click", () => applyCriteria({ ...currentCriteria, important: !currentCriteria.important }));
-    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "", important: false }));
+    excludeDailyButton?.addEventListener("click", () => applyCriteria({ ...currentCriteria, excludeDaily: !currentCriteria.excludeDaily }));
+    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "", important: false, excludeDaily: false }));
 
     renderSelectOptions();
     updateTriggerLabels(currentCriteria);
 }
 
 function bindToggle(recordDiv) {
-    const imageButton = recordDiv.querySelector(".image-toggle");
-    const imageWrap = recordDiv.querySelector(".image-wrapper");
-
-    if (imageButton && imageWrap) {
-        imageButton.onclick = () => {
-            const open = imageWrap.style.display === "block";
-            imageWrap.style.display = open ? "none" : "block";
-            imageButton.textContent = open ? "📷" : "❌";
-        };
-    }
-
     const attachmentButton = recordDiv.querySelector(".attach-toggle");
     const attachmentWrap = recordDiv.querySelector(".attachments-wrapper");
-
     if (attachmentButton && attachmentWrap) {
         attachmentButton.onclick = () => {
             const open = attachmentWrap.style.display === "block";

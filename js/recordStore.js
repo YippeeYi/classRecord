@@ -25,6 +25,7 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
                 files.map(async (file, i) => {
                     const res = await fetch(`data/record/${file}`);
                     const record = await res.json();
+                    record.fileName = file;
                     record.date = file.slice(0, 10);
 
                     // 生成id

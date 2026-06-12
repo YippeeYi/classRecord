@@ -157,7 +157,7 @@
       add(person.id, person.id);
       extractTokenRefs(`[[${person.id}|${person.alias || ''}]]`, 'person').forEach((ref) => add(person.id, ref.label));
     });
-    records.forEach((record) => {
+    records.filter((record) => !String(record.fileName || record.id || '').replace(/\.json$/i, '').endsWith('-00')).forEach((record) => {
       extractTokenRefs(record.content || '', 'person').forEach((ref) => add(ref.id, ref.label));
     });
     return map;
@@ -591,13 +591,13 @@
       pools.personOptions = uniqueValues([...pools.personLabels.values()].flat());
       pools.termOptions = uniqueValues([
         ...pools.termOptions,
-        ...records.flatMap((record) => extractTokenRefs(record.content || '', 'term').map((ref) => ref.label))
+        ...quizRecords.flatMap((record) => extractTokenRefs(record.content || '', 'term').map((ref) => ref.label))
       ]);
 
       const authorPool = uniqueValues(records.map((record) => record.author));
       const datePool = uniqueValues(records.map((record) => record.date));
       const questions = [];
-      records.forEach((record) => {
+      quizRecords.forEach((record) => {
         questions.push(buildChoiceQuestion(record, 'person', pools));
         questions.push(buildChoiceQuestion(record, 'term', pools));
         questions.push(buildFillQuestion(record, 'person'));

@@ -152,8 +152,7 @@ body>footer {
   .guide-stat-link,
   .record-filter .filter-dropdown-trigger,
   .record-filter .filter-option,
-  .image-toggle,
-  .attach-toggle,
+    .attach-toggle,
   .switch-btn,
   .back-to-guide-btn,
   .sort-controls .dropdown-trigger) {
@@ -177,8 +176,7 @@ body>footer {
   .btn-select,
   .guide-stat-link,
   .record-filter .filter-option,
-  .image-toggle,
-  .attach-toggle,
+    .attach-toggle,
   .switch-btn,
   .back-to-guide-btn,
   .auth-page .auth-form button):active {
@@ -653,7 +651,6 @@ body>footer {
   pointer-events: auto;
 }
 
-.image-toggle,
 .attach-toggle {
   position: relative;
   overflow: hidden;
@@ -685,7 +682,6 @@ body>footer {
 }
 
 
-.image-toggle:hover,
 .attach-toggle:hover {
   background: var(--control-hover-bg);
   background-image: var(--control-gradient-hover);
@@ -694,16 +690,6 @@ body>footer {
 }
 
 
-.image-wrapper {
-  display: none;
-  margin-top: 12px;
-}
-
-.image-wrapper img {
-  max-width: 100%;
-  border-radius: 10px;
-  border: var(--field-border);
-}
 
 .attachments-wrapper {
   display: none;
@@ -1333,7 +1319,6 @@ body>footer {
 .record-filter button:focus-visible,
 .record-filter .filter-dropdown-trigger:focus-visible,
 .record-filter .filter-option:focus-visible,
-.image-toggle:focus-visible,
 .attach-toggle:focus-visible,
 .switch-btn:focus-visible,
 .sort-controls .dropdown-trigger:focus-visible,
@@ -3631,3 +3616,317 @@ body.is-wish-revealing {
   }
 }
 
+
+.record-view-switch {
+  margin-left: 20px;
+}
+
+.record-written-view {
+  display: grid;
+  gap: 16px;
+}
+
+.record-written-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.record-written-page {
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.record-written-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.record-written-image {
+  position: sticky;
+  top: 18px;
+  margin: 0;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-soft);
+}
+
+.record-written-image img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  border: var(--field-border);
+}
+
+.record-written-image.is-missing::before {
+  content: "未找到原始书面记录图片";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  border-radius: 12px;
+  border: 2px dashed var(--attachment-border);
+  color: var(--text-subtle);
+  background: rgba(255, 255, 255, 0.46);
+  font-weight: 800;
+}
+
+.record-written-image.is-missing picture {
+  display: none;
+}
+
+.record-written-image figcaption {
+  margin-top: 8px;
+  color: var(--text-subtle);
+  font-size: 13px;
+  text-align: center;
+}
+
+.record-written-empty {
+  padding: 22px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  color: var(--text-subtle);
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+@media (max-width: 900px) {
+  .record-written-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .record-written-image {
+    position: static;
+  }
+}
+
+.qcoin-mini {
+  position: fixed;
+  z-index: 20;
+  left: 18px;
+  top: 16px;
+  padding: 6px 11px;
+  border-radius: 999px;
+  color: var(--control-active-text);
+  background-image: var(--control-active-gradient);
+  box-shadow: var(--control-active-glow);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.record-view-switch {
+  margin-left: 20px;
+}
+
+.record-written-view {
+  display: grid;
+  gap: 16px;
+}
+
+.record-written-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.record-written-page {
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.record-written-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.record-written-image {
+  position: sticky;
+  top: 18px;
+  margin: 0;
+  padding: 14px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  box-shadow: var(--shadow-soft);
+}
+
+.record-written-image img {
+  display: block;
+  width: 100%;
+  border-radius: 12px;
+  border: var(--field-border);
+}
+
+.record-written-image.is-missing::before {
+  content: "未找到原始书面记录图片";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 260px;
+  border-radius: 12px;
+  border: 2px dashed var(--attachment-border);
+  color: var(--text-subtle);
+  background: rgba(255, 255, 255, 0.46);
+  font-weight: 800;
+}
+
+.record-written-image.is-missing picture {
+  display: none;
+}
+
+.record-written-image figcaption {
+  margin-top: 8px;
+  color: var(--text-subtle);
+  font-size: 13px;
+  text-align: center;
+}
+
+.record-written-empty {
+  padding: 22px;
+  border-radius: 18px;
+  background: var(--bg-card);
+  color: var(--text-subtle);
+  text-align: center;
+  box-shadow: var(--shadow-soft);
+}
+
+.parkour-shell {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 18px;
+}
+
+.parkour-panel {
+  border-radius: 28px;
+  background: rgba(255, 253, 248, 0.62);
+  border: 1px solid rgba(255, 255, 255, 0.56);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 24px 60px rgba(31, 41, 55, 0.14);
+  padding: 18px;
+}
+
+.parkour-topbar,
+.parkour-stats,
+.parkour-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.parkour-topbar {
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.parkour-topbar h1,
+.parkour-panel h2,
+.parkour-help,
+.parkour-event-text {
+  margin: 0;
+}
+
+.parkour-stats span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+#parkour-canvas {
+  display: block;
+  width: 100%;
+  max-height: 68vh;
+  border-radius: 20px;
+  border: 2px solid rgba(79, 70, 229, 0.16);
+  background: #8ccf91;
+  image-rendering: pixelated;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.36);
+}
+
+.parkour-controls {
+  margin-top: 12px;
+  justify-content: center;
+}
+
+.parkour-dir.is-active {
+  color: var(--control-active-text);
+  background-image: var(--control-active-gradient);
+  border-color: transparent;
+  box-shadow: var(--control-active-glow);
+}
+
+.parkour-help {
+  margin-top: 10px;
+  color: var(--text-subtle);
+  text-align: center;
+  font-size: 14px;
+}
+
+.parkour-side {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.parkour-list {
+  margin: 0;
+  padding-left: 22px;
+  color: var(--text-main);
+}
+
+.parkour-list li {
+  margin: 7px 0;
+}
+
+.parkour-list li span {
+  display: inline-block;
+  min-width: 92px;
+}
+
+.parkour-inventory {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.parkour-relic {
+  padding: 6px 9px;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 70, 229, 0.12);
+  color: var(--text-subtle);
+  background: rgba(255, 255, 255, 0.48);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.parkour-relic.is-owned {
+  color: var(--control-active-text);
+  background-image: var(--control-active-gradient);
+}
+
+.parkour-event-text {
+  color: var(--text-soft);
+  line-height: 1.6;
+}
+
+@media (max-width: 900px) {
+  .record-written-layout,
+  .parkour-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .record-written-image {
+    position: static;
+  }
+}

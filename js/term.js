@@ -16,6 +16,7 @@ const recordContainer = document.getElementById("record-list");
 // 页面状态
 let allRecords = [];
 let relatedRecords = [];
+let termFilterCriteria = { year: "", month: "", day: "", important: false, excludeDaily: false };
 
 /* ===============================
    页面初始化
@@ -62,7 +63,27 @@ cacheReady.then(() => Promise.all([
     relatedRecords = allRecords.filter(r =>
         r.content && pattern.test(r.content)
     );
-
     sortRecords(relatedRecords);
-    renderRecordList(relatedRecords, recordContainer);
+
+    const filterHost = document.createElement("div");
+    filterHost.id = "record-filter";
+    recordContainer.before(filterHost);
+
+    const renderFilteredRecords = () => {
+        const filtered = filterRecordsByDate(relatedRecords, termFilterCriteria);
+        sortRecords(filtered);
+        renderRecordList(filtered, recordContainer);
+    };
+
+    renderRecordFilter({
+        container: filterHost,
+        getRecords: () => relatedRecords,
+        initial: termFilterCriteria,
+        onFilterChange: criteria => {
+            termFilterCriteria = criteria;
+            renderFilteredRecords();
+        }
+    });
+
+    renderFilteredRecords();
 });

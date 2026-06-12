@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>编日史 · 校园跑酷</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="favicon.ico">
+    <link rel="preload" href="fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf" as="font" type="font/ttf" crossorigin>
+    <script src="js/authGate.js"></script>
+    <script src="js/navigation.js"></script>
+</head>
+
+<body class="feature-page parkour-page">
+    <div class="page-header">
+        <button class="back-to-guide-btn" aria-label="返回主页" title="返回主页" data-nav-target="index.html">↩</button>
+    </div>
+
+    <main class="feature-shell parkour-shell">
+        <section class="parkour-panel parkour-stage-panel">
+            <div class="parkour-topbar">
+                <div>
+                    <p class="feature-eyebrow">Pixel School Run</p>
+                    <h1>编日史跑酷</h1>
+                </div>
+                <div class="parkour-stats">
+                    <span>分数 <strong id="parkour-score">0</strong></span>
+                    <span>生命 <strong id="parkour-lives">3</strong></span>
+                    <span id="parkour-time">早晨 · 晴</span>
+                </div>
+            </div>
+            <canvas id="parkour-canvas" width="960" height="600" aria-label="校园跑酷游戏画面"></canvas>
+            <div class="parkour-controls">
+                <button id="parkour-toggle" class="btn-action" type="button">开始跑酷</button>
+                <button class="btn-action parkour-dir" type="button" data-dir="-2">↙ 急左</button>
+                <button class="btn-action parkour-dir" type="button" data-dir="-1">← 左</button>
+                <button class="btn-action parkour-dir is-active" type="button" data-dir="0">↓ 直行</button>
+                <button class="btn-action parkour-dir" type="button" data-dir="1">→ 右</button>
+                <button class="btn-action parkour-dir" type="button" data-dir="2">↘ 急右</button>
+            </div>
+            <p class="parkour-help">按空格开始/暂停，A/D 或方向键切换五段方向。人物固定在中央，向下跑得越远分数越高。</p>
+        </section>
+
+        <aside class="parkour-side">
+            <section class="parkour-panel">
+                <h2>排行榜</h2>
+                <ol id="parkour-leaderboard" class="parkour-list"></ol>
+            </section>
+            <section class="parkour-panel">
+                <h2>纪念品仓库</h2>
+                <div id="parkour-inventory" class="parkour-inventory"></div>
+            </section>
+            <section class="parkour-panel">
+                <h2>当前事件</h2>
+                <p id="parkour-event" class="parkour-event-text">地图上会随机出现编日史事件小场景。</p>
+            </section>
+        </aside>
+    </main>
+
+    <script src="js/cacheLoader.js"></script>
+    <script src="js/recordStore.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/gameSystem.js"></script>
+    <script src="js/backgroundOptions.js"></script>
+    <script src="js/backgroundSwitcher.js"></script>
+    <script src="js/recordRendererV2.js"></script>
+    <script src="js/parkourApp.js"></script>
+</body>
+
+</html>

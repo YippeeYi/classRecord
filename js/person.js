@@ -20,7 +20,7 @@ const switchButtons = document.querySelectorAll(".switch-btn");
 let allRecords = [];
 let participatedRecords = [];
 let authoredRecords = [];
-let currentFilter = { year: "", month: "", day: "" };
+let currentFilter = { year: "", month: "", day: "", important: false, excludeDaily: false };
 
 function getActiveRecords() {
     const active = document.querySelector(".switch-btn.active");

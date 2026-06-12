@@ -1,14 +1,4 @@
 function bindToggle(recordDiv) {
-    const imageButton = recordDiv.querySelector(".image-toggle");
-    const imageWrap = recordDiv.querySelector(".image-wrapper");
-    if (imageButton && imageWrap) {
-        imageButton.onclick = () => {
-            const open = imageWrap.style.display === "block";
-            imageWrap.style.display = open ? "none" : "block";
-            imageButton.textContent = open ? "📷" : "❌";
-        };
-    }
-
     const attachmentButton = recordDiv.querySelector(".attach-toggle");
     const attachmentWrap = recordDiv.querySelector(".attachments-wrapper");
     if (attachmentButton && attachmentWrap) {

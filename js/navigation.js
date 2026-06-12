@@ -86,7 +86,7 @@
             prefetchPage('people.html');
             prefetchPage('glossary.html');
             prefetchPage('quiz.html');
-            prefetchPage('gacha.html');
+            prefetchPage('parkour.html');
             warmCoreData();
         };
 
