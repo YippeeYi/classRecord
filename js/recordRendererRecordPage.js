@@ -5,6 +5,7 @@ function parseContent(text) {
         .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, (_, id, label) => `<span class="term-tag" data-id="${id}">${label}</span>`)
         .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, (_, id, label) => `<span class="person-tag" data-id="${id}" title="${id}">${label}</span>`)
         .replace(/\(\((.+?)\)\)/g, (_, content) => `<span class="redacted"><span class="redacted-mask"></span><span class="redacted-content">${content}</span></span>`)
+        .replace(/>>(.+?)<</g, (_, value) => `<span class="record-align-right">${value}</span>`)
         .replace(/\^(.+?)\^/g, (_, value) => `<sup>${value}</sup>`)
         .replace(/_(.+?)_/g, (_, value) => `<sub>${value}</sub>`);
 }
@@ -16,6 +17,7 @@ function stripRecordMarkup(text) {
         .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, "$2")
         .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, "$2")
         .replace(/\(\((.+?)\)\)/g, "$1")
+        .replace(/>>(.+?)<</g, "$1")
         .replace(/\^(.+?)\^/g, "$1")
         .replace(/_(.+?)_/g, "$1");
 }
@@ -23,7 +25,10 @@ function stripRecordMarkup(text) {
 window.stripRecordMarkup = stripRecordMarkup;
 
 function formatContent(text) {
-    return text.split("\n\n").map((paragraph) => parseContent(paragraph).replace(/\n/g, "<br>")).join("");
+    return String(text || "")
+        .split(/\n\s*\n/g)
+        .map((paragraph) => `<span class="record-paragraph">${parseContent(paragraph).replace(/\n/g, "<br>")}</span>`)
+        .join("");
 }
 
 function sortRecords(records) {

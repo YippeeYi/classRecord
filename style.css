@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: "Google Sans Flex";
   src: url("fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");
   font-weight: 100 1000;
@@ -606,6 +606,22 @@ body>footer {
   font-size: 18px;
   line-height: 1.75;
   letter-spacing: 0.02em;
+}
+
+.record-paragraph {
+  display: block;
+  margin: 0 0 0.72em;
+}
+
+.record-paragraph:last-child {
+  margin-bottom: 0;
+}
+
+.record-align-right {
+  display: block;
+  margin: 0.36em 0;
+  text-align: right;
+  text-indent: 0;
 }
 
 
@@ -1779,7 +1795,7 @@ body>footer {
   color: var(--text-main);
   line-height: 1;
   text-indent: 0;
-  vertical-align: sub;
+  vertical-align: baseline;
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
 }
 
@@ -1967,7 +1983,7 @@ body>footer {
   position: absolute;
   inset: 0;
   z-index: 1;
-  border-radius: 14px;
+  border-radius: inherit;
   background: rgba(17, 24, 39, 0.82);
   backdrop-filter: blur(3px) saturate(0.85);
   pointer-events: none;
@@ -1981,16 +1997,15 @@ body>footer {
 .record-lock-panel {
   position: absolute;
   z-index: 2;
-  left: 18px;
-  right: 18px;
-  top: 50%;
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
   color: #fff8e6;
   text-shadow: 0 1px 12px rgba(0, 0, 0, 0.28);
-  transform: translateY(-50%);
+  padding: 18px;
+  border-radius: inherit;
 }
 
 .record-lock-icon {
@@ -2037,6 +2052,7 @@ body>footer {
 
 .record.is-locked.importance-important {
   border-left-width: 7px;
+  border-left-color: transparent;
   box-shadow:
     0 0 0 1px rgba(255, 226, 142, 0.28),
     0 20px 46px rgba(15, 23, 42, 0.36),
@@ -3614,3 +3630,4 @@ body.is-wish-revealing {
     white-space: normal;
   }
 }
+
