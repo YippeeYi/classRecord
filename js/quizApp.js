@@ -396,6 +396,12 @@
     return allQuestions.some((question) => question[group === 'types' ? 'type' : 'content'] === value);
   }
 
+  function hasQuestionWhenSelected(group, value) {
+    const selectedTypes = group === 'types' ? new Set([value]) : activeFilters.types;
+    const selectedContents = group === 'contents' ? new Set([value]) : activeFilters.contents;
+    return hasQuestionFor(selectedTypes, selectedContents);
+  }
+
 
   function pruneFilters() {
     let changed = true;
@@ -436,8 +442,8 @@
       else nextSet.add(value);
       const nextTypes = group === 'types' ? nextSet : activeFilters.types;
       const nextContents = group === 'contents' ? nextSet : activeFilters.contents;
-      const unavailable = !hasAnyQuestionInGroup(group, value) || !hasQuestionFor(nextTypes, nextContents);
-      const disabled = currentSet.has(value) ? nextSet.size === 0 : unavailable;
+      const unavailable = !hasAnyQuestionInGroup(group, value) || !hasQuestionWhenSelected(group, value);
+      const disabled = currentSet.has(value) ? nextSet.size === 0 || !hasQuestionFor(nextTypes, nextContents) : unavailable;
       return `
         <button type="button" class="btn-action filter-option${currentSet.has(value) ? ' is-active' : ''}${unavailable ? ' is-disabled' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>
           <span class="quiz-filter-check">${currentSet.has(value) ? '\u2713' : '+'}</span>${label}

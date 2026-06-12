@@ -1734,9 +1734,6 @@ body>footer {
   text-indent: 0;
 }
 
-.quiz-question-record.has-answer-blank {
-  padding-top: 8px;
-}
 
 .quiz-question-side {
   display: inline-grid;
@@ -1782,7 +1779,7 @@ body>footer {
   color: var(--text-main);
   line-height: 1;
   text-indent: 0;
-  vertical-align: -0.24em;
+  vertical-align: sub;
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
 }
 
