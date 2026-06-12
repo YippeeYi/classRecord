@@ -46,15 +46,16 @@ function buildRecordBody(record, isLocked) {
             </span>
         </div>
         <div class="content ${isLocked ? "content-locked" : ""}">
-            ${isLocked ? `
-                <div class="record-lock-panel">
-                    <div class="record-lock-icon">LOCKED</div>
-                    <p class="record-lock-title">重要条目已上锁</p>
-                    <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
-                    <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
-                </div>
-            ` : formatContent(record.content)}
+            ${formatContent(record.content)}
         </div>
+        ${isLocked ? `
+            <div class="record-lock-panel">
+                <div class="record-lock-icon">LOCKED</div>
+                <p class="record-lock-title">重要条目已上锁</p>
+                <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
+                <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
+            </div>
+        ` : ""}
         ${!isLocked && record.image ? `<div class="image-wrapper" style="display:none"><img src="${record.image}" alt="${record.id}"></div>` : ""}
         ${!isLocked && record.attachments?.length ? `
             <div class="attachments-wrapper" style="display:none">

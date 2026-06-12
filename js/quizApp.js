@@ -54,6 +54,40 @@
     return stripOptionMarkup(text).toLowerCase();
   }
 
+  function blankHtml(answer, revealed = false) {
+    const width = Math.max(2, Array.from(String(answer || '')).length);
+    return `<span class="quiz-answer-blank${revealed ? ' is-revealed' : ''}" style="--blank-chars:${width}">${revealed ? escapeHtml(answer) : ''}</span>`;
+  }
+
+  function renderRecordWithBlank(recordText, answer, revealed = false) {
+    const escapedRecord = escapeHtml(recordText);
+    const escapedAnswer = escapeHtml(answer);
+    if (escapedRecord.includes(escapedAnswer)) {
+      return escapedRecord.replace(escapedAnswer, blankHtml(answer, revealed));
+    }
+    return `${escapedRecord}<span class="quiz-record-answer-line">???${blankHtml(answer, revealed)}</span>`;
+  }
+
+  function renderJudgeRecord(question, revealed = false) {
+    const escapedRecord = escapeHtml(question.recordText || '');
+    if (!revealed || question.answer === '\u6b63\u786e' || !question.wrongText) return escapedRecord;
+    return escapedRecord.replace(escapeHtml(question.wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(question.wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(question.correctText)}</span></span>`);
+  }
+
+  function renderQuestionBody(revealed = false) {
+    if (!currentQuestion) return;
+    let recordHtml = escapeHtml(currentQuestion.recordText || currentQuestion.maskedText || '');
+    if (currentQuestion.type === 'choice' || currentQuestion.type === 'fill') {
+      recordHtml = renderRecordWithBlank(currentQuestion.recordText || currentQuestion.maskedText || '', currentQuestion.answer, revealed);
+    } else if (currentQuestion.type === 'judge') {
+      recordHtml = renderJudgeRecord(currentQuestion, revealed);
+    }
+    questionText.innerHTML = `
+      <span class="quiz-question-prompt">${escapeHtml(currentQuestion.prompt)}</span>
+      <span class="quiz-question-record">${formatContent(recordHtml)}</span>
+    `;
+  }
+
   function stripOptionMarkup(text) {
     return window.stripRecordMarkup(text || '')
       .replace(/\^(.+?)\^/g, '$1')
@@ -116,8 +150,7 @@
     if (!tokens.length) return null;
 
     const answerRef = pickRandom(tokens);
-    const maskedText = text.replace(answerRef.label, '________________________');
-    if (maskedText === text) return null;
+    if (!text.includes(answerRef.label)) return null;
 
     return {
       id: record.id,
@@ -125,29 +158,51 @@
       content: kind,
       answer: answerRef.label,
       answerId: answerRef.id,
-      maskedText
+      recordText: text,
+      prompt: kind === 'person' ? '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u4eba\u540d\u3002' : '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u672f\u8bed\u3002'
     };
+  }
+
+  function getPersonChoiceOptions(base, pools) {
+    const answerLabels = shuffle((pools.personLabels.get(base.answerId) || []).filter((item) => item !== base.answer));
+    const otherPeople = shuffle([...pools.personLabels.entries()]
+      .filter(([id, labels]) => id !== base.answerId && labels.length)
+      .map(([id, labels]) => ({ id, labels: shuffle(labels) })));
+    const forms = [];
+
+    if (answerLabels.length >= 3) {
+      forms.push([base.answer, ...answerLabels.slice(0, 3)]);
+    }
+    const twoLabelPerson = otherPeople.find((person) => person.labels.length >= 2);
+    if (answerLabels.length >= 1 && twoLabelPerson) {
+      forms.push([base.answer, answerLabels[0], ...twoLabelPerson.labels.slice(0, 2)]);
+    }
+    if (otherPeople.length >= 3) {
+      forms.push([base.answer, ...otherPeople.slice(0, 3).map((person) => person.labels[0])]);
+    }
+
+    const options = pickRandom(shuffle(forms).filter((form) => uniqueValues(form).length === 4));
+    return options ? shuffle(options) : null;
   }
 
   function buildChoiceQuestion(record, kind, pools) {
     const base = getQuestionBase(record, kind);
     if (!base) return null;
 
-    const samePersonLabels = kind === 'person'
-      ? shuffle((pools.personLabels.get(base.answerId) || []).filter((item) => item !== base.answer && !base.maskedText.includes(item)))
-      : [];
-    const generalPool = kind === 'person' ? pools.personOptions : pools.termOptions;
-    const distractors = uniqueValues([
-      ...samePersonLabels,
-      ...shuffle(generalPool.filter((item) => item !== base.answer && !base.maskedText.includes(item)))
-    ]).slice(0, 3);
-    if (distractors.length < 3) return null;
+    const options = kind === 'person'
+      ? getPersonChoiceOptions(base, pools)
+      : shuffle(uniqueValues([
+        base.answer,
+        ...shuffle(pools.termOptions.filter((item) => item !== base.answer && !base.recordText.includes(item))).slice(0, 3)
+      ]));
+    if (!options || options.length < 4) return null;
 
     return {
       ...base,
       type: 'choice',
       reward: CHOICE_REWARD,
-      options: shuffle([base.answer, ...distractors])
+      prompt: kind === 'person' ? '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u4eba\u540d\u3002' : '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u672f\u8bed\u3002',
+      options: shuffle(options.slice(0, 4))
     };
   }
 
@@ -159,6 +214,7 @@
       ...base,
       type: 'fill',
       reward: FILL_REWARD,
+      prompt: kind === 'person' ? '\u8bf7\u586b\u5199\u8bb0\u5f55\u4e2d\u88ab\u6316\u7a7a\u7684\u4eba\u540d\u3002' : '\u8bf7\u586b\u5199\u8bb0\u5f55\u4e2d\u88ab\u6316\u7a7a\u7684\u672f\u8bed\u3002',
       options: []
     };
   }
@@ -177,10 +233,11 @@
         id: record.id,
         type: 'judge',
         content: kind,
-        answer: '正确',
-        maskedText: text,
+        answer: '\u6b63\u786e',
+        prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
+        recordText: text,
         reward: JUDGE_REWARD,
-        options: ['正确', '错误']
+        options: ['\u6b63\u786e', '\u9519\u8bef']
       };
     }
 
@@ -199,10 +256,13 @@
       id: record.id,
       type: 'judge',
       content: kind,
-      answer: '错误',
-      maskedText: text.replace(target.label, replacement),
+      answer: '\u9519\u8bef',
+      prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
+      recordText: text.replace(target.label, replacement),
+      wrongText: replacement,
+      correctText: target.label,
       reward: JUDGE_REWARD,
-      options: ['正确', '错误']
+      options: ['\u6b63\u786e', '\u9519\u8bef']
     };
   }
 
@@ -216,7 +276,8 @@
       type: 'choice',
       content: 'author',
       answer: record.author,
-      maskedText: `${buildStemText(record).trim()}\n\n这条记录的记录人是谁？`,
+      prompt: '\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba\u662f\u8c01\uff1f',
+      recordText: buildStemText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.author, ...distractors])
     };
@@ -229,7 +290,8 @@
       type: 'fill',
       content: 'author',
       answer: String(record.author).toLowerCase(),
-      maskedText: `${buildStemText(record).trim()}\n\n请填写记录人姓名拼音首字母。`,
+      prompt: '\u8bf7\u586b\u5199\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba\u59d3\u540d\u62fc\u97f3\u9996\u5b57\u6bcd\u3002',
+      recordText: buildStemText(record).trim(),
       reward: FILL_REWARD,
       options: []
     };
@@ -246,10 +308,13 @@
       id: record.id,
       type: 'judge',
       content: 'author',
-      answer: shouldBeCorrect ? '正确' : '错误',
-      maskedText: `${buildStemText(record).trim()}\n\n这条记录的记录人是 ${shownAuthor}。`,
+      answer: shouldBeCorrect ? '\u6b63\u786e' : '\u9519\u8bef',
+      prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u4eba\u4e0e\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u5339\u914d\u3002',
+      recordText: `${buildStemText(record).trim()}\n\n\u8bb0\u5f55\u4eba\uff1a${shownAuthor}`,
+      wrongText: shownAuthor,
+      correctText: record.author,
       reward: JUDGE_REWARD,
-      options: ['正确', '错误']
+      options: ['\u6b63\u786e', '\u9519\u8bef']
     };
   }
 
@@ -273,7 +338,8 @@
       type: 'choice',
       content: 'date',
       answer: record.date,
-      maskedText: `${buildStemText(record).trim()}\n\n这条记录发生在什么时间？`,
+      prompt: '\u8fd9\u6761\u8bb0\u5f55\u53d1\u751f\u5728\u4ec0\u4e48\u65f6\u95f4\uff1f',
+      recordText: buildStemText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.date, ...distractors])
     };
@@ -284,42 +350,73 @@
     feedback.className = `quiz-feedback is-${type}`;
   }
 
-  function updateQuestionBank() {
-    const allowedContents = new Set();
-    activeFilters.types.forEach((type) => {
-      contentByType[type].forEach((content) => allowedContents.add(content));
-    });
-    [...activeFilters.contents].forEach((content) => {
-      if (!allowedContents.has(content)) activeFilters.contents.delete(content);
-    });
+  function hasQuestionFor(types, contents) {
+    return allQuestions.some((question) => types.has(question.type) && contents.has(question.content));
+  }
 
+
+  function pruneFilters() {
+    let changed = true;
+    while (changed) {
+      changed = false;
+      const nextTypes = new Set([...activeFilters.types].filter((type) => allQuestions.some((question) => question.type === type && activeFilters.contents.has(question.content))));
+      if (nextTypes.size && nextTypes.size !== activeFilters.types.size) {
+        activeFilters.types = nextTypes;
+        changed = true;
+      }
+      const nextContents = new Set([...activeFilters.contents].filter((content) => allQuestions.some((question) => activeFilters.types.has(question.type) && question.content === content)));
+      if (nextContents.size && nextContents.size !== activeFilters.contents.size) {
+        activeFilters.contents = nextContents;
+        changed = true;
+      }
+    }
+  }
+
+  function updateQuestionBank() {
+    pruneFilters();
+    if (!hasQuestionFor(activeFilters.types, activeFilters.contents)) {
+      const firstQuestion = allQuestions[0];
+      if (firstQuestion) {
+        activeFilters.types = new Set([firstQuestion.type]);
+        activeFilters.contents = new Set([firstQuestion.content]);
+      }
+    }
     questionBank = allQuestions.filter((question) => activeFilters.types.has(question.type) && activeFilters.contents.has(question.content));
     renderFilter();
   }
 
   function renderFilter() {
     if (!filterWrap) return;
-    const availableContents = new Set();
-    activeFilters.types.forEach((type) => contentByType[type].forEach((content) => availableContents.add(content)));
-    const buildButton = (group, value, label, disabled = false) => `
-      <button type="button" class="btn-action filter-option${activeFilters[group].has(value) ? ' is-active' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>${label}</button>
-    `;
+    const buildButton = (group, value, label) => {
+      const currentSet = activeFilters[group];
+      const nextSet = new Set(currentSet);
+      if (nextSet.has(value)) nextSet.delete(value);
+      else nextSet.add(value);
+      const nextTypes = group === 'types' ? nextSet : activeFilters.types;
+      const nextContents = group === 'contents' ? nextSet : activeFilters.contents;
+      const disabled = !nextSet.size || !hasQuestionFor(nextTypes, nextContents);
+      return `
+        <button type="button" class="btn-action filter-option${currentSet.has(value) ? ' is-active' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>
+          <span class="quiz-filter-check">${currentSet.has(value) ? '\u2713' : '+'}</span>${label}
+        </button>
+      `;
+    };
 
     filterWrap.innerHTML = `
       <div class="filter-field quiz-filter-field">
-        <label>题型</label>
+        <label>\u9898\u578b\uff08\u53ef\u591a\u9009\uff09</label>
         <div class="quiz-filter-options">
           ${Object.entries(typeLabels).map(([value, label]) => buildButton('types', value, label)).join('')}
         </div>
       </div>
       <div class="filter-field quiz-filter-field">
-        <label>内容</label>
+        <label>\u5185\u5bb9\uff08\u53ef\u591a\u9009\uff09</label>
         <div class="quiz-filter-options">
-          ${Object.entries(contentLabels).map(([value, label]) => buildButton('contents', value, label, !availableContents.has(value))).join('')}
+          ${Object.entries(contentLabels).map(([value, label]) => buildButton('contents', value, label)).join('')}
         </div>
       </div>
       <div class="filter-actions">
-        <button type="button" class="btn-action quiz-filter-all">全选</button>
+        <button type="button" class="btn-action quiz-filter-all">\u5168\u9009\u53ef\u7528</button>
       </div>
     `;
   }
@@ -341,7 +438,7 @@
     feedback.textContent = '';
     feedback.className = 'quiz-feedback';
     nextButton.disabled = false;
-    questionText.innerHTML = formatContent(currentQuestion.maskedText);
+    renderQuestionBody(false);
     questionMeta.textContent = `条目 ${currentQuestion.id} · ${typeLabels[currentQuestion.type]} · ${contentLabels[currentQuestion.content]} · 答对奖励 ${currentQuestion.reward} Q币`;
 
     const isFill = currentQuestion.type === 'fill';
@@ -388,11 +485,12 @@
       });
     }
 
+    renderQuestionBody(true);
     if (isCorrect) {
       window.GameState.addCoins(currentQuestion.reward, 'quiz-reward');
-      setFeedback(`回答正确，获得 ${currentQuestion.reward} Q币。`, 'success');
+      setFeedback(`\u2713 \u56de\u7b54\u6b63\u786e\uff0c\u83b7\u5f97 ${currentQuestion.reward} Q\u5e01\u3002`, 'success');
     } else {
-      setFeedback(`回答错误，正确答案是 ${currentQuestion.answer}。`, 'error');
+      setFeedback(`\u2715 \u56de\u7b54\u9519\u8bef\uff0c\u6b63\u786e\u7b54\u6848\u662f ${currentQuestion.answer}\u3002`, 'error');
     }
   }
 
@@ -401,8 +499,8 @@
     const allButton = event.target.closest('.quiz-filter-all');
     if (allButton) {
       activeFilters = {
-        types: new Set(Object.keys(typeLabels)),
-        contents: new Set(Object.keys(contentLabels))
+        types: new Set(Object.keys(typeLabels).filter((type) => allQuestions.some((question) => question.type === type))),
+        contents: new Set(Object.keys(contentLabels).filter((content) => allQuestions.some((question) => question.content === content)))
       };
       renderQuestion();
       return;

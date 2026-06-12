@@ -1637,6 +1637,29 @@ body>footer {
   flex-wrap: wrap;
   gap: 8px;
 }
+
+.quiz-filter .filter-option {
+  width: auto;
+  min-width: 78px;
+  height: 32px;
+  gap: 6px;
+}
+
+.quiz-filter .filter-option:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+
+.quiz-filter-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.58);
+  font-size: 12px;
+}
 .quiz-card-head {
   display: flex;
   align-items: center;
@@ -1658,8 +1681,92 @@ body>footer {
 
 .quiz-question-text {
   margin: 20px 0 0;
-  font-size: clamp(24px, 3vw, 34px);
-  line-height: 1.6;
+  display: grid;
+  gap: 14px;
+  line-height: 1.7;
+}
+
+.quiz-question-prompt {
+  display: block;
+  font-size: clamp(21px, 2.5vw, 28px);
+  font-weight: 800;
+  color: var(--text-main);
+}
+
+.quiz-question-record {
+  display: block;
+  padding: 16px 18px 16px 26px;
+  border-left: 4px solid color-mix(in srgb, var(--theme-accent) 48%, transparent);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--theme-surface) 72%, transparent);
+  color: var(--text-soft);
+  font-size: clamp(17px, 2vw, 20px);
+  font-weight: 600;
+  text-indent: 1em;
+}
+
+.quiz-record-answer-line {
+  display: block;
+  margin-top: 10px;
+  text-indent: 0;
+  color: var(--text-main);
+  font-weight: 800;
+}
+
+.quiz-answer-blank {
+  display: inline-flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: calc(var(--blank-chars, 4) * 1em);
+  height: 1.35em;
+  padding: 0 0.08em;
+  border-bottom: 0.11em solid currentColor;
+  color: var(--text-main);
+  line-height: 1;
+  text-indent: 0;
+  vertical-align: baseline;
+  transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+
+.quiz-answer-blank.is-revealed {
+  color: var(--theme-accent-strong);
+  border-color: currentColor;
+  background: color-mix(in srgb, var(--theme-accent) 10%, transparent);
+}
+
+.quiz-judge-correction {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45em;
+  text-indent: 0;
+}
+
+.quiz-judge-wrong {
+  position: relative;
+  color: #b42318;
+  animation: quiz-wrong-fade 0.34s ease both;
+}
+
+.quiz-judge-wrong::after {
+  content: "";
+  position: absolute;
+  left: -0.08em;
+  right: -0.08em;
+  top: 52%;
+  height: 0.12em;
+  border-radius: 999px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left center;
+  animation: quiz-strike 0.46s ease 0.1s forwards;
+}
+
+.quiz-judge-answer {
+  color: #0f8c5f;
+  font-weight: 800;
+  opacity: 0;
+  transform: translateX(-8px);
+  animation: quiz-answer-slide 0.42s ease 0.28s forwards;
 }
 
 .quiz-options {
@@ -1767,41 +1874,61 @@ body>footer {
 
 .quiz-feedback {
   margin-top: 18px;
-  min-height: 24px;
-  font-size: 15px;
+  min-height: 32px;
+  padding: 10px 14px;
+  border-radius: 16px;
+  font-size: 16px;
+  font-weight: 800;
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.22s ease, transform 0.22s ease, background 0.22s ease;
 }
 
 .quiz-feedback.is-success {
   color: #0f8c5f;
+  background: rgba(226, 255, 244, 0.86);
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .quiz-feedback.is-error {
   color: #b42318;
+  background: rgba(255, 238, 238, 0.88);
+  opacity: 1;
+  transform: translateY(0);
 }
 
- .record.is-locked {
-  border: 1px solid rgba(214, 184, 95, 0.36);
-  border-left-width: 7px;
+.record.is-locked {
+  color: var(--text-main);
+}
+
+.record.is-locked::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: 14px;
   background:
-    linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(48, 58, 82, 0.82)),
-    rgba(255, 252, 246, 0.34);
-  color: #f5f2e8;
+    linear-gradient(135deg, rgba(17, 24, 39, 0.82), rgba(48, 58, 82, 0.74)),
+    rgba(255, 252, 246, 0.24);
+  pointer-events: none;
 }
 
 .record.is-locked .meta,
 .record.is-locked .content {
-  color: rgba(255, 248, 230, 0.92);
-}
-
-.record.is-locked .meta,
-.record.is-locked .meta span,
-.record.is-locked .person-tag {
-  color: #fff;
+  filter: blur(1px) saturate(0.8);
 }
 
 .record-lock-panel {
+  position: absolute;
+  z-index: 2;
+  inset: 52px 18px 18px;
   display: grid;
+  align-content: center;
+  justify-items: start;
   gap: 10px;
+  color: #fff8e6;
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.28);
 }
 
 .record-lock-icon {
@@ -1846,6 +1973,29 @@ body>footer {
     0 0 0 1px rgba(255, 226, 142, 0.28),
     0 20px 46px rgba(15, 23, 42, 0.36),
     0 0 38px rgba(255, 210, 104, 0.22);
+}
+
+@keyframes quiz-strike {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes quiz-answer-slide {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes quiz-wrong-fade {
+  from {
+    background: rgba(255, 238, 238, 0);
+  }
+
+  to {
+    background: rgba(255, 238, 238, 0.72);
+  }
 }
 
 .gacha-page {

@@ -66,16 +66,16 @@ function buildRecordBody(record, isLocked) {
         </div>
 
         <div class="content ${isLocked ? "content-locked" : ""}">
-            ${isLocked ? `
-                <div class="record-lock-panel">
-                    <div class="record-lock-icon">LOCKED</div>
-                    <p class="record-lock-title">重要条目已上锁</p>
-                    <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
-                    <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
-                </div>
-            ` : formatContent(record.content)}
+            ${formatContent(record.content)}
         </div>
-
+        ${isLocked ? `
+            <div class="record-lock-panel">
+                <div class="record-lock-icon">LOCKED</div>
+                <p class="record-lock-title">重要条目已上锁</p>
+                <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
+                <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
+            </div>
+        ` : ""}
         ${!isLocked && record.image ? `
             <div class="image-wrapper" style="display:none">
                 <img src="${record.image}" alt="${record.id}">
@@ -423,7 +423,7 @@ document.addEventListener("mouseover", (event) => {
         activeTooltip.className = "term-tooltip hidden";
         activeTooltip.innerHTML = `
             <div class="term-tooltip-content">${formatContent(term.definition)}</div>
-            <div class="term-tooltip-hint">点击查看完整术语页面</div>
+            <div class="term-tooltip-hint">点击此处查看完整术语页面</div>
         `;
         document.body.appendChild(activeTooltip);
 
