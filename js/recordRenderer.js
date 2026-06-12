@@ -125,16 +125,18 @@ function renderRecordList(records, container) {
     });
 }
 
-function filterRecordsByDate(records, { year, month, day }) {
+function filterRecordsByDate(records, { year, month, day, important } = {}) {
     const hasYear = Boolean(year);
     const hasMonth = Boolean(month);
     const hasDay = Boolean(day);
+    const onlyImportant = Boolean(important);
 
-    if (!hasYear && !hasMonth && !hasDay) {
+    if (!hasYear && !hasMonth && !hasDay && !onlyImportant) {
         return records.slice();
     }
 
     return records.filter((record) => {
+        if (onlyImportant && record.importance !== "important") return false;
         if (!record.date) return false;
         const [recordYear, recordMonth, recordDay] = record.date.split("-");
         if (hasYear && recordYear !== year) return false;
@@ -207,6 +209,7 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
             <div id="filter-day-options" class="filter-options" role="group" aria-label="按日筛选"></div>
         </div>
         <div class="filter-actions">
+            <button type="button" class="btn-action filter-important" data-field="important">重要记录</button>
             <button type="button" class="btn-action clear">清空</button>
         </div>
     `;
@@ -218,11 +221,13 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     const dropdownTriggers = wrapper.querySelectorAll(".filter-dropdown-trigger");
     const filterFields = wrapper.querySelectorAll(".filter-field");
     const clearButton = wrapper.querySelector(".clear");
+    const importantButton = wrapper.querySelector(".filter-important");
 
     let currentCriteria = {
         year: initial.year || "",
         month: initial.month || "",
-        day: initial.day || ""
+        day: initial.day || "",
+        important: Boolean(initial.important)
     };
 
     const updateTriggerLabels = (criteria) => {
@@ -231,6 +236,9 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
             month: criteria.month ? `${criteria.month}月` : "选择月",
             day: criteria.day ? `${criteria.day}日` : "选择日"
         };
+        if (importantButton) {
+            importantButton.classList.toggle("is-active", Boolean(criteria.important));
+        }
         dropdownTriggers.forEach((trigger) => {
             const target = trigger.dataset.target;
             if (!target) return;
@@ -318,7 +326,8 @@ function renderRecordFilter({ container, onFilterChange, getRecords, initial = {
     yearOptions.addEventListener("click", handleOptionClick);
     monthOptions.addEventListener("click", handleOptionClick);
     dayOptions.addEventListener("click", handleOptionClick);
-    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "" }));
+    importantButton?.addEventListener("click", () => applyCriteria({ ...currentCriteria, important: !currentCriteria.important }));
+    clearButton.addEventListener("click", () => applyCriteria({ year: "", month: "", day: "", important: false }));
 
     renderSelectOptions();
     updateTriggerLabels(currentCriteria);

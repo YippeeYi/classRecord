@@ -1,4 +1,4 @@
-﻿@font-face {
+@font-face {
   font-family: "Google Sans Flex";
   src: url("fonts/GoogleSansFlex/GoogleSansFlex-VariableFont_GRAD,ROND,opsz,slnt,wdth,wght.ttf") format("truetype");
   font-weight: 100 1000;
@@ -589,20 +589,6 @@ body>footer {
     0 18px 44px rgba(var(--theme-rgb), 0.18),
     0 0 28px color-mix(in srgb, var(--important-border) 24%, transparent);
 }
-
-.record.importance-important::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: 14px;
-  pointer-events: none;
-  background:
-    linear-gradient(120deg, transparent 0%, color-mix(in srgb, var(--important-border) 18%, white) 18%, transparent 34%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 38%);
-  opacity: 0.85;
-}
-
-
 
 
 .meta {
@@ -1636,6 +1622,21 @@ body>footer {
   padding: 28px;
 }
 
+
+.quiz-filter {
+  margin: 0 0 18px;
+  width: 100%;
+}
+
+.quiz-filter-field {
+  align-items: flex-start;
+}
+
+.quiz-filter-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
 .quiz-card-head {
   display: flex;
   align-items: center;
@@ -1724,13 +1725,19 @@ body>footer {
   font: inherit;
   color: var(--text-main);
   cursor: pointer;
-  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  transition: transform 0.08s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
 }
 
 .quiz-option:hover {
   transform: translateY(-2px);
   box-shadow: 0 18px 30px rgba(79, 70, 229, 0.12);
 }
+
+.quiz-option:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: var(--control-shadow-inset);
+}
+
 
 .quiz-option:disabled {
   cursor: default;
@@ -1772,8 +1779,9 @@ body>footer {
   color: #b42318;
 }
 
-.record.is-locked {
+ .record.is-locked {
   border: 1px solid rgba(214, 184, 95, 0.36);
+  border-left-width: 7px;
   background:
     linear-gradient(135deg, rgba(17, 24, 39, 0.88), rgba(48, 58, 82, 0.82)),
     rgba(255, 252, 246, 0.34);
@@ -1794,10 +1802,6 @@ body>footer {
 .record-lock-panel {
   display: grid;
   gap: 10px;
-  padding: 20px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
-  border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
 .record-lock-icon {
@@ -1837,7 +1841,7 @@ body>footer {
 }
 
 .record.is-locked.importance-important {
-  border-left-width: 8px;
+  border-left-width: 7px;
   box-shadow:
     0 0 0 1px rgba(255, 226, 142, 0.28),
     0 20px 46px rgba(15, 23, 42, 0.36),
