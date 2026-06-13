@@ -133,6 +133,7 @@ body>h2,
 body>.notice,
 body>.person-info,
 body>.record-switch,
+body>.record-view-switch,
 body>.sort-controls,
 body>#record-filter,
 body>#record-list,
@@ -476,6 +477,8 @@ body>footer {
 }
 
 .record-filter .filter-option.is-active,
+.record-filter .filter-important.is-active,
+.record-filter .filter-exclude-daily.is-active,
 .select-menu .sort-option.is-active {
   color: var(--control-active-text);
   border-color: transparent;
@@ -3618,7 +3621,8 @@ body.is-wish-revealing {
 
 
 .record-view-switch {
-  margin-left: 20px;
+  justify-content: flex-start;
+  padding-left: 20px;
 }
 
 .record-written-view {
@@ -3709,8 +3713,9 @@ body.is-wish-revealing {
 .qcoin-mini {
   position: fixed;
   z-index: 20;
-  left: 18px;
+  left: 50%;
   top: 16px;
+  transform: translateX(-50%);
   padding: 6px 11px;
   border-radius: 999px;
   color: var(--control-active-text);
@@ -3721,7 +3726,8 @@ body.is-wish-revealing {
 }
 
 .record-view-switch {
-  margin-left: 20px;
+  justify-content: flex-start;
+  padding-left: 20px;
 }
 
 .record-written-view {
@@ -3929,4 +3935,20 @@ body.is-wish-revealing {
   .record-written-image {
     position: static;
   }
+}
+
+.guide-feature-grid.is-compact {
+  grid-template-columns: repeat(2, minmax(180px, 260px));
+  justify-content: center;
+  gap: 12px;
+}
+
+.guide-feature-grid.is-compact .guide-feature-card {
+  min-height: 0;
+  padding: 16px 18px;
+}
+
+.guide-feature-grid.is-compact .guide-feature-card h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
 }

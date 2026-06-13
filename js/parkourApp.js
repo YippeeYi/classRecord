@@ -106,7 +106,7 @@
             y: -360,
             w: 34 + Math.random() * 34,
             h: 34 + Math.random() * 34,
-            vx: (Math.random() - 0.5) * 90,
+            vx: 0,
             color: "#7f1d1d"
         });
     }
@@ -195,8 +195,6 @@
         const player = { x: playerX, y: 0, w: 30, h: 34 };
         objects.forEach((object) => {
             object.y += speed * dt;
-            object.x += object.vx * dt;
-            if (object.x > 380 || object.x < -380) object.vx *= -1;
             if (!object.used && hit(player, object)) {
                 object.used = true;
                 if (object.type === "obstacle" && invincible <= 0) {

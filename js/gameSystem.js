@@ -79,6 +79,16 @@
         });
     }
 
+    function ensureBalanceChip() {
+        if (document.body.classList.contains('auth-page')) return;
+        if (document.querySelector('.qcoin-mini')) return;
+        const chip = document.createElement('div');
+        chip.className = 'qcoin-mini';
+        chip.innerHTML = 'Q币 <strong data-qcoin-balance>0</strong>';
+        document.body.prepend(chip);
+        syncBalanceTargets();
+    }
+
     function notify(message, type = 'info') {
         window.showGameToast?.(message, type);
     }
@@ -153,6 +163,9 @@
         syncBalanceTargets();
     });
 
-    document.addEventListener('DOMContentLoaded', syncBalanceTargets, { once: true });
+    document.addEventListener('DOMContentLoaded', () => {
+        ensureBalanceChip();
+        syncBalanceTargets();
+    }, { once: true });
     window.GameState.subscribe(syncBalanceTargets);
 })();

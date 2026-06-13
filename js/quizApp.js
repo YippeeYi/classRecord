@@ -583,6 +583,7 @@
   (window.cacheReadyPromise || Promise.resolve())
     .then(() => Promise.all([window.loadAllRecords(), window.loadAllPeople(), window.loadAllGlossary()]))
     .then(([records, people, glossary]) => {
+      const quizRecords = records.filter((record) => !String(record.fileName || record.id || '').replace(/\.json$/i, '').endsWith('-00'));
       const pools = {
         personLabels: buildLabelMap(records, people),
         personOptions: [],
@@ -594,8 +595,8 @@
         ...quizRecords.flatMap((record) => extractTokenRefs(record.content || '', 'term').map((ref) => ref.label))
       ]);
 
-      const authorPool = uniqueValues(records.map((record) => record.author));
-      const datePool = uniqueValues(records.map((record) => record.date));
+      const authorPool = uniqueValues(quizRecords.map((record) => record.author));
+      const datePool = uniqueValues(quizRecords.map((record) => record.date));
       const questions = [];
       quizRecords.forEach((record) => {
         questions.push(buildChoiceQuestion(record, 'person', pools));
