@@ -4,5 +4,29 @@
         "image": "images/quiz/lamian/01.png",
         "answer": "卤门家族",
         "prompt": "请根据图片填写答案。"
+    },
+    {
+        "id": "LAMIAN-02",
+        "image": "images/quiz/lamian/02.png",
+        "answer": "珠穆朗玛峰",
+        "prompt": "请根据图片填写答案。"
+    },
+    {
+        "id": "LAMIAN-03",
+        "image": "images/quiz/lamian/03.png",
+        "answer": "乞力马扎罗山",
+        "prompt": "请根据图片填写答案。"
+    },
+    {
+        "id": "LAMIAN-04",
+        "image": "images/quiz/lamian/04.png",
+        "answer": "雷曼传奇",
+        "prompt": "请根据图片填写答案。"
+    },
+    {
+        "id": "LAMIAN-05",
+        "image": "images/quiz/lamian/05.png",
+        "answer": "提拉米苏",
+        "prompt": "请根据图片填写答案。"
     }
 ]
