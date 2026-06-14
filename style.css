@@ -1738,6 +1738,22 @@ body>footer {
   text-indent: 0;
 }
 
+.quiz-question-image {
+  display: block;
+  width: min(100%, 720px);
+  margin-top: 2px;
+}
+
+.quiz-question-image img {
+  display: block;
+  width: 100%;
+  max-height: 58vh;
+  object-fit: contain;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 12px 28px rgba(51, 43, 35, 0.16);
+}
+
 
 .quiz-question-side {
   display: inline-grid;

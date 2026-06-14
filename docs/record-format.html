@@ -33,7 +33,7 @@
                 <td>time</td>
                 <td>❌</td>
                 <td>具体时间</td>
-                <td><code>"HH:MM"</code>（使用半角，即英文冒号；无具体时间保留本行）</td>
+                <td><code>"HH:MM"</code>（使用半角，即英文冒号；不填时直接删除本字段）</td>
             </tr>
             <tr>
                 <td>author</td>
@@ -92,7 +92,6 @@ H^2^O     CO_2_
     <pre>
 {
     "date": "2024-11-20",
-    "time": "",
     "author": "shr",
     "content": "[[zhx|qq哥]]将[[shr|shr]]的情书揉成一团并扔在地上，并抢夺其生物作业。[[hxw|贺宝宝]]帮助[[shr|生物课代表]]保留了情书",
     "image": "images/2024-11-20-01.jpg",
@@ -115,6 +114,22 @@ H^2^O     CO_2_
     "image": "images/2025-09-03-02.jpg"
 }
   </pre>
+
+    <h2>书面记录分页</h2>
+    <p>
+        书面记录页配置在 <code>data/record/record_pages.json</code>。图片按页码命名，放在
+        <code>images/record-pages/</code>，例如 <code>01.png</code>、<code>02.png</code>、
+        <code>A1.png</code>；每一页在 JSON 中填写 <code>start</code> 和 <code>end</code>，
+        值为该页展示记录的起始与结束 JSON 文件名，例如 <code>2024-11-20-01.json</code>。
+    </p>
+
+    <h2>隐藏答题题库</h2>
+    <p>
+        编日史答题页输入 <code>lamian</code> 后会显示 <code>???</code> 内容选项。题库填写在
+        <code>data/quiz/lamian.json</code>，图片放在 <code>images/quiz/lamian/</code>。
+        默认命名规则为 <code>01.png</code>、<code>02.png</code>、<code>03.png</code>，
+        并在 JSON 的 <code>image</code> 字段中对应填写完整路径。
+    </p>
 
     <h2>备注</h2>
     <p>

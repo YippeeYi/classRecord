@@ -25,7 +25,11 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
                 files.map(async (file, i) => {
                     const res = await fetch(`data/record/${file}`);
                     const record = await res.json();
+                    if (!record.time) {
+                        delete record.time;
+                    }
                     record.fileName = file;
+                    record.recordIndex = i;
                     record.date = file.slice(0, 10);
 
                     // 生成id
@@ -42,6 +46,15 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
             );
 
             return records;
+        }
+    });
+
+    list.forEach((record, index) => {
+        if (!record.time) {
+            delete record.time;
+        }
+        if (!Number.isInteger(record.recordIndex)) {
+            record.recordIndex = index;
         }
     });
 

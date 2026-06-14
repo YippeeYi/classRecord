@@ -2,6 +2,8 @@
   const CHOICE_REWARD = 100;
   const FILL_REWARD = 500;
   const JUDGE_REWARD = 100;
+  const SECRET_SEQUENCE = 'lamian';
+  const SECRET_CONTENT = 'lamian';
   const questionText = document.getElementById('quiz-question-text');
   const questionMeta = document.getElementById('quiz-question-meta');
   const optionsWrap = document.getElementById('quiz-options');
@@ -12,9 +14,10 @@
   const filterWrap = document.getElementById('quiz-filter');
   const typeLabels = { choice: '选择题', fill: '填空题', judge: '判断题' };
   const contentLabels = { person: '人名', term: '术语', author: '记录人', date: '记录时间' };
+  const secretContentLabels = { [SECRET_CONTENT]: '???' };
   const contentByType = {
     choice: ['person', 'term', 'author', 'date'],
-    fill: ['person', 'term', 'author'],
+    fill: ['person', 'term', 'author', SECRET_CONTENT],
     judge: ['person', 'term', 'author']
   };
 
@@ -22,6 +25,8 @@
   let questionBank = [];
   let currentQuestion = null;
   let answeredCurrent = false;
+  let secretUnlocked = false;
+  let secretBuffer = '';
   let activeFilters = {
     types: new Set(Object.keys(typeLabels)),
     contents: new Set(Object.keys(contentLabels))
@@ -96,6 +101,16 @@
 
   function renderQuestionBody(revealed = false) {
     if (!currentQuestion) return;
+    if (currentQuestion.content === SECRET_CONTENT) {
+      questionText.innerHTML = `
+        <span class="quiz-question-prompt">${escapeHtml(currentQuestion.prompt)}</span>
+        <span class="quiz-question-image">
+          <img src="${escapeHtml(currentQuestion.image)}" alt="题目图片" loading="eager" decoding="async">
+        </span>
+      `;
+      return;
+    }
+
     const shouldBlankRecord = (currentQuestion.type === 'choice' || currentQuestion.type === 'fill') && ['person', 'term'].includes(currentQuestion.content);
     let recordHtml = escapeHtml(currentQuestion.recordText || '');
     if (shouldBlankRecord) {
@@ -383,6 +398,35 @@
     };
   }
 
+  async function loadSecretQuestions() {
+    try {
+      const res = await fetch('data/quiz/lamian.json');
+      if (!res.ok) return [];
+      const raw = await res.json();
+      const items = Array.isArray(raw) ? raw : (Array.isArray(raw.questions) ? raw.questions : []);
+      return items.map((item, index) => {
+        const number = String(index + 1).padStart(2, '0');
+        const image = item.image || `images/quiz/lamian/${number}.png`;
+        const answer = String(item.answer || '').trim();
+        if (!image || !answer) return null;
+        return {
+          id: item.id || `LAMIAN-${number}`,
+          type: 'fill',
+          content: SECRET_CONTENT,
+          answer,
+          prompt: item.prompt || '请根据图片填写答案。',
+          recordText: '',
+          image,
+          reward: FILL_REWARD,
+          options: []
+        };
+      }).filter(Boolean);
+    } catch (error) {
+      console.warn('无法加载隐藏题库：', error);
+      return [];
+    }
+  }
+
   function setFeedback(message, type) {
     feedback.textContent = message;
     feedback.className = `quiz-feedback is-${type}`;
@@ -435,6 +479,8 @@
 
   function renderFilter() {
     if (!filterWrap) return;
+    const visibleContentLabels = secretUnlocked ? { ...contentLabels, ...secretContentLabels } : contentLabels;
+    const secretSelected = activeFilters.contents.has(SECRET_CONTENT);
     const buildButton = (group, value, label) => {
       const currentSet = activeFilters[group];
       const nextSet = new Set(currentSet);
@@ -442,8 +488,11 @@
       else nextSet.add(value);
       const nextTypes = group === 'types' ? nextSet : activeFilters.types;
       const nextContents = group === 'contents' ? nextSet : activeFilters.contents;
-      const unavailable = !hasAnyQuestionInGroup(group, value) || !hasQuestionWhenSelected(group, value);
-      const disabled = currentSet.has(value) ? nextSet.size === 0 || !hasQuestionFor(nextTypes, nextContents) : unavailable;
+      const unavailable = group === 'contents' && value === SECRET_CONTENT
+        ? !hasAnyQuestionInGroup(group, value)
+        : !hasAnyQuestionInGroup(group, value) || !hasQuestionWhenSelected(group, value);
+      const secretTypeBlocked = group === 'types' && secretSelected && value !== 'fill';
+      const disabled = secretTypeBlocked || (currentSet.has(value) ? nextSet.size === 0 || !hasQuestionFor(nextTypes, nextContents) : unavailable);
       return `
         <button type="button" class="btn-action filter-option${currentSet.has(value) ? ' is-active' : ''}${unavailable ? ' is-disabled' : ''}" data-group="${group}" data-value="${value}"${disabled ? ' disabled' : ''}>
           <span class="quiz-filter-check">${currentSet.has(value) ? '\u2713' : '+'}</span>${label}
@@ -461,7 +510,7 @@
       <div class="filter-field quiz-filter-field">
         <label>\u5185\u5bb9\uff08\u53ef\u591a\u9009\uff09</label>
         <div class="quiz-filter-options">
-          ${Object.entries(contentLabels).map(([value, label]) => buildButton('contents', value, label)).join('')}
+          ${Object.entries(visibleContentLabels).map(([value, label]) => buildButton('contents', value, label)).join('')}
         </div>
       </div>
       <div class="filter-actions">
@@ -488,7 +537,8 @@
     feedback.className = 'quiz-feedback';
     nextButton.disabled = false;
     renderQuestionBody(false);
-    questionMeta.textContent = `条目 ${currentQuestion.id} · ${typeLabels[currentQuestion.type]} · ${contentLabels[currentQuestion.content]} · 答对奖励 ${currentQuestion.reward} Q币`;
+    const visibleContentLabels = secretUnlocked ? { ...contentLabels, ...secretContentLabels } : contentLabels;
+    questionMeta.textContent = `条目 ${currentQuestion.id} · ${typeLabels[currentQuestion.type]} · ${visibleContentLabels[currentQuestion.content]} · 答对奖励 ${currentQuestion.reward} Q币`;
 
     const isFill = currentQuestion.type === 'fill';
     optionsWrap.hidden = isFill;
@@ -558,6 +608,21 @@
 
     const group = button.dataset.group;
     const value = button.dataset.value;
+    if (group === 'contents' && value === SECRET_CONTENT) {
+      activeFilters.types = new Set(['fill']);
+      activeFilters.contents = new Set([SECRET_CONTENT]);
+      renderQuestion();
+      return;
+    }
+    if (group === 'types' && activeFilters.contents.has(SECRET_CONTENT) && value !== 'fill') {
+      return;
+    }
+    if (group === 'contents' && value !== SECRET_CONTENT && activeFilters.contents.has(SECRET_CONTENT)) {
+      activeFilters.contents = new Set([value]);
+      activeFilters.types = new Set(Object.keys(typeLabels).filter((type) => allQuestions.some((question) => question.type === type && question.content === value)));
+      renderQuestion();
+      return;
+    }
     const values = activeFilters[group];
     if (values.has(value)) {
       if (values.size > 1) values.delete(value);
@@ -580,14 +645,23 @@
 
   nextButton?.addEventListener('click', renderQuestion);
 
+  document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey || event.altKey || event.metaKey || event.key.length !== 1) return;
+    secretBuffer = (secretBuffer + event.key.toLowerCase()).slice(-SECRET_SEQUENCE.length);
+    if (!secretUnlocked && secretBuffer === SECRET_SEQUENCE) {
+      secretUnlocked = true;
+      renderFilter();
+    }
+  });
+
   (window.cacheReadyPromise || Promise.resolve())
-    .then(() => Promise.all([window.loadAllRecords(), window.loadAllPeople(), window.loadAllGlossary()]))
-    .then(([records, people, glossary]) => {
+    .then(() => Promise.all([window.loadAllRecords(), window.loadAllPeople(), window.loadAllGlossary(), loadSecretQuestions()]))
+    .then(([records, people, glossary, secretQuestions]) => {
       const quizRecords = records.filter((record) => !String(record.fileName || record.id || '').replace(/\.json$/i, '').endsWith('-00'));
       const pools = {
         personLabels: buildLabelMap(records, people),
         personOptions: [],
-        termOptions: uniqueValues(glossary.flatMap((term) => [stripOptionMarkup(term.term), term.id]))
+        termOptions: uniqueValues(glossary.map((term) => stripOptionMarkup(term.term)))
       };
       pools.personOptions = uniqueValues([...pools.personLabels.values()].flat());
       pools.termOptions = uniqueValues([
@@ -611,7 +685,7 @@
         questions.push(buildDateChoiceQuestion(record, datePool));
       });
 
-      allQuestions = shuffle(questions.filter(Boolean));
+      allQuestions = shuffle([...questions.filter(Boolean), ...secretQuestions]);
       renderQuestion();
     });
 })();

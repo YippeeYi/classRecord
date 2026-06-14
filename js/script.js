@@ -6,6 +6,7 @@
 const container = document.getElementById("record-list");
 const filterContainer = document.getElementById("record-filter");
 let allRecords = [];
+let recordPageConfig = [];
 let currentCriteria = { year: "", month: "", day: "", important: false, excludeDaily: false };
 let currentView = "list";
 let currentPageIndex = 0;
@@ -24,8 +25,59 @@ function getFilteredRecords() {
   return filtered;
 }
 
+function normalizeFileName(value) {
+  return String(value || "").trim().replace(/^data\/record\//i, "");
+}
+
+function normalizeRecordPage(page, index) {
+  if (typeof page === "string") {
+    return { page, start: "", end: "" };
+  }
+  return {
+    page: String(page?.page || page?.id || String(index + 1).padStart(2, "0")).trim(),
+    start: normalizeFileName(page?.start || page?.startFile || page?.from),
+    end: normalizeFileName(page?.end || page?.endFile || page?.to)
+  };
+}
+
+async function loadRecordPageConfig() {
+  try {
+    const res = await fetch("data/record/record_pages.json");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const pages = await res.json();
+    recordPageConfig = Array.isArray(pages) ? pages.map(normalizeRecordPage).filter((page) => page.page) : [];
+  } catch (error) {
+    console.warn("无法加载书面记录页配置：", error);
+    recordPageConfig = [];
+  }
+}
+
+function getRecordIndexMap() {
+  const map = new Map();
+  allRecords.forEach((record) => {
+    const fileName = normalizeFileName(record.fileName);
+    if (fileName) map.set(fileName, record.recordIndex);
+  });
+  return map;
+}
+
+function getPageRecords(page, filteredRecords, recordIndexMap) {
+  const startIndex = recordIndexMap.get(normalizeFileName(page.start));
+  const endIndex = recordIndexMap.get(normalizeFileName(page.end));
+  if (!Number.isInteger(startIndex) || !Number.isInteger(endIndex)) {
+    return [];
+  }
+
+  const from = Math.min(startIndex, endIndex);
+  const to = Math.max(startIndex, endIndex);
+  return filteredRecords.filter((record) => record.recordIndex >= from && record.recordIndex <= to);
+}
+
 function getWrittenPages(records) {
-  return [...new Set(records.map((record) => record.date).filter(Boolean))].sort().reverse();
+  const recordIndexMap = getRecordIndexMap();
+  return recordPageConfig
+    .map((page) => ({ ...page, records: getPageRecords(page, records, recordIndexMap) }))
+    .filter((page) => page.records.length || (!page.start && !page.end));
 }
 
 function renderWrittenView(records) {
@@ -36,23 +88,20 @@ function renderWrittenView(records) {
   }
   currentPageIndex = Math.min(currentPageIndex, pages.length - 1);
   const page = pages[currentPageIndex];
-  const pageRecords = records.filter((record) => record.date === page);
+  const pageRecords = page.records || [];
   sortRecords(pageRecords);
-  const imageBase = `images/record-pages/${page}`;
+  const imageBase = `images/record-pages/${page.page}`;
   container.innerHTML = `
     <section class="record-written-view">
       <div class="record-written-toolbar">
         <button class="btn-action record-page-prev" type="button" ${currentPageIndex >= pages.length - 1 ? 'disabled' : ''}>上一页</button>
-        <span class="record-written-page">${page} · 第 ${currentPageIndex + 1} / ${pages.length} 页</span>
+        <span class="record-written-page">${page.page} · 第 ${currentPageIndex + 1} / ${pages.length} 页</span>
         <button class="btn-action record-page-next" type="button" ${currentPageIndex <= 0 ? 'disabled' : ''}>下一页</button>
       </div>
       <div class="record-written-layout">
         <figure class="record-written-image">
-          <picture>
-            <source srcset="${imageBase}.png" type="image/png">
-            <img src="${imageBase}.jpg" alt="${page} 原始书面记录" onerror="this.closest('figure').classList.add('is-missing')">
-          </picture>
-          <figcaption>原始书面记录：images/record-pages/${page}.jpg 或 .png</figcaption>
+          <img src="${imageBase}.png" alt="${page.page} 原始书面记录" loading="lazy" decoding="async" onerror="if (!this.dataset.fallback) { this.dataset.fallback='1'; this.src='${imageBase}.jpg'; } else { this.closest('figure').classList.add('is-missing'); }">
+          <figcaption>原始书面记录：images/record-pages/${page.page}.png 或 .jpg</figcaption>
         </figure>
         <div class="record-written-records"></div>
       </div>
@@ -102,7 +151,8 @@ function renderViewControls() {
 const cacheReady = window.cacheReadyPromise || Promise.resolve();
 
 cacheReady.then(() => loadAllRecords())
-  .then(records => {
+  .then(async records => {
+    await loadRecordPageConfig();
     allRecords = records;
     sortRecords(allRecords);
     renderViewControls();
