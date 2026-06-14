@@ -18,38 +18,51 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
         expire: 24 * 60 * 60 * 1000,
         loader: async () => {
             const indexRes = await fetch("data/record/records_index.json");
+            if (!indexRes.ok) {
+                throw new Error(`记录索引加载失败：${indexRes.status}`);
+            }
             const files = await indexRes.json();
 
 
             const records = await Promise.all(
                 files.map(async (file, i) => {
-                    const res = await fetch(`data/record/${file}`);
-                    const record = await res.json();
-                    if (!record.time) {
-                        delete record.time;
-                    }
-                    record.fileName = file;
-                    record.recordIndex = i;
-                    record.date = file.slice(0, 10);
+                    try {
+                        const res = await fetch(`data/record/${file}`);
+                        if (!res.ok) {
+                            throw new Error(`HTTP ${res.status}`);
+                        }
+                        const record = await res.json();
+                        if (!record.time) {
+                            delete record.time;
+                        }
+                        record.fileName = file;
+                        record.recordIndex = i;
+                        record.date = file.slice(0, 10);
 
-                    // 生成id
-                    if (!record.id) {
-                        record.id = `R${String(i + 1).padStart(3, "0")}`;
-                    }
+                        // 生成id
+                        if (!record.id) {
+                            record.id = `R${String(i + 1).padStart(3, "0")}`;
+                        }
 
-                    if (typeof onProgressStep === "function") {
-                        onProgressStep();
+                        return record;
+                    } catch (error) {
+                        console.warn(`跳过无法加载的记录文件：${file}`, error);
+                        return null;
+                    } finally {
+                        if (typeof onProgressStep === "function") {
+                            onProgressStep();
+                        }
                     }
-
-                    return record;
                 })
             );
 
-            return records;
+            return records.filter(Boolean);
         }
     });
 
-    list.forEach((record, index) => {
+    const normalizedList = list.filter(Boolean);
+
+    normalizedList.forEach((record, index) => {
         if (!record.time) {
             delete record.time;
         }
@@ -58,7 +71,7 @@ window.loadAllRecords = async function ({ onProgressStep } = {}) {
         }
     });
 
-    RecordStore.records = list;
+    RecordStore.records = normalizedList;
     RecordStore.loaded = true;
-    return list;
+    return normalizedList;
 };
