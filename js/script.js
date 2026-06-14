@@ -91,23 +91,28 @@ function renderWrittenView(records) {
   const pageRecords = page.records || [];
   pageRecords.sort((a, b) => (a.recordIndex ?? 0) - (b.recordIndex ?? 0));
   const imageBase = `images/record-pages/${page.page}`;
+  const pageOptions = pages.map((item, index) => `
+    <button type="button" class="btn-action filter-option${index === currentPageIndex ? ' is-active' : ''}" data-page-index="${index}">
+      ${item.page}
+    </button>
+  `).join("");
   container.innerHTML = `
     <section class="record-written-view">
       <div class="record-written-toolbar">
         <button class="btn-action record-page-prev" type="button" ${currentPageIndex <= 0 ? 'disabled' : ''}>上一页</button>
         <span class="record-written-page">${page.page} · 第 ${currentPageIndex + 1} / ${pages.length} 页</span>
         <button class="btn-action record-page-next" type="button" ${currentPageIndex >= pages.length - 1 ? 'disabled' : ''}>下一页</button>
-        <label class="record-page-jump">
-          <span>跳转</span>
-          <select class="record-page-select" aria-label="选择书面记录页">
-            ${pages.map((item, index) => `<option value="${index}" ${index === currentPageIndex ? 'selected' : ''}>${item.page}</option>`).join("")}
-          </select>
-        </label>
+        <div class="filter-field record-page-jump">
+          <label>跳转</label>
+          <button type="button" class="btn-select filter-dropdown-trigger record-page-trigger">第 ${page.page} 页 <span class="dropdown-arrow" aria-hidden="true">▾</span></button>
+          <div class="filter-options record-page-options" role="group" aria-label="选择书面记录页">
+            ${pageOptions}
+          </div>
+        </div>
       </div>
       <div class="record-written-layout">
         <figure class="record-written-image">
           <img src="${imageBase}.png" alt="${page.page} 原始书面记录" loading="lazy" decoding="async" onerror="if (!this.dataset.fallback) { this.dataset.fallback='1'; this.src='${imageBase}.jpg'; } else { this.closest('figure').classList.add('is-missing'); }">
-          <figcaption>原始书面记录：images/record-pages/${page.page}.png 或 .jpg</figcaption>
         </figure>
         <div class="record-written-records"></div>
       </div>
@@ -122,8 +127,17 @@ function renderWrittenView(records) {
     currentPageIndex = Math.min(currentPageIndex + 1, pages.length - 1);
     renderCurrentView();
   });
-  container.querySelector(".record-page-select")?.addEventListener("change", (event) => {
-    currentPageIndex = Math.min(Math.max(Number(event.target.value) || 0, 0), pages.length - 1);
+  const pageJump = container.querySelector(".record-page-jump");
+  pageJump?.addEventListener("mouseenter", () => pageJump.classList.add("is-open"));
+  pageJump?.addEventListener("mouseleave", () => pageJump.classList.remove("is-open"));
+  pageJump?.querySelector(".record-page-trigger")?.addEventListener("click", () => {
+    pageJump.classList.toggle("is-open");
+  });
+  pageJump?.querySelector(".record-page-options")?.addEventListener("click", (event) => {
+    const button = event.target.closest("[data-page-index]");
+    if (!button) return;
+    currentPageIndex = Math.min(Math.max(Number(button.dataset.pageIndex) || 0, 0), pages.length - 1);
+    pageJump.classList.remove("is-open");
     renderCurrentView();
   });
 }

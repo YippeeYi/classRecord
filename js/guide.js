@@ -98,11 +98,14 @@
             return;
         }
 
-        await Promise.all([
+        const results = await Promise.allSettled([
             typeof window.loadAllRecords === 'function' ? window.loadAllRecords() : Promise.resolve([]),
             typeof window.loadAllPeople === 'function' ? window.loadAllPeople() : Promise.resolve([]),
             typeof window.loadAllGlossary === 'function' ? window.loadAllGlossary() : Promise.resolve([])
         ]);
+        results
+            .filter((result) => result.status === 'rejected')
+            .forEach((result) => console.warn('导览数据加载失败：', result.reason));
 
         const records = Array.isArray(window.RecordStore?.records) ? window.RecordStore.records : [];
         const people = Array.isArray(window.PeopleStore?.people) ? window.PeopleStore.people : [];
@@ -112,7 +115,7 @@
             .map((item) => item?.date)
             .filter(Boolean)
             .sort()
-            .at(-1) || '暂无';
+            .slice(-1)[0] || '暂无';
 
         const setText = (id, value) => {
             const el = document.getElementById(id);
@@ -161,21 +164,31 @@
             setProgress(0);
         }
 
-        await window.ensureAllCachesLoaded({
-            showOverlay: false,
-            onProgress: (progress) => {
-                if (progressWrap) {
-                    progressWrap.hidden = false;
+        try {
+            await window.ensureAllCachesLoaded({
+                showOverlay: false,
+                onProgress: (progress) => {
+                    if (progressWrap) {
+                        progressWrap.hidden = false;
+                    }
+                    setProgress(progress);
                 }
-                setProgress(progress);
-            }
-        });
+            });
+        } catch (error) {
+            console.warn('导览缓存预加载失败，继续显示入口：', error);
+        }
     })();
 
     bindStatCardLinks();
 
     window.cacheReadyPromise
-        .then(renderGuideHighlights)
+        .then(() => renderGuideHighlights().catch((error) => {
+            console.warn('导览统计渲染失败，继续显示入口：', error);
+            const wrap = document.getElementById('guide-highlights');
+            if (wrap) {
+                wrap.hidden = false;
+            }
+        }))
         .finally(showNav);
 
     const refreshBtn = document.getElementById('refresh-cache-btn');

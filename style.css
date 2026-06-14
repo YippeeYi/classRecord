@@ -438,6 +438,29 @@ body>footer {
   transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
 }
 
+.record-written-toolbar .record-page-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  gap: 8px;
+  padding: 10px;
+  box-sizing: border-box;
+  background: var(--panel-bg);
+  border-radius: 12px;
+  border: var(--panel-border);
+  box-shadow: var(--panel-shadow);
+  width: min(360px, 84vw);
+  margin-top: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 10;
+  opacity: 0;
+  transform: translateY(4px);
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s ease;
+}
+
 .record-filter .filter-dropdown-trigger {
   display: inline-flex;
   align-items: center;
@@ -447,7 +470,17 @@ body>footer {
   white-space: nowrap;
 }
 
+.record-written-toolbar .filter-dropdown-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 108px;
+  justify-content: space-between;
+  white-space: nowrap;
+}
+
 .record-filter .filter-field.is-open .filter-options,
+.record-written-toolbar .record-page-jump.is-open .record-page-options,
 .sort-dropdown.is-open .select-menu {
   opacity: 1;
   transform: translateY(0);
@@ -456,6 +489,7 @@ body>footer {
 }
 
 .record-filter .filter-dropdown-trigger,
+.record-written-toolbar .filter-dropdown-trigger,
 .sort-controls .dropdown-trigger {
   font-size: 13px;
   font-weight: 600;
@@ -463,6 +497,10 @@ body>footer {
 }
 
 .record-filter .filter-dropdown-trigger:focus {
+  outline: none;
+}
+
+.record-written-toolbar .filter-dropdown-trigger:focus {
   outline: none;
 }
 
@@ -476,7 +514,18 @@ body>footer {
   box-sizing: border-box;
 }
 
+.record-written-toolbar .filter-option {
+  width: 100%;
+  height: 24px;
+  padding: 0 8px;
+  border-radius: 10px;
+  font-size: 13px;
+  color: var(--control-text);
+  box-sizing: border-box;
+}
+
 .record-filter .filter-option.is-active,
+.record-written-toolbar .filter-option.is-active,
 .record-filter .filter-important.is-active,
 .record-filter .filter-exclude-daily.is-active,
 .select-menu .sort-option.is-active {
@@ -3693,28 +3742,25 @@ body.is-wish-revealing {
   font-weight: 800;
 }
 
-.record-page-jump {
+.record-written-toolbar .record-page-jump {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-soft);
-  font-weight: 700;
+  gap: 6px;
+  position: relative;
 }
 
-.record-page-select {
-  min-height: 38px;
-  padding: 0 34px 0 12px;
-  border: var(--field-border);
-  border-radius: 10px;
-  background: var(--bg-card);
-  color: var(--text-main);
-  font: inherit;
-  font-weight: 800;
+.record-written-toolbar .record-page-options {
+  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  width: min(360px, 84vw);
+}
+
+.record-written-toolbar .record-page-trigger {
+  min-width: 108px;
 }
 
 .record-written-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(380px, 1.35fr) minmax(0, 0.85fr);
   gap: 18px;
   align-items: start;
 }
@@ -3723,7 +3769,7 @@ body.is-wish-revealing {
   position: sticky;
   top: 18px;
   margin: 0;
-  padding: 14px;
+  padding: 8px;
   border-radius: 18px;
   background: var(--bg-card);
   box-shadow: var(--shadow-soft);
@@ -3762,10 +3808,7 @@ body.is-wish-revealing {
 }
 
 .record-written-image figcaption {
-  margin-top: 8px;
-  color: var(--text-subtle);
-  font-size: 13px;
-  text-align: center;
+  display: none;
 }
 
 .record-written-empty {
@@ -3825,28 +3868,25 @@ body.is-wish-revealing {
   font-weight: 800;
 }
 
-.record-page-jump {
+.record-written-toolbar .record-page-jump {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  color: var(--text-soft);
-  font-weight: 700;
+  gap: 6px;
+  position: relative;
 }
 
-.record-page-select {
-  min-height: 38px;
-  padding: 0 34px 0 12px;
-  border: var(--field-border);
-  border-radius: 10px;
-  background: var(--bg-card);
-  color: var(--text-main);
-  font: inherit;
-  font-weight: 800;
+.record-written-toolbar .record-page-options {
+  grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+  width: min(360px, 84vw);
+}
+
+.record-written-toolbar .record-page-trigger {
+  min-width: 108px;
 }
 
 .record-written-layout {
   display: grid;
-  grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
+  grid-template-columns: minmax(380px, 1.35fr) minmax(0, 0.85fr);
   gap: 18px;
   align-items: start;
 }
@@ -3855,7 +3895,7 @@ body.is-wish-revealing {
   position: sticky;
   top: 18px;
   margin: 0;
-  padding: 14px;
+  padding: 8px;
   border-radius: 18px;
   background: var(--bg-card);
   box-shadow: var(--shadow-soft);
@@ -3894,10 +3934,7 @@ body.is-wish-revealing {
 }
 
 .record-written-image figcaption {
-  margin-top: 8px;
-  color: var(--text-subtle);
-  font-size: 13px;
-  text-align: center;
+  display: none;
 }
 
 .record-written-empty {
