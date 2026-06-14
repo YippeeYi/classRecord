@@ -1337,10 +1337,11 @@ body>footer {
 
 .guide-page {
   min-height: 100vh;
+  height: 100vh;
   margin: 0;
   padding: clamp(14px, 3vw, 28px);
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .guide-main {
@@ -1728,30 +1729,57 @@ body>footer {
 .quiz-question-record {
   display: block;
   padding: 14px 18px 14px 24px;
-  border-left: 4px solid color-mix(in srgb, var(--theme-accent) 48%, transparent);
+  border-left: 4px solid color-mix(in srgb, var(--theme-accent-strong) 68%, transparent);
   border-radius: 16px;
-  background: color-mix(in srgb, var(--theme-surface) 72%, transparent);
-  color: var(--text-soft);
+  background: color-mix(in srgb, var(--theme-surface) 82%, transparent);
+  color: color-mix(in srgb, var(--text-main) 88%, #2f4f99);
   font-size: clamp(17px, 2vw, 20px);
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.55;
   text-indent: 0;
 }
 
-.quiz-question-image {
-  display: block;
-  width: min(100%, 720px);
-  margin-top: 2px;
+.quiz-question-prompt--secret {
+  text-align: center;
 }
 
-.quiz-question-image img {
-  display: block;
+.quiz-secret-visual {
+  display: grid;
+  justify-items: center;
+  gap: 16px;
   width: 100%;
-  max-height: 58vh;
+}
+
+.quiz-secret-visual img {
+  display: block;
+  width: min(100%, 760px);
+  max-height: 54vh;
   object-fit: contain;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.72);
-  box-shadow: 0 12px 28px rgba(51, 43, 35, 0.16);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.quiz-secret-answer-boxes {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.quiz-secret-answer-box {
+  width: 38px;
+  aspect-ratio: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid color-mix(in srgb, var(--theme-accent-strong) 54%, transparent);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--theme-accent-strong);
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
 }
 
 
@@ -1764,8 +1792,8 @@ body>footer {
   max-width: 100%;
   padding: 10px 14px;
   border-radius: 16px;
-  border: 1px solid rgba(79, 70, 229, 0.12);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.84), rgba(244, 245, 255, 0.74));
+  border: 1px solid color-mix(in srgb, var(--theme-accent-strong) 28%, transparent);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.92), rgba(239, 246, 255, 0.86));
   color: var(--text-main);
   font-size: 17px;
 }
@@ -1778,6 +1806,7 @@ body>footer {
 
 .quiz-side-value {
   font-weight: 800;
+  color: var(--theme-accent-strong);
 }
 
 .quiz-record-answer-line {
@@ -1790,17 +1819,22 @@ body>footer {
 
 .quiz-answer-blank {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: center;
   min-width: calc(var(--blank-chars, 4) * 1em);
-  height: 1em;
+  height: 1.32em;
   padding: 0 0.08em;
   border-bottom: 0.11em solid currentColor;
   color: var(--text-main);
-  line-height: 1;
+  line-height: 1.12;
   text-indent: 0;
-  vertical-align: baseline;
+  vertical-align: -0.18em;
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
+}
+
+.quiz-answer-blank>span {
+  display: inline-block;
+  min-height: 1.12em;
 }
 
 .quiz-answer-blank.is-revealed {

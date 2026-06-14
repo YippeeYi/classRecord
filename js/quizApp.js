@@ -25,6 +25,8 @@
   let questionBank = [];
   let currentQuestion = null;
   let answeredCurrent = false;
+  let recentQuestionIds = [];
+  let secretProgress = [];
   let secretUnlocked = false;
   let secretBuffer = '';
   let activeFilters = {
@@ -60,32 +62,37 @@
 
   function blankHtml(answer, revealed = false) {
     const width = Math.max(2, Array.from(String(answer || '')).length);
-    return `<span class="quiz-answer-blank${revealed ? ' is-revealed' : ''}" style="--blank-chars:${width}">${revealed ? escapeHtml(answer) : ''}</span>`;
+    return `<span class="quiz-answer-blank${revealed ? ' is-revealed' : ''}" style="--blank-chars:${width}"><span>${revealed ? escapeHtml(answer) : ''}</span></span>`;
   }
 
   function renderRecordWithBlank(recordText, answer, revealed = false) {
-    const escapedRecord = escapeHtml(recordText);
-    const escapedAnswer = escapeHtml(answer);
-    if (escapedRecord.includes(escapedAnswer)) {
-      return escapedRecord.replace(escapedAnswer, blankHtml(answer, revealed));
+    if (recordText.includes(answer)) {
+      return recordText.replace(answer, blankHtml(answer, revealed));
     }
-    return escapedRecord;
+    return recordText;
+  }
+
+  function renderSecretAnswerBoxes() {
+    if (!currentQuestion || currentQuestion.content !== SECRET_CONTENT) return '';
+    const answerChars = Array.from(String(currentQuestion.answer || ''));
+    const boxes = answerChars.map((_, index) => `<span class="quiz-secret-answer-box">${escapeHtml(secretProgress[index] || '')}</span>`).join('');
+    return `<span class="quiz-secret-answer-boxes" aria-label="答案字数 ${answerChars.length}">${boxes}</span>`;
   }
 
   function renderJudgeCorrection(text, wrongText, correctText, revealed = false) {
-    const escapedText = escapeHtml(text || '');
-    if (!revealed || !wrongText) return escapedText;
-    return escapedText.replace(escapeHtml(wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correctText)}</span></span>`);
+    const source = String(text || '');
+    if (!revealed || !wrongText) return source;
+    return source.replace(wrongText, `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correctText)}</span></span>`);
   }
 
   function renderJudgeCorrections(text, corrections, revealed = false) {
-    if (!revealed || !Array.isArray(corrections) || !corrections.length) return escapeHtml(text || '');
-    return corrections.reduce((html, correction) => html.replace(escapeHtml(correction.wrongText), `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(correction.wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correction.correctText)}</span></span>`), escapeHtml(text || ''));
+    if (!revealed || !Array.isArray(corrections) || !corrections.length) return String(text || '');
+    return corrections.reduce((html, correction) => html.replace(correction.wrongText, `<span class="quiz-judge-correction"><span class="quiz-judge-wrong">${escapeHtml(correction.wrongText)}</span><span class="quiz-judge-answer">${escapeHtml(correction.correctText)}</span></span>`), String(text || ''));
   }
 
   function renderJudgeRecord(question, revealed = false) {
     if (question.answer === '\u6b63\u786e' || question.correctionTarget === 'side') {
-      return escapeHtml(question.recordText || '');
+      return question.recordText || '';
     }
     return renderJudgeCorrections(question.recordText || '', question.corrections || [{ wrongText: question.wrongText, correctText: question.correctText }], revealed);
   }
@@ -95,24 +102,25 @@
     const shouldCorrectSide = question.correctionTarget === 'side' && question.answer !== '\u6b63\u786e';
     const valueHtml = shouldCorrectSide
       ? renderJudgeCorrection(question.sideText, question.wrongText, question.correctText, revealed)
-      : escapeHtml(question.sideText);
-    return `<span class="quiz-question-side"><span class="quiz-side-label">${escapeHtml(question.sideLabel || '')}</span><span class="quiz-side-value">${valueHtml}</span></span>`;
+      : question.sideText;
+    return `<span class="quiz-question-side"><span class="quiz-side-label">${escapeHtml(question.sideLabel || '')}</span><span class="quiz-side-value">${formatContent(valueHtml)}</span></span>`;
   }
 
   function renderQuestionBody(revealed = false) {
     if (!currentQuestion) return;
     if (currentQuestion.content === SECRET_CONTENT) {
       questionText.innerHTML = `
-        <span class="quiz-question-prompt">${escapeHtml(currentQuestion.prompt)}</span>
-        <span class="quiz-question-image">
+        <span class="quiz-question-prompt quiz-question-prompt--secret">${escapeHtml(currentQuestion.prompt)}</span>
+        <span class="quiz-secret-visual">
           <img src="${escapeHtml(currentQuestion.image)}" alt="题目图片" loading="eager" decoding="async">
+          ${renderSecretAnswerBoxes()}
         </span>
       `;
       return;
     }
 
     const shouldBlankRecord = (currentQuestion.type === 'choice' || currentQuestion.type === 'fill') && ['person', 'term'].includes(currentQuestion.content);
-    let recordHtml = escapeHtml(currentQuestion.recordText || '');
+    let recordHtml = currentQuestion.recordText || '';
     if (shouldBlankRecord) {
       recordHtml = renderRecordWithBlank(currentQuestion.recordText || '', currentQuestion.answer, revealed);
     } else if (currentQuestion.type === 'judge') {
@@ -134,11 +142,20 @@
       .trim();
   }
 
-  function buildStemText(record) {
+  function buildPlainText(record) {
     return String(record.content || '')
       .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, '$2')
       .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, '$2')
-      .replace(/\(\((.+?)\)\)/g, '$1');
+      .replace(/\(\((.+?)\)\)/g, '$1')
+      .replace(/>>(.+?)<</g, '$1')
+      .replace(/\^(.+?)\^/g, '$1')
+      .replace(/_(.+?)_/g, '$1');
+  }
+
+  function buildDisplayText(record) {
+    return String(record.content || '')
+      .replace(/\{\{([a-zA-Z0-9_-]+)\|(.+?)\}\}/g, '$2')
+      .replace(/\[\[([a-zA-Z0-9_-]+)\|(.+?)\]\]/g, '$2');
   }
 
   function extractTokenRefs(text, kind) {
@@ -179,23 +196,26 @@
   }
 
   function getQuestionBase(record, kind) {
-    const text = buildStemText(record).trim();
-    if (!text) return null;
+    const plainText = buildPlainText(record).trim();
+    const displayText = buildDisplayText(record).trim();
+    if (!plainText || !displayText) return null;
 
     const tokens = extractTokenRefs(record.content || '', kind)
-      .filter((ref) => ref.label && text.includes(ref.label));
+      .filter((ref) => ref.label && plainText.includes(ref.label) && displayText.includes(ref.label));
     if (!tokens.length) return null;
 
     const answerRef = pickRandom(tokens);
-    if (!text.includes(answerRef.label)) return null;
+    if (!plainText.includes(answerRef.label) || !displayText.includes(answerRef.label)) return null;
 
     return {
       id: record.id,
+      recordKey: record.fileName || record.id,
       type: '',
       content: kind,
       answer: answerRef.label,
       answerId: answerRef.id,
-      recordText: text,
+      plainText,
+      recordText: displayText,
       prompt: kind === 'person' ? '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u4eba\u540d\u3002' : '\u8bf7\u6839\u636e\u8bb0\u5f55\u5185\u5bb9\u9009\u62e9\u88ab\u6316\u7a7a\u7684\u672f\u8bed\u3002'
     };
   }
@@ -230,7 +250,7 @@
       ? getPersonChoiceOptions(base, pools)
       : shuffle(uniqueValues([
         base.answer,
-        ...shuffle(pools.termOptions.filter((item) => item !== base.answer && !base.recordText.includes(item))).slice(0, 3)
+        ...shuffle(pools.termOptions.filter((item) => item !== base.answer && !base.plainText.includes(item))).slice(0, 3)
       ]));
     if (!options || options.length < 4) return null;
 
@@ -261,58 +281,88 @@
     const availableRefs = refs.filter((ref) => ref.label);
     if (!availableRefs.length) return null;
 
-    const shouldBeCorrect = Math.random() >= 0.5;
-    const text = buildStemText(record).trim();
-    if (!text) return null;
+    const text = buildPlainText(record).trim();
+    const displayText = buildDisplayText(record).trim();
+    if (!text || !displayText) return null;
 
+    const replacementPool = kind === 'person'
+        ? [...pools.personLabels.entries()]
+          .flatMap(([, labels]) => labels)
+        : pools.termOptions;
+
+    return {
+      id: record.id,
+      recordKey: record.fileName || record.id,
+      type: 'judge',
+      content: kind,
+      answer: '\u6b63\u786e',
+      prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
+      recordText: displayText,
+      sourceRecordText: displayText,
+      availableRefs,
+      replacementPool: uniqueValues(replacementPool),
+      reward: JUDGE_REWARD,
+      options: ['\u6b63\u786e', '\u9519\u8bef'],
+      randomizeOnPick: true
+    };
+  }
+
+  function randomizeTokenJudgeQuestion(question) {
+    const shouldBeCorrect = Math.random() >= 0.5;
     if (shouldBeCorrect) {
       return {
-        id: record.id,
-        type: 'judge',
-        content: kind,
+        ...question,
         answer: '\u6b63\u786e',
-        prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
-        recordText: text,
-        reward: JUDGE_REWARD,
-        options: ['\u6b63\u786e', '\u9519\u8bef']
+        recordText: question.sourceRecordText,
+        corrections: [],
+        wrongText: '',
+        correctText: ''
       };
     }
 
-    const generalPool = kind === 'person' ? pools.personOptions : pools.termOptions;
-    const targets = kind === 'person'
+    const availableRefs = question.availableRefs || [];
+    const targets = question.content === 'person'
       ? shuffle(availableRefs).slice(0, Math.max(1, Math.min(3, availableRefs.length, 1 + Math.floor(Math.random() * 3))))
       : [pickRandom(availableRefs)];
-    let recordText = text;
+    let recordText = question.sourceRecordText || question.recordText || '';
     const corrections = [];
     const usedReplacements = new Set();
 
     targets.forEach((target) => {
-      const replacementPool = kind === 'person'
-        ? [...pools.personLabels.entries()]
-          .filter(([id]) => id !== target.id)
-          .flatMap(([, labels]) => labels)
-        : generalPool;
-      const replacement = pickRandom(uniqueValues(shuffle(replacementPool)
-        .filter((item) => item !== target.label && item !== target.id && !usedReplacements.has(item))));
+      const replacement = pickRandom(uniqueValues(shuffle(question.replacementPool || [])
+        .filter((item) => item !== target.label && item !== target.id && !usedReplacements.has(item) && !recordText.includes(item))));
       if (!replacement || !recordText.includes(target.label)) return;
-      recordText = recordText.replace(target.label, replacement);
+      const occurrences = recordText.split(target.label).length - 1;
+      const replaceIndex = Math.floor(Math.random() * Math.max(1, occurrences));
+      let seen = 0;
+      recordText = recordText.replaceAll(target.label, (value) => {
+        if (seen === replaceIndex) {
+          seen += 1;
+          return replacement;
+        }
+        seen += 1;
+        return value;
+      });
       usedReplacements.add(replacement);
       corrections.push({ wrongText: replacement, correctText: target.label });
     });
-    if (!corrections.length) return null;
+    if (!corrections.length) {
+      return {
+        ...question,
+        answer: '\u6b63\u786e',
+        recordText: question.sourceRecordText,
+        corrections: []
+      };
+    }
 
     return {
-      id: record.id,
+      ...question,
       type: 'judge',
-      content: kind,
       answer: '\u9519\u8bef',
-      prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u6b63\u786e\u3002',
       recordText,
       corrections,
       wrongText: corrections[0].wrongText,
       correctText: corrections[0].correctText,
-      reward: JUDGE_REWARD,
-      options: ['\u6b63\u786e', '\u9519\u8bef']
     };
   }
 
@@ -323,11 +373,12 @@
 
     return {
       id: record.id,
+      recordKey: record.fileName || record.id,
       type: 'choice',
       content: 'author',
       answer: record.author,
       prompt: '\u8bf7\u9009\u62e9\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba',
-      recordText: buildStemText(record).trim(),
+      recordText: buildDisplayText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.author, ...distractors])
     };
@@ -337,11 +388,12 @@
     if (!record.author || !record.content) return null;
     return {
       id: record.id,
+      recordKey: record.fileName || record.id,
       type: 'fill',
       content: 'author',
       answer: String(record.author).toLowerCase(),
       prompt: '\u8bf7\u586b\u5199\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u4eba\u59d3\u540d\u62fc\u97f3\u9996\u5b57\u6bcd\u3002',
-      recordText: buildStemText(record).trim(),
+      recordText: buildDisplayText(record).trim(),
       reward: FILL_REWARD,
       options: []
     };
@@ -349,25 +401,47 @@
 
   function buildAuthorJudgeQuestion(record, authorPool) {
     if (!record.author || !record.content) return null;
-    const shouldBeCorrect = Math.random() >= 0.5;
-    const wrongAuthor = pickRandom(authorPool.filter((author) => author !== record.author));
-    if (!shouldBeCorrect && !wrongAuthor) return null;
-    const shownAuthor = shouldBeCorrect ? record.author : wrongAuthor;
 
     return {
       id: record.id,
+      recordKey: record.fileName || record.id,
       type: 'judge',
       content: 'author',
-      answer: shouldBeCorrect ? '\u6b63\u786e' : '\u9519\u8bef',
+      answer: '\u6b63\u786e',
       prompt: '\u8bf7\u5224\u65ad\u4e0b\u65b9\u8bb0\u5f55\u4eba\u4e0e\u8bb0\u5f55\u5185\u5bb9\u662f\u5426\u5339\u914d\u3002',
-      recordText: buildStemText(record).trim(),
+      recordText: buildDisplayText(record).trim(),
+      author: record.author,
+      authorPool,
       sideLabel: '\u8bb0\u5f55\u4eba',
-      sideText: shownAuthor,
+      sideText: record.author,
       correctionTarget: 'side',
-      wrongText: shownAuthor,
+      wrongText: '',
       correctText: record.author,
       reward: JUDGE_REWARD,
-      options: ['\u6b63\u786e', '\u9519\u8bef']
+      options: ['\u6b63\u786e', '\u9519\u8bef'],
+      randomizeOnPick: true
+    };
+  }
+
+  function randomizeAuthorJudgeQuestion(question) {
+    const shouldBeCorrect = Math.random() >= 0.5;
+    const wrongAuthor = pickRandom(shuffle(question.authorPool || []).filter((author) => author !== question.author));
+    if (shouldBeCorrect || !wrongAuthor) {
+      return {
+        ...question,
+        answer: '\u6b63\u786e',
+        sideText: question.author,
+        wrongText: '',
+        correctText: question.author
+      };
+    }
+
+    return {
+      ...question,
+      answer: '\u9519\u8bef',
+      sideText: wrongAuthor,
+      wrongText: wrongAuthor,
+      correctText: question.author
     };
   }
 
@@ -388,11 +462,12 @@
 
     return {
       id: record.id,
+      recordKey: record.fileName || record.id,
       type: 'choice',
       content: 'date',
       answer: record.date,
       prompt: '\u8bf7\u9009\u62e9\u8fd9\u6761\u8bb0\u5f55\u7684\u8bb0\u5f55\u65f6\u95f4',
-      recordText: buildStemText(record).trim(),
+      recordText: buildDisplayText(record).trim(),
       reward: CHOICE_REWARD,
       options: shuffle([record.date, ...distractors])
     };
@@ -411,6 +486,7 @@
         if (!image || !answer) return null;
         return {
           id: item.id || `LAMIAN-${number}`,
+          recordKey: item.id || `LAMIAN-${number}`,
           type: 'fill',
           content: SECRET_CONTENT,
           answer,
@@ -477,6 +553,29 @@
     renderFilter();
   }
 
+  function questionRecordKey(question) {
+    return question?.recordKey || question?.id || '';
+  }
+
+  function randomizeQuestion(question) {
+    if (!question?.randomizeOnPick) return question;
+    if (question.content === 'author') return randomizeAuthorJudgeQuestion(question);
+    if (question.type === 'judge') return randomizeTokenJudgeQuestion(question);
+    return question;
+  }
+
+  function pickNextQuestion() {
+    const avoidSet = new Set(recentQuestionIds);
+    const freshPool = questionBank.filter((question) => !avoidSet.has(questionRecordKey(question)));
+    const pool = freshPool.length ? freshPool : questionBank;
+    const picked = randomizeQuestion(pickRandom(pool));
+    const key = questionRecordKey(picked);
+    if (key) {
+      recentQuestionIds = [key, ...recentQuestionIds.filter((item) => item !== key)].slice(0, 6);
+    }
+    return picked;
+  }
+
   function renderFilter() {
     if (!filterWrap) return;
     const visibleContentLabels = secretUnlocked ? { ...contentLabels, ...secretContentLabels } : contentLabels;
@@ -531,8 +630,9 @@
       return;
     }
 
-    currentQuestion = pickRandom(questionBank);
+    currentQuestion = pickNextQuestion();
     answeredCurrent = false;
+    secretProgress = currentQuestion.content === SECRET_CONTENT ? Array.from(String(currentQuestion.answer || '')).map(() => '') : [];
     feedback.textContent = '';
     feedback.className = 'quiz-feedback';
     nextButton.disabled = false;
@@ -557,13 +657,57 @@
     optionsWrap.innerHTML = currentQuestion.options.map((option, index) => `
             <button class="quiz-option" type="button" data-option="${escapeHtml(option)}">
                 <span class="quiz-option-label">${currentQuestion.type === 'judge' ? (index === 0 ? '✓' : '×') : String.fromCharCode(65 + index)}</span>
-                <span>${escapeHtml(option)}</span>
+                <span>${formatContent(String(option || ''))}</span>
             </button>
         `).join('');
   }
 
+  function handleSecretAnswer(option) {
+    if (!currentQuestion || currentQuestion.content !== SECRET_CONTENT || answeredCurrent) return;
+    const answerChars = Array.from(String(currentQuestion.answer || ''));
+    const inputChars = Array.from(String(option || '').trim());
+
+    if (inputChars.length !== answerChars.length) {
+      setFeedback(`字数不对，需要 ${answerChars.length} 个字，请重新回答。`, 'error');
+      if (fillInput) {
+        fillInput.value = '';
+        fillInput.focus();
+      }
+      return;
+    }
+
+    let changed = false;
+    answerChars.forEach((char, index) => {
+      if (inputChars[index] === char && secretProgress[index] !== char) {
+        secretProgress[index] = char;
+        changed = true;
+      }
+    });
+
+    renderQuestionBody(false);
+    const complete = secretProgress.every((char, index) => char === answerChars[index]);
+    if (!complete) {
+      setFeedback(changed ? '字数正确，部分字已填入方框，请继续回答。' : '字数正确，但本次没有新的正确字，请重新回答。', 'error');
+      if (fillInput) {
+        fillInput.value = '';
+        fillInput.focus();
+      }
+      return;
+    }
+
+    answeredCurrent = true;
+    if (fillInput) fillInput.disabled = true;
+    window.GameState.recordQuizResult(true);
+    window.GameState.addCoins(currentQuestion.reward, 'quiz-reward');
+    setFeedback(`\u2713 \u56de\u7b54\u6b63\u786e\uff0c\u83b7\u5f97 ${currentQuestion.reward} Q\u5e01\u3002`, 'success');
+  }
+
   function handleAnswer(option) {
     if (!currentQuestion || answeredCurrent) return;
+    if (currentQuestion.content === SECRET_CONTENT) {
+      handleSecretAnswer(option);
+      return;
+    }
     answeredCurrent = true;
     const isCorrect = currentQuestion.type === 'fill'
       ? normalizeAnswer(option) === normalizeAnswer(currentQuestion.answer)
