@@ -1819,22 +1819,22 @@ body>footer {
 
 .quiz-answer-blank {
   display: inline-flex;
-  align-items: flex-end;
+  align-items: baseline;
   justify-content: center;
   min-width: calc(var(--blank-chars, 4) * 1em);
-  height: 1.32em;
+  height: 1.2em;
   padding: 0 0.08em;
   border-bottom: 0.11em solid currentColor;
   color: var(--text-main);
-  line-height: 1.12;
+  line-height: inherit;
   text-indent: 0;
-  vertical-align: -0.18em;
+  vertical-align: -0.14em;
   transition: color 0.28s ease, border-color 0.28s ease, background 0.28s ease;
 }
 
 .quiz-answer-blank>span {
   display: inline-block;
-  min-height: 1.12em;
+  line-height: inherit;
 }
 
 .quiz-answer-blank.is-revealed {
@@ -3693,6 +3693,25 @@ body.is-wish-revealing {
   font-weight: 800;
 }
 
+.record-page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.record-page-select {
+  min-height: 38px;
+  padding: 0 34px 0 12px;
+  border: var(--field-border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: inherit;
+  font-weight: 800;
+}
+
 .record-written-layout {
   display: grid;
   grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
@@ -3708,11 +3727,19 @@ body.is-wish-revealing {
   border-radius: 18px;
   background: var(--bg-card);
   box-shadow: var(--shadow-soft);
+  aspect-ratio: 1986 / 2978;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .record-written-image img {
   display: block;
   width: 100%;
+  aspect-ratio: 1986 / 2978;
+  object-fit: contain;
+  flex: 1 1 auto;
+  min-height: 0;
   border-radius: 12px;
   border: var(--field-border);
 }
@@ -3798,6 +3825,25 @@ body.is-wish-revealing {
   font-weight: 800;
 }
 
+.record-page-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-soft);
+  font-weight: 700;
+}
+
+.record-page-select {
+  min-height: 38px;
+  padding: 0 34px 0 12px;
+  border: var(--field-border);
+  border-radius: 10px;
+  background: var(--bg-card);
+  color: var(--text-main);
+  font: inherit;
+  font-weight: 800;
+}
+
 .record-written-layout {
   display: grid;
   grid-template-columns: minmax(280px, 0.9fr) minmax(0, 1.1fr);
@@ -3813,11 +3859,19 @@ body.is-wish-revealing {
   border-radius: 18px;
   background: var(--bg-card);
   box-shadow: var(--shadow-soft);
+  aspect-ratio: 1986 / 2978;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 }
 
 .record-written-image img {
   display: block;
   width: 100%;
+  aspect-ratio: 1986 / 2978;
+  object-fit: contain;
+  flex: 1 1 auto;
+  min-height: 0;
   border-radius: 12px;
   border: var(--field-border);
 }

@@ -115,7 +115,7 @@
             return currentState.unlockedRecordIds.includes(recordId);
         },
         isRecordLocked(record) {
-            return Boolean(record && record.importance === 'important' && !this.isRecordUnlocked(record.id));
+            return false;
         },
         unlockRecord(recordId, cost = 500) {
             if (!recordId || this.isRecordUnlocked(recordId)) {

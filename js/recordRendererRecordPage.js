@@ -35,7 +35,7 @@ function sortRecords(records) {
     records.sort((a, b) => b.id.localeCompare(a.id));
 }
 
-function buildRecordBody(record, isLocked) {
+function buildRecordBody(record) {
     const timeText = record.time ? `📌 ${record.time} |` : "";
 
     return `
@@ -46,22 +46,14 @@ function buildRecordBody(record, isLocked) {
                 ${timeText}
                 ✍ ${parseContent(`[[${record.author}|${record.author}]]`)}
             </span>
-            <span class="icon-group${isLocked ? " is-hidden" : ""}">
+            <span class="icon-group">
                 ${record.attachments?.length ? `<span class="attach-toggle">📎</span>` : ""}
             </span>
         </div>
-        <div class="content ${isLocked ? "content-locked" : ""}">
+        <div class="content">
             ${formatContent(record.content)}
         </div>
-        ${isLocked ? `
-            <div class="record-lock-panel">
-                <div class="record-lock-icon">LOCKED</div>
-                <p class="record-lock-title">重要条目已上锁</p>
-                <p class="record-lock-copy">该条目被标记为重要，解锁后可查看正文、图片和附件。</p>
-                <button class="btn-action record-unlock-btn" type="button" data-record-id="${record.id}">500 Q币解锁</button>
-            </div>
-        ` : ""}
-        ${!isLocked && record.attachments?.length ? `
+        ${record.attachments?.length ? `
             <div class="attachments-wrapper" style="display:none">
                 <ul>
                     ${record.attachments.map((attachment) => `<li><a href="${attachment.file}" target="_blank">${attachment.name}</a></li>`).join("")}
@@ -85,15 +77,9 @@ function renderRecordList(records, container) {
         const div = document.createElement("div");
 
         const renderIntoDiv = () => {
-            const isLocked = Boolean(window.GameState?.isRecordLocked?.(record));
-            div.className = `record importance-${importance}${isLocked ? " is-locked" : ""}`;
-            div.innerHTML = buildRecordBody(record, isLocked);
+            div.className = `record importance-${importance}`;
+            div.innerHTML = buildRecordBody(record);
             bindToggle(div);
-            div.querySelector(".record-unlock-btn")?.addEventListener("click", () => {
-                if (window.GameState?.unlockRecord?.(record.id, 500)) {
-                    renderIntoDiv();
-                }
-            });
         };
 
         renderIntoDiv();

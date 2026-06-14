@@ -89,14 +89,20 @@ function renderWrittenView(records) {
   currentPageIndex = Math.min(currentPageIndex, pages.length - 1);
   const page = pages[currentPageIndex];
   const pageRecords = page.records || [];
-  sortRecords(pageRecords);
+  pageRecords.sort((a, b) => (a.recordIndex ?? 0) - (b.recordIndex ?? 0));
   const imageBase = `images/record-pages/${page.page}`;
   container.innerHTML = `
     <section class="record-written-view">
       <div class="record-written-toolbar">
-        <button class="btn-action record-page-prev" type="button" ${currentPageIndex >= pages.length - 1 ? 'disabled' : ''}>上一页</button>
+        <button class="btn-action record-page-prev" type="button" ${currentPageIndex <= 0 ? 'disabled' : ''}>上一页</button>
         <span class="record-written-page">${page.page} · 第 ${currentPageIndex + 1} / ${pages.length} 页</span>
-        <button class="btn-action record-page-next" type="button" ${currentPageIndex <= 0 ? 'disabled' : ''}>下一页</button>
+        <button class="btn-action record-page-next" type="button" ${currentPageIndex >= pages.length - 1 ? 'disabled' : ''}>下一页</button>
+        <label class="record-page-jump">
+          <span>跳转</span>
+          <select class="record-page-select" aria-label="选择书面记录页">
+            ${pages.map((item, index) => `<option value="${index}" ${index === currentPageIndex ? 'selected' : ''}>${item.page}</option>`).join("")}
+          </select>
+        </label>
       </div>
       <div class="record-written-layout">
         <figure class="record-written-image">
@@ -109,11 +115,15 @@ function renderWrittenView(records) {
   `;
   renderRecordList(pageRecords, container.querySelector(".record-written-records"));
   container.querySelector(".record-page-prev")?.addEventListener("click", () => {
-    currentPageIndex = Math.min(currentPageIndex + 1, pages.length - 1);
+    currentPageIndex = Math.max(currentPageIndex - 1, 0);
     renderCurrentView();
   });
   container.querySelector(".record-page-next")?.addEventListener("click", () => {
-    currentPageIndex = Math.max(currentPageIndex - 1, 0);
+    currentPageIndex = Math.min(currentPageIndex + 1, pages.length - 1);
+    renderCurrentView();
+  });
+  container.querySelector(".record-page-select")?.addEventListener("change", (event) => {
+    currentPageIndex = Math.min(Math.max(Number(event.target.value) || 0, 0), pages.length - 1);
     renderCurrentView();
   });
 }
